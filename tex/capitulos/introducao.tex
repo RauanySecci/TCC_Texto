@@ -1,0 +1,71 @@
+
+Este capítulo apresenta o contexto em que o trabalho se insere, a motivação para a comparação entre PostgreSQL com JSONB e MongoDB, os objetivos da pesquisa e a forma como o texto está organizado.
+
+\section{Contextualização e Motivação}
+O crescimento do volume de dados semiestruturados trouxe novos desafios
+aos Sistemas de Gerenciamento de Bancos de Dados (SGBDs) relacionais, o que leva a
+adoção de SGBDs NoSQL \cite{Eldahshan2022}. Entre eles, os orientados a documentos,
+como o MongoDB\footnote{\url{https://www.mongodb.com/docs/manual/}}, ganharam popularidade com o uso do formato JSON em aplicações web, 
+pois armazenam dados semiestruturados de forma nativa, com esquema flexível e permitindo que documentos de uma mesma coleção tenham 
+atributos distintos. 
+No entanto, carecem de recursos dos sistemas relacionais \cite{Chasseur2013}, como junções eficientes, 
+chaves estrangeiras para manter a consistência entre registros relacionados e transações ACID (atomicidade, consistência, isolamento e durabilidade) envolvendo múltiplas entidades.
+Por sua vez, o PostgreSQL\footnote{\url{https://www.postgresql.org/docs/current/}} passou a incorporar suporte a dados
+semiestruturados em formatos como JSON, com esforços para evoluir esse suporte
+para representações binárias e indexáveis mais adequadas a esse modelo de dados
+\cite{Bartunov2013}.
+
+Essa discussão é relevante em catálogos de produtos, cujos dados costumam ser heterogêneos. 
+Por exemplo, pode-se ter em um mesmo catálogo uma pizza que possui opções de borda e tamanhos, 
+uma bebida que possui volume e informação de temperatura e uma sobremesa que possui informação nutricional específica, 
+ou seja, cada tipo de produto tem suas próprias
+particularidades. A representação horizontal
+tradicional, com uma coluna por atributo, é inadequada \cite{Agrawal2001}, pois a maioria das
+colunas ficaria vazia para a maioria dos itens, e cada nova categoria de produto exigiria
+alterar o esquema da tabela. Criar uma tabela para cada tipo de produto também não é viável,
+pois listar o cardápio completo passa a exigir a junção de várias tabelas, algo que seria muito custoso.
+Uma alternativa é manter os atributos comuns em colunas relacionais e armazenar a parte variável em uma coluna JSONB\footnote{\url{https://www.postgresql.org/docs/current/datatype-json.html}}.
+Outra alternativa é abandonar o modelo relacional e armazenar todo o catálogo em um SGBD orientado a documentos, como o MongoDB.
+
+
+Esse é o cenário da equipe de Catálogo do iFood\footnote{\url{https://www.ifood.com.br/}}, empresa em que a autora realiza estágio.
+O serviço responsável por esse catálogo armazena os itens em uma tabela do PostgreSQL
+com 55 colunas, das quais 11 são do tipo JSONB, que armazenam objetos como preços,
+grupos de opções, horários, classificações, entre outros. Os atributos comuns a todos os
+itens permanecem em colunas relacionais, enquanto os que variam ficam em colunas JSONB, o que
+permite lidar com a variabilidade sem abrir mão da integridade transacional do PostgreSQL.
+
+O JSONB resolve o problema de modelagem, mas o principal gargalo passa a ser o desempenho.
+Em sistemas relacionais, a ausência de um esquema fixo no JSONB resulta em consultas analíticas
+lentas \cite{Durner2021}. No PostgreSQL, acessar um campo dentro de um JSONB exige operadores
+e índices específicos, como o \textit{Generalized Inverted Index} (GIN)\footnote{\url{https://www.postgresql.org/docs/current/gin.html}}, enquanto no MongoDB o acesso a um campo do documento é
+nativo. A pergunta que motiva este
+trabalho é se o MongoDB seria uma alternativa mais adequada para o padrão de dados de
+um catálogo como o do iFood, ou o PostgreSQL com JSONB e índices oferece desempenho
+comparável.
+
+Este trabalho é um recorte desse problema. Por se tratar de um sistema de produção que
+atende milhões de transações diárias, o iFood não permite a replicação de sua infraestrutura
+e de seus dados reais para fins de pesquisa acadêmica. Por isso, utiliza-se dados
+gerados sinteticamente, em escala controlada de até 1 milhão de itens, e projeta o problema
+em um cenário de dados estruturados e semiestruturados. Das 11 colunas
+JSONB do sistema real, 3 foram selecionadas, cada uma representando um padrão estrutural observado nas 11 colunas: um conjunto de campos fixos (igual para todos os itens do catálogo),
+um conjunto de campos que varia conforme a categoria do item, ou seja, o tipo de item vendido, como pizza, bebida ou sobremesa. Por fim,
+um \textit{array} de estruturas aninhadas, em que cada elemento possui seus próprios campos.
+
+\section{Objetivos}
+
+O principal objetivo deste trabalho é comparar o desempenho do PostgreSQL, com a ferramenta
+JSONB, e do MongoDB, identificando em quais cenários cada tecnologia apresenta melhores resultados. 
+
+Para isso, são avaliadas estratégias de indexação genéricas e específicas em cada sistema,
+aplicadas a operações de leitura e escrita sobre dados estruturados e semiestruturados.
+Além disso, analisa-se a escalabilidade de cada tecnologia conforme a seletividade das
+consultas, o volume de dados e o tamanho do lote de escrita. Para garantir uma comparação
+justa, os experimentos são executados em um ambiente controlado e com medição de tempo
+uniforme nos dois sistemas. 
+
+
+\section{Organização do Trabalho}
+
+Este trabalho de conclusão de curso estrutura-se em quatro capítulos, dos quais este é o Capítulo~\ref{chapter:introducao}. No Capítulo~\ref{chapter:bibliografia}, é apresentada a fundamentação teórica dos principais conceitos e tecnologias empregadas neste trabalho, como PostgreSQL, JSONB, MongoDB, Índices, entre outros, juntamente com os trabalhos relacionados a este estudo. Em seguida, no Capítulo~\ref{chapter:desenvolvimento}, descreve-se a metodologia adotada, detalhando-se a implementação das duas aplicações de catálogo comparadas e os resultados obtidos em todos os experimentos. Por fim, no Capítulo~\ref{chapter:conclusao}, são apresentadas as considerações finais sobre os resultados alcançados, as contribuições do trabalho e propostas para trabalhos futuros.

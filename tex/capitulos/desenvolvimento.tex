@@ -1,0 +1,1214 @@
+Este capítulo descreve o projeto desenvolvido: a comparação entre o PostgreSQL com JSONB e o MongoDB em um catálogo de dados parcialmente variáveis. A Seção~\ref{sec:descricao-problema} apresenta o problema e a metodologia, a Seção~\ref{sec:atividades} detalha as atividades realizadas, a Seção~\ref{sec:resultados} analisa os resultados e a Seção~\ref{sec:dificuldades} discute as dificuldades e limitações.
+
+\section{Descrição do Problema e/ou Projeto}
+\label{sec:descricao-problema}
+
+Sistemas de catálogo de restaurantes armazenam itens, opções e promoções cujas
+estruturas variam de um item para outro. Esses dados podem ser representados em um banco relacional com colunas
+JSONB, como o PostgreSQL, ou em um banco orientado a documentos, como o MongoDB.
+A pergunta que este trabalho busca responder é: em um sistema de catálogo com dados parcialmente variáveis, em quais cenários o PostgreSQL, com o recurso JSONB, e o MongoDB apresentam melhor desempenho e escalabilidade? 
+
+
+Para isso, foi implementado nos dois bancos um recorte controlado de um sistema
+de catálogo, com dados sintéticos e consultas que foram medidas em
+condições idênticas. A Figura~\ref{fig:metodologia} apresenta as etapas da
+metodologia, agrupadas em três fases.
+
+\begin{figure}[H]
+    \centering
+    \caption{Metodologia Geral do Desenvolvimento.}
+    \includegraphics[width=0.9\textwidth]{metodologia.png}
+    \label{fig:metodologia}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
+Na \textbf{preparação do ambiente e dos dados} (etapas 1 a 4), os dois bancos são
+configurados em contêineres Docker, o modelo de dados é definido em cada um e os
+mesmos dados sintéticos são gerados e inseridos. Na \textbf{execução do
+experimento} (etapas 5 a 7), um conjunto de consultas e operações de escrita é
+implementado no PostgreSQL e no MongoDB, avaliado com e sem índices e medido quanto ao
+tempo, ao consumo de recursos e ao espaço em disco. Por fim, na
+\textbf{escalabilidade e análise} (etapas 8 e 9), as operações são repetidas
+variando o volume de dados, a seletividade e o tamanho do lote de escrita, e os
+resultados são comparados. O detalhamento de cada etapa é apresentado na seção
+seguinte.
+
+
+\section{Descrição das Atividades Realizadas}
+\label{sec:atividades}
+
+\subsection{Ambiente e Ferramentas Utilizadas}
+
+Todo o experimento foi executado localmente, em uma única máquina, com os dois bancos de dados em
+contêineres Docker. A implementação está disponível em duas formas: um notebook Jupyter, que apresenta
+cada etapa de forma explicativa, e um script Python (\texttt{analises.py}), que executa os experimentos
+de ponta a ponta e grava os resultados em arquivos JSON. O código completo, incluindo a implementação do experimento,
+o arquivo de configuração dos contêineres, o arquivo de geração de gráficos e lista de dependências, está disponível em um
+repositório público no GitHub\footnote{\url{https://github.com/RauanySecci/TCC_Rauany}}.
+
+A máquina utilizada possui processador Intel Core i5-9300H (2,40~GHz), 8~GB de memória RAM e sistema operacional
+Ubuntu 22.04.5 LTS. Os contêineres foram executados com Docker Engine, versão 29.1.3.
+
+Os bancos foram definidos a partir de imagens com versão fixada: PostgreSQL 14.18 e MongoDB 8.0.29.
+Cada contêiner foi limitado a 2 CPUs e 3~GB de memória, o mesmo limite para os dois, garantindo
+condições equivalentes de execução. Os dados ficam em
+volumes persistentes, e as portas padrão de cada banco (5432 e 27017) são expostas ao notebook.
+
+A implementação foi desenvolvida no Visual Studio Code\footnote{\url{https://code.visualstudio.com}}
+com Python\footnote{\url{https://www.python.org}} 3.10.12. O notebook e o script concentram as etapas do
+experimento: criação do esquema, geração e inserção dos dados, execução das consultas, criação dos
+índices, escalabilidade, medição de desempenho e gravação dos resultados. Antes de cada repetição de uma medição, os
+contêineres são reiniciados e o cache do sistema operacional é descartado, sem aquecimento, de modo que
+cada execução parte do cache vazio. As credenciais e os parâmetros de conexão não ficam no
+código: são lidos de arquivos \texttt{.env}.
+
+A primeira etapa do script (e a primeira célula do notebook) realiza a configuração do ambiente, importa as bibliotecas, carrega as variáveis dos arquivos \texttt{.env}, cria a conexão com o
+PostgreSQL por meio do SQLAlchemy\footnote{\url{https://www.sqlalchemy.org}} e a conexão com o MongoDB por meio do PyMongo\footnote{\url{https://pymongo.readthedocs.io}}.
+
+As versões de todas as dependências estão fixadas no arquivo \texttt{requirements.txt}, que permite recriar o ambiente
+Python e inclui também as dependências indiretas do
+Jupyter. As principais bibliotecas utilizadas estão na Tabela~\ref{tab:versoes}.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.1}
+\caption{Principais bibliotecas Python e versões utilizadas.}
+\label{tab:versoes}
+\small
+\begin{tabular}{|l|l|p{7.2cm}|}
+\hline
+\textbf{Biblioteca} & \textbf{Versão} & \textbf{Finalidade} \\ \hline
+SQLAlchemy & 2.0.53 & Conexão e consultas ao PostgreSQL \\ \hline
+psycopg2-binary & 2.9.13 & Driver do PostgreSQL e inserção em lotes (\texttt{execute\_values}) \\ \hline
+PyMongo & 4.18.1 & Conexão e consultas ao MongoDB \\ \hline
+Faker & 40.39.0 & Geração de dados sintéticos \\ \hline
+pandas & 2.3.3 & Manipulação dos resultados \\ \hline
+matplotlib & 3.10.9 & Geração dos gráficos \\ \hline
+numpy & 2.2.6 & Cálculos numéricos nos gráficos \\ \hline
+python-dotenv & 1.2.3 & Leitura das variáveis do \texttt{.env} \\ \hline
+\texttt{time} / \texttt{statistics} & 3.10.12$^{*}$ & Medição (\texttt{perf\_counter}) e agregação dos tempos \\ \hline
+\texttt{subprocess} / \texttt{threading} & 3.10.12$^{*}$ & Coleta de CPU e memória dos contêineres (cgroup, com \texttt{docker stats} como alternativa) durante a inserção dos dados \\ \hline
+\end{tabular}
+\vspace{0.4em}
+\legend{$^{*}$ Biblioteca padrão do Python, com a versão do interpretador. Fonte: Elaborado pela autora.}
+\end{table}
+
+\subsection{Modelagem dos Dados e Schema}
+
+Para representar o catálogo, o experimento utiliza duas entidades: restaurantes e itens. Essa escolha é um recorte do problema real, já que
+em um catálogo de produção há outras entidades e atributos, mas o objetivo aqui é avaliar o comportamento dos bancos sobre dados parcialmente 
+variáveis, e não reproduzir o domínio completo. A tabela de itens é a principal do experimento, é nela que se concentram os atributos variáveis, o maior volume de registros 
+e a maioria das consultas. A tabela de restaurantes existe para viabilizar a consulta que envolve junção, relacionando os itens ao restaurante que pertencem.
+
+A Figura~\ref{fig:modelo-relacional} apresenta o diagrama UML do modelo adotado no PostgreSQL, onde os dados fixos do item ocupam colunas tradicionais, e os dados que variam ocupam 
+colunas JSONB.
+
+\begin{figure}[H]
+    \centering
+    \caption{Modelo de dados no PostgreSQL.}
+    \includegraphics[width=0.6\textwidth]{modelo-relacional.png}
+    \label{fig:modelo-relacional}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
+A Figura~\ref{fig:modelo-documentos} apresenta o diagrama UML do modelo equivalente no MongoDB, onde restaurante e item são documentos. Item contém os objetos de preço 
+e de grupos de opções e recebe os atributos variáveis como campos próprios (exemplificado por \texttt{atributosEspecificosCategoria}).
+
+\begin{figure}[H]
+    \centering
+    \caption{Modelo de documentos no MongoDB.}
+    \includegraphics[width=0.9\textwidth]{modelo-documentos.png}
+    \label{fig:modelo-documentos}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
+A Figura~\ref{fig:hierarquia-item} mostra a hierarquia conceitual dos itens, onde 
+todo item pertence a uma das quatro categorias (pizza, bebida, sobremesa ou lanche). 
+Essa hierarquia é conceitual e não é implementada como tabelas separadas, apenas reflete na estrutura do conteúdo JSONB.
+
+\begin{figure}[H]
+    \centering
+    \caption{Hierarquia conceitual dos itens por categoria.}
+    \includegraphics[width=0.6\textwidth]{hierarquia-item.png}
+    \label{fig:hierarquia-item}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
+\subsubsection{Definição dos Atributos (PostgreSQL)}
+
+A Tabela~\ref{tab:atributos-restaurante} apresenta os atributos da tabela \texttt{restaurantes}.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Atributos da tabela \texttt{restaurantes}}
+    \label{tab:atributos-restaurante}
+    \small
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{8cm}|}
+        \hline
+        \textbf{Atributo} & \textbf{Tipo} & \textbf{Descrição} \\
+        \hline
+        \texttt{id} & \texttt{UUID} & Identificador único do restaurante (chave primária). \\ \hline
+        \texttt{nome} & \texttt{VARCHAR(255)} & Nome do restaurante. \\ \hline
+        \texttt{categoria} & \texttt{VARCHAR(100)} & Classificação da culinária do restaurante. \\ \hline
+        \texttt{ativo} & \texttt{BOOLEAN} & Indica se o restaurante está em funcionamento. \\ \hline
+        \texttt{criado\_em} & \texttt{TIMESTAMP} & Data de criação do registro. \\
+        \hline
+    \end{tabular}
+    \vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+Já a Tabela~\ref{tab:atributos-itens} apresenta os atributos da tabela \texttt{itens}. 
+Os atributos \texttt{hash} e \texttt{versao} não pertencem ao domínio do cardápio, eles são usados na lógica de inserção condicional, explicada na C2 da Seção~\ref{sec:consultas-implementadas}. 
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Atributos da tabela \texttt{itens}}
+    \label{tab:atributos-itens}
+    \small
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{3.4cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{7.6cm}|}
+        \hline
+        \textbf{Atributo} & \textbf{Tipo} & \textbf{Descrição} \\
+        \hline
+        \texttt{id} & \texttt{UUID} & Identificador único do item (chave primária). \\ \hline
+        \texttt{restaurante\_id} & \texttt{UUID} & Restaurante a que o item pertence (chave estrangeira). \\ \hline
+        \texttt{nome} & \texttt{VARCHAR(255)} & Nome do item. \\ \hline
+        \texttt{categoria} & \texttt{VARCHAR(100)} & Pizza, bebida, sobremesa ou lanche. \\ \hline
+        \texttt{status} & \texttt{VARCHAR(20)} & \texttt{AVAILABLE}, \texttt{UNAVAILABLE} ou \texttt{DELETED}. O último representa a exclusão lógica, em que o registro permanece no banco. \\ \hline
+        \texttt{preco} & \texttt{JSONB} & Preço do item, em um objeto de estrutura fixa. \\ \hline
+        \texttt{opcoes\_grupos} & \texttt{JSONB} & Grupos de opções configuráveis pelo cliente, em um array de objetos aninhados. \\ \hline
+        \texttt{atributos\_variaveis} & \texttt{JSONB} & Características descritivas que variam conforme a categoria. \\ \hline
+        \texttt{hash} & \texttt{INT} & Valor derivado do conteúdo do item, usado para identificar se ele mudou. \\ \hline
+        \texttt{versao} & \texttt{BIGINT} & Contador de versão do item. \\ \hline
+        \texttt{criado\_em} & \texttt{TIMESTAMP} & Data de criação do registro. \\ \hline
+        \texttt{modificado\_em} & \texttt{TIMESTAMP} & Data da última modificação do registro. \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+\subsubsection{Atributos JSONB}
+
+Os três atributos JSONB foram escolhidos para representar padrões estruturais distintos de dados semiestruturados, 
+que se comportam de maneira diferente nas consultas e nos índices.
+
+O atributo \texttt{preco} é um objeto simples, com estrutura igual para todos os itens (Tabela~\ref{tab:jsonb-preco}). 
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.1}
+\caption{Estrutura do atributo \texttt{preco}.}
+\label{tab:jsonb-preco}
+\small
+\begin{tabular}{|l|l|p{6cm}|l|}
+\hline
+\textbf{Atributo} & \textbf{Tipo} & \textbf{Descrição} & \textbf{Obrigatório?} \\ \hline
+\texttt{valor} & Number (float) & Preço de venda atual do item. & Sim \\ \hline
+\texttt{moeda} & String & Código da moeda corrente. & Sim \\ \hline
+\texttt{precoOriginal} & Number (float) ou null & Preço antes do desconto. É preenchido apenas quando o item possui promoção, caso contrário, é \texttt{null}. & Não \\ \hline
+\end{tabular}
+\vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+O atributo \texttt{opcoes\_grupos} é um array de objetos aninhados (Tabela~\ref{tab:jsonb-opcoes}). Cada grupo é um
+objeto com os campos \texttt{nome}, \texttt{minimo}, \texttt{maximo} (limites mínimo e máximo de escolhas) e
+\texttt{opcoes}. 
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.1}
+\caption{Estrutura do atributo \texttt{opcoes\_grupos}.}
+\label{tab:jsonb-opcoes}
+\small
+\begin{tabular}{|l|l|l|p{4.2cm}|l|}
+\hline
+\textbf{Categoria} & \textbf{Grupo esperado} & \textbf{Limites} & \textbf{Estrutura de \texttt{opcoes}} & \textbf{Obrigatório?} \\ \hline
+\textbf{pizza} & \texttt{Borda} & min: 0, max: 1 & Array de \{nome, precoAdicional\} & Não \\ \cline{2-5}
+ & \texttt{Tamanho} & min: 1, max: 1 & Array de \{nome, precoAdicional\} & Sim \\ \hline
+\textbf{bebida} & \texttt{Tamanho} & min: 1, max: 1 & Array de \{nome, precoAdicional\} & Sim \\ \hline
+\textbf{sobremesa} & \texttt{Acompanhamento} & min: 0, max: 2 & Array de \{nome, precoAdicional\} & Não \\ \hline
+\textbf{lanche} & \texttt{Adicionais} & min: 0, max: 5 & Array de \{nome, precoAdicional\} & Não \\ \hline
+\end{tabular}
+\vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+O atributo \texttt{atributos\_variaveis} é um objeto cujas chaves dependem da categoria do item 
+(Tabela~\ref{tab:jsonb-atributos}). Atributos como \texttt{tags} e \texttt{promocao} são opcionais e ocorrem em mais de uma categoria. 
+Neste caso, atributos não obrigatórios são omitidos quando não se aplicam, em vez de armazenados como nulos. O campo \texttt{promocao} é um objeto com \texttt{descontoPercentual} (inteiro) e \texttt{validoAte}
+(texto com a data), e \texttt{informacaoNutricional} é um objeto com \texttt{calorias} (inteiro) e
+\texttt{contemGluten} (booleano).
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.1}
+\caption{Estrutura do atributo \texttt{atributos\_variaveis}.}
+\label{tab:jsonb-atributos}
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Categoria} & \textbf{Atributo esperado} & \textbf{Tipo} & \textbf{Obrigatório?} \\ \hline
+\textbf{pizza} & \texttt{promocao} & Objeto \{descontoPercentual, validoAte\} & Não \\ \cline{2-4}
+ & \texttt{tags} & Array de strings & Não \\ \hline
+\textbf{bebida} & \texttt{gelada} & Boolean & Sim \\ \cline{2-4}
+ & \texttt{tags} & Array de strings & Não \\ \hline
+\textbf{sobremesa} & \texttt{informacaoNutricional} & Objeto \{calorias, contemGluten\} & Sim \\ \cline{2-4}
+ & \texttt{promocao} & Objeto \{descontoPercentual, validoAte\} & Não \\ \hline
+\textbf{lanche} & \texttt{ingredientes} & Array de strings & Sim \\ \cline{2-4}
+ & \texttt{tags} & Array de strings & Não \\ \cline{2-4}
+ & \texttt{promocao} & Objeto \{descontoPercentual, validoAte\} & Não \\ \hline
+\end{tabular}
+\vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+\subsubsection{Criação das tabelas no PostgreSQL}
+
+No PostgreSQL, o esquema é definido de forma explícita antes da inserção dos dados. O Código~\ref{lst:ddl} apresenta os comandos de criação das duas tabelas. A chave estrangeira \texttt{fk\_item\_restaurante} garante a integridade referencial entre item e restaurante, e a cláusula \texttt{ON DELETE CASCADE} remove os itens de um restaurante quando ele é removido.
+
+\begin{codigo}[language=SQL, breaklines=true, caption={Criação das tabelas no PostgreSQL.}, label={lst:ddl}]
+CREATE TABLE restaurantes (
+  id          UUID DEFAULT gen_random_uuid(),
+  nome        VARCHAR(255) NOT NULL,
+  categoria   VARCHAR(100),
+  ativo       BOOLEAN NOT NULL DEFAULT true,
+  criado_em   TIMESTAMP NOT NULL DEFAULT now(),
+  CONSTRAINT pk_restaurante PRIMARY KEY (id)
+);
+
+CREATE TABLE itens (
+  id                    UUID DEFAULT gen_random_uuid(),
+  restaurante_id        UUID NOT NULL,
+  nome                  VARCHAR(255) NOT NULL,
+  categoria             VARCHAR(100) NOT NULL,
+  status                VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE',
+  preco                 JSONB NOT NULL,
+  opcoes_grupos         JSONB,
+  atributos_variaveis   JSONB NOT NULL DEFAULT '{}'::jsonb,
+  hash                  INT,
+  versao                BIGINT NOT NULL DEFAULT 1,
+  criado_em             TIMESTAMP NOT NULL DEFAULT now(),
+  modificado_em         TIMESTAMP NOT NULL DEFAULT now(),
+  CONSTRAINT pk_item PRIMARY KEY (id),
+  CONSTRAINT fk_item_restaurante FOREIGN KEY (restaurante_id)
+    REFERENCES restaurantes(id) ON DELETE CASCADE
+);
+\end{codigo}
+
+\subsubsection{Modelagem no MongoDB}
+
+No MongoDB não há um esquema equivalente ao do PostgreSQL. As coleções \texttt{restaurantes} e \texttt{itens} não são declaradas previamente: elas passam a existir 
+quando os primeiros documentos são inseridos, e a estrutura de cada documento é definida pelo próprio conteúdo inserido. Essa ausência de integridade referencial é uma 
+característica dos bancos não relacionais discutida na Seção~\ref{sec:relacional-vs-nao-relacional}, e transfere para a aplicação a responsabilidade de manter a consistência 
+entre item e restaurante.
+
+A principal diferença estrutural está nos atributos variáveis. No PostgreSQL, eles ficam dentro da coluna \texttt{atributos\_variaveis}, já no MongoDB 
+eles são gravados como campos de nível superior do documento do item, ao lado de \texttt{nome} e \texttt{categoria}. Isso altera a forma de consultá-los: 
+no PostgreSQL, o acesso parte da coluna \texttt{atributos\_variaveis}, e no MongoDB, ele é feito diretamente pelo nome do campo no documento. 
+Já \texttt{preco} e \texttt{opcoes\_grupos} são, em ambos os bancos, um objeto e um array de objetos, respectivamente, mas no MongoDB são campos nativos do documento, 
+e não valores de uma coluna. 
+
+A Tabela~\ref{tab:comparacao-modelos} resume as diferenças entre os dois modelos.
+
+\begin{table}[H]
+    \centering
+    \caption{Comparação entre os modelos do PostgreSQL e do MongoDB}
+    \label{tab:comparacao-modelos}
+    \small
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{3.6cm}|>{\raggedright\arraybackslash}p{5.4cm}|>{\raggedright\arraybackslash}p{5.4cm}|}
+        \hline
+        \textbf{Aspecto} & \textbf{PostgreSQL} & \textbf{MongoDB} \\
+        \hline
+        Esquema & Definido antes da inserção, com tipos e restrições & Definido pelo conteúdo inserido, sem validação \\ \hline
+        Identificador & \texttt{id} (UUID) & \texttt{\_id} (ObjectId) \\ \hline
+        Referência ao restaurante & \texttt{restaurante\_id}, com chave estrangeira & \texttt{restauranteId}, sem integridade referencial \\ \hline
+        Preço e opções & Colunas JSONB & Objeto e array embutidos no documento \\ \hline
+        Atributos variáveis & Coluna \texttt{atributos\_variaveis} & Campos de nível superior do documento \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+\subsubsection{Limpeza do banco}
+
+Antes de cada carga de dados, os dois bancos são limpos para que execuções anteriores não interfiram nos resultados. No PostgreSQL, as tabelas são removidas com \texttt{DROP TABLE IF EXISTS ... CASCADE} e recriadas com os comandos do Código~\ref{lst:ddl}. No MongoDB, as duas coleções são removidas com \texttt{drop()} e voltam a existir na inserção seguinte. 
+
+\subsection{Geração dos Dados}
+
+Como não foi possível utilizar dados reais do catálogo que inspira este trabalho, os dados do experimento são gerados de forma sintética, por meio de um \textit{script} em Python. A geração usa duas bibliotecas: a biblioteca padrão \texttt{random}, que realiza os sorteios, e a biblioteca \texttt{Faker}, configurada para o português do Brasil, que fornece sobrenomes e nomes de cidades para compor os nomes dos restaurantes. Os demais textos, como os nomes dos itens, dos ingredientes e das opções, vêm de listas definidas pela autora. As probabilidades descritas nesta seção também foram definidas de forma arbitrária, com o objetivo de tornar o catálogo heterogêneo.
+
+Os mesmos dados gerados são inseridos nos dois bancos, de modo que a comparação ocorre sobre conteúdos
+idênticos. Apenas o formato do identificador muda: UUID no PostgreSQL e \texttt{ObjectId} no MongoDB.
+As sementes dos geradores aleatórios (\texttt{random.seed(42)} e \texttt{Faker.seed(42)}) são fixas, de
+modo que o conteúdo gerado se repete a cada execução. Os identificadores, por outro lado, não dependem
+dessas sementes e mudam a cada execução.
+
+
+\subsubsection{Restaurantes}
+
+A Tabela~\ref{tab:geracao-restaurantes} resume como cada atributo do restaurante é gerado.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Geração dos atributos dos restaurantes}
+    \label{tab:geracao-restaurantes}
+    \small
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{6cm}|>{\raggedright\arraybackslash}p{5.2cm}|}
+        \hline
+        \textbf{Atributo} & \textbf{Geração} & \textbf{Distribuição} \\ \hline
+        Categoria & Atribuída de forma cíclica & Italiana, brasileira, árabe e mexicana, em partes iguais \\ \hline
+        Nome & Prefixo (três por categoria, como \textit{Cantina}, \textit{Trattoria} e \textit{Pizzaria}) mais sobrenome ou nome de cidade do \texttt{Faker} & Único em todo o conjunto \\ \hline
+        Porte & Sorteio entre três portes, que define o peso do restaurante na distribuição dos itens & Pequeno (60\%), médio (30\%) e grande (10\%) \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+Os pesos de porte fazem com que os restaurantes grandes concentrem,
+em média, cerca de 49\% dos itens, os médios cerca de 37\% e os pequenos cerca de 15\%. Essa desigualdade
+é proposital, pois permite medir como a seletividade afeta uma consulta.
+
+\subsubsection{Itens}
+
+A Tabela~\ref{tab:geracao-itens} resume como cada atributo de Item é gerado.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Geração dos atributos dos itens}
+    \label{tab:geracao-itens}
+    \small
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{6cm}|>{\raggedright\arraybackslash}p{5.2cm}|}
+        \hline
+        \textbf{Atributo} & \textbf{Geração} & \textbf{Distribuição} \\ \hline
+        Categoria & Sorteio com probabilidades distintas & Pizza: 35\% \newline Bebida: 20\% \newline Sobremesa: 10\% \newline Lanche: 35\% \\ \hline
+        Nome & Nome-base (seis a oito por categoria, como \textit{Margherita}, \textit{Brownie} e \textit{X-Bacon}) mais um complemento opcional (seis complementos possíveis ou nenhum, como \textit{Tradicional} e \textit{da Casa}) & Não precisa ser único \\ \hline
+        Status & Sorteio entre três valores & \texttt{AVAILABLE} (85\%) \newline \texttt{UNAVAILABLE} (10\%) \newline e \texttt{DELETED} (5\%) \\ \hline
+        Atributos variáveis & Definidos por categoria, com sorteios independentes & Tabela~\ref{tab:probabilidades} \\ \hline
+        Opções de grupos & Definidas por categoria, com preço adicional fixo por opção & Tabela~\ref{tab:opcoes-geradas} \\ \hline
+        Preço & Valor uniforme na faixa da categoria, com duas casas decimais & Pizza: R\$~35 a R\$~70 \newline Bebida: R\$~5 a R\$~15 \newline Sobremesa: R\$~12 a R\$~25 \newline Lanche: R\$~18 a R\$~35 \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+A distribuição das categorias foi definida para que o catálogo tivesse categorias de tamanhos diferentes, como ocorre em catálogos reais. Os itens com status \texttt{DELETED} existem porque o catálogo que inspira este trabalho realiza a exclusão por meio de \textit{soft delete}.
+
+Os atributos de \texttt{atributos\_variaveis} são definidos por categoria, e cada atributo 
+opcional é decidido por um sorteio independente. A lógica é: o gerador compara um número 
+aleatório entre 0 e 1 com um limiar, o atributo só é incluído quando o número do sorteio 
+o supera. Atributos que não se aplicam são omitidos do objeto. A Tabela~\ref{tab:probabilidades} 
+resume os atributos gerados e suas probabilidades.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Atributos variáveis gerados por categoria}
+    \label{tab:probabilidades}
+    \small
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{3.3cm}|>{\raggedright\arraybackslash}p{2.7cm}|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}p{5.2cm}|}
+        \hline
+        \textbf{Atributo} & \textbf{Categorias} & \textbf{Presença} & \textbf{Conteúdo gerado} \\ \hline
+        \texttt{tags} & Pizza \newline Bebida \newline Lanche & Opcional & Sorteadas entre sete tags possíveis, cada uma com 30\% de chance, então um item pode ter várias tags. Se nenhuma for sorteada, o atributo é omitido. \\ \hline
+        \texttt{promocao} & Pizza \newline Sobremesa \newline Lanche & Opcional: \newline 40\% \newline 30\% \newline 35\% & Objeto com \texttt{descontoPercentual} (inteiro entre 5 e 30 em 98\% das promoções, e 50, 60, 70 ou 80 nos 2\% restantes) e \texttt{validoAte} (data fixa). \\ \hline
+        \texttt{gelada} & Bebida & Sempre & Booleano, verdadeiro em 80\% dos casos. \\ \hline
+        \texttt{informacao\allowbreak Nutricional} & Sobremesa & Sempre & Objeto com \texttt{calorias} (inteiro entre 200 e 500) e \texttt{contemGluten} (verdadeiro em 50\% dos casos). \\ \hline
+        \texttt{ingredientes} & Lanche & Sempre & Lista com dois ou mais ingredientes, sorteados entre dez possíveis, cada um com 50\% de chance, então um lanche pode ter vários ingredientes. Se saírem menos de dois, usa \textit{queijo} e \textit{bacon}. \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+Os grupos de \texttt{opcoes\_grupos} são definidos por categoria, com os limites apresentados na Tabela~\ref{tab:jsonb-opcoes}. A Tabela~\ref{tab:opcoes-geradas} apresenta as opções de cada grupo e o preço adicional fixo de cada uma.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Opções geradas em cada grupo}
+    \label{tab:opcoes-geradas}
+    \small
+    \begin{tabular}{|l|l|l|l|>{\raggedright\arraybackslash}p{3.6cm}|}
+        \hline
+        \textbf{Categoria} & \textbf{Grupo} & \textbf{Opção} & \textbf{Preço adicional} & \textbf{Presença} \\ \hline
+        \textbf{pizza} & \texttt{Borda} & Sem borda & R\$~0,00 & Sempre \\ \cline{3-5}
+         & & Borda mussarela & R\$~8,00 & Sempre \\ \cline{3-5}
+         & & Borda catupiry & R\$~10,00 & Sempre \\ \cline{2-5}
+         & \texttt{Tamanho} & Média & R\$~0,00 & Sempre \\ \cline{3-5}
+         & & Grande & R\$~12,00 & Sempre \\ \cline{3-5}
+         & & Família & R\$~20,00 & Sempre \\ \hline
+        \textbf{bebida} & \texttt{Tamanho} & 350ml & R\$~0,00 & Sempre \\ \cline{3-5}
+         & & 500ml & R\$~2,00 & Sempre \\ \cline{3-5}
+         & & 600ml & R\$~3,50 & Sempre \\ \hline
+        \textbf{sobremesa} & \texttt{Acompanhamento} & Calda & R\$~2,00 & Sempre \\ \cline{3-5}
+         & & Sem acompanhamento & R\$~0,00 & Sempre \\ \hline
+        \textbf{lanche} & \texttt{Adicionais} & Sem cebola & R\$~0,00 & Sempre \\ \cline{3-5}
+         & & Bacon extra & R\$~3,00 & Restaurantes que o oferecem (cerca de 60\%) \\ \cline{3-5}
+         & & Cheddar extra & R\$~3,50 & Restaurantes que o oferecem (cerca de 25\%) \\ \cline{3-5}
+         & & Picles extra & R\$~2,50 & Restaurantes pequenos que o oferecem (cerca de 1\% dos restaurantes) \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+A oferta de \textit{Bacon extra}, \textit{Cheddar extra} e \textit{Picles extra} é decidida no nível do restaurante, e não do item, porque não faria sentido um mesmo restaurante oferecê-los em alguns lanches e em outros não. Dessa forma, a diferença de oferta entre os restaurantes produz seletividades distintas nas consultas que filtram por essas opções. 
+
+O preço é um objeto, cujo campo \texttt{precoOriginal} só é preenchido quando o item possui promoção e é calculado a partir do percentual de desconto. Por esse motivo, os atributos variáveis são gerados antes do preço.
+
+Cada item recebe um valor de \texttt{hash}, que funciona como uma impressão digital do seu conteúdo. Ele é calculado a partir do nome, da categoria, do status, do preço, das opções e dos atributos variáveis, serializados em JSON com as chaves ordenadas, o que garante que o mesmo conteúdo produza sempre o mesmo valor, o Código~\ref{lst:hash} apresenta esse cálculo. O objetivo é permitir, na inserção condicional, decidir se um item recebido difere do armazenado comparando apenas dois inteiros, em vez de comparar todos os campos.
+
+\begin{codigo}[language=Python, breaklines=true, caption={Cálculo da impressão digital do item.}, label={lst:hash}]
+def calcular_hash(nome, categoria, status, preco, opcoes_grupos, atributos):
+    conteudo = json.dumps(
+        {"nome": nome, "categoria": categoria, "status": status,
+         "preco": preco, "opcoes_grupos": opcoes_grupos, "atributos": atributos},
+        sort_keys=True, ensure_ascii=False
+    )
+    digest = hashlib.md5(conteudo.encode("utf-8")).hexdigest()
+    valor = int(digest[:8], 16)
+    if valor >= 2**31:
+        valor -= 2**32
+    return valor
+\end{codigo}
+
+\subsection{Inserção dos dados}
+
+Os restaurantes são inseridos antes dos itens, porque os itens referenciam o restaurante. 
+Os dois bancos recebem os itens em lotes de 10000, e cada lote é confirmado da seguinte forma: 
+no PostgreSQL, com um \texttt{commit} ao final de cada lote, e no MongoDB com a opção 
+\texttt{journal=True}. 
+O banco gera o identificador de cada 
+item (\texttt{DEFAULT gen\_random\_uuid()}) e preenche as datas de criação e modificação 
+(\texttt{DEFAULT now()}). O Código~\ref{lst:insert-pg} apresenta a inserção no PostgreSQL.
+
+\begin{codigo}[language=Python, breaklines=true, caption={Inserção dos dados no PostgreSQL.}, label={lst:insert-pg}]
+execute_values(
+    cur,
+    "INSERT INTO restaurantes (id, nome, categoria, ativo) VALUES %s",
+    dados_restaurantes, page_size=10_000)
+conn.commit()
+
+for i in range(0, len(itens), 10_000):
+    rows = [(it["restaurante"]["pg_id"], it["nome"], it["categoria"],
+             it["status"],
+             json.dumps(it["preco"], ensure_ascii=False),
+             json.dumps(it["opcoes_grupos"], ensure_ascii=False),
+             json.dumps(it["atributos"], ensure_ascii=False),
+             it["hash"], it["versao"])
+            for it in itens[i:i + 10_000]]
+    execute_values(
+        cur,
+        "INSERT INTO itens (restaurante_id, nome, categoria, status, preco, "
+        "opcoes_grupos, atributos_variaveis, hash, versao) VALUES %s",
+        rows,
+        template="(%s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::jsonb, %s, %s)",
+        page_size=10_000)
+    conn.commit()  # confirma a cada lote
+\end{codigo}
+
+
+No MongoDB, os itens são carregados com uma chamada a \texttt{insert\_many} por lote, e o identificador do
+item é gerado pelo \textit{driver}. Como o banco não preenche as datas, a aplicação as define com o instante
+do início da carga, o mesmo valor para todos os documentos. Além disso, os atributos variáveis são gravados
+diretamente no nível superior do documento (Código~\ref{lst:insert-mongo}).
+
+\begin{codigo}[language=Python, breaklines=true, caption={Inserção dos dados no MongoDB.}, label={lst:insert-mongo}]
+agora = datetime.now()
+
+docs_restaurantes = [{"_id": r["mongo_id"], "nome": r["nome"],
+                      "categoria": r["categoria"], "ativo": r["ativo"],
+                      "criado_em": agora} for r in restaurantes]
+db_mongo.restaurantes.insert_many(docs_restaurantes)
+
+for i in range(0, len(itens), 10_000):
+    docs = []
+    for it in itens[i:i + 10_000]:
+        doc = {"restauranteId": it["restaurante"]["mongo_id"],
+               "nome": it["nome"], "categoria": it["categoria"],
+               "status": it["status"], "preco": it["preco"],
+               "opcoes_grupos": it["opcoes_grupos"],
+               "hash": it["hash"], "versao": it["versao"],
+               "criado_em": agora, "modificado_em": agora}
+        doc.update(it["atributos"])  # atributos variaveis no nivel superior
+        docs.append(doc)
+    db_mongo.itens.insert_many(docs)
+\end{codigo}
+
+Durante cada inserção são medidos o tempo total, o uso de CPU e de memória do contêiner e o 
+espaço ocupado pelos dados. Ao final da carga, o PostgreSQL executa o comando
+\texttt{ANALYZE} nas duas tabelas, para que todos os cenários partam das mesmas estatísticas, em vez de
+depender do momento em que o \textit{autovacuum} rodaria sozinho.
+
+\subsection{Consultas Implementadas}
+\label{sec:consultas-implementadas}
+
+As consultas do experimento foram definidas a partir de dois critérios. O primeiro é a 
+recorrência: foram escolhidas operações que ocorrem com frequência no cenário do iFood, 
+como carregar o cardápio de um restaurante, filtrar itens por categoria, processar eventos de 
+atualização do catálogo e remover itens do cardápio. O segundo é a investigação de possíveis 
+gargalos: como a busca em arrays de objetos aninhados dentro de um campo JSONB e a 
+busca por um valor específico dentro de um atributo opcional, 
+como o valor da promoção, presente em apenas parte dos itens. Cada consulta 
+representa um cenário distinto de uso do catálogo.
+
+As oito consultas foram divididas em dois grupos, conforme o tipo de dado sobre o qual atuam. 
+consultas sobre dados estruturados (C1 a C4) operam sobre campos escalares comuns. 
+As consultas sobre dados semiestruturados (C5 a C8) operam sobre o conteúdo dos atributos 
+JSONB. A Tabela~\ref{tab:consultas} resume as consultas, e as seções seguintes apresentam 
+cada uma com a implementação nos dois bancos. 
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Resumo das consultas implementadas}
+    \label{tab:consultas}
+    \small
+    \begin{tabular}{|l|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{1.8cm}|>{\raggedright\arraybackslash}p{3.9cm}|>{\raggedright\arraybackslash}p{3.9cm}|}
+        \hline
+        \textbf{Id.} & \textbf{Grupo} & \textbf{Operação} & \textbf{Padrão de acesso} & \textbf{Cenário representado} \\ \hline
+        C1 & Estruturado & Leitura & Igualdade na categoria e exclusão de um status & Listar os itens não excluídos de uma categoria específica. \\ \hline
+        C2 & Estruturado & Escrita & Upsert condicional por identificador & Processar um evento de atualização do catálogo. \\ \hline
+        C3 & Estruturado & Escrita & \textit{Soft delete} por identificador & Remover um item sem excluí-lo fisicamente. \\ \hline
+        C4 & Estruturado & Junção & Junção e filtro de status & Carregar o cardápio completo de um restaurante. \\ \hline
+        C5 & Semiestruturado & Leitura & Intervalo em campo numérico do JSONB & Filtrar itens por faixa de preço. \\ \hline
+        C6 & Semiestruturado & Leitura & Igualdade em valor de atributo aninhado & Buscar itens em promoção. \\ \hline
+        C7 & Semiestruturado & Leitura & Contenção em array aninhado & Buscar itens que oferecem uma opção. \\ \hline
+        C8 & Semiestruturado & Escrita & Atualização parcial do JSONB por identificador & Adicionar uma tag a um item. \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+\legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+\subsubsection{C1: itens por categoria e status.} Retorna os itens de uma categoria, por exemplo \textit{pizza}, que não tenham sido excluídos logicamente. Essa consulta representa o cliente que busca um tipo de produto e recebe os itens dessa categoria. O padrão de acesso é a igualdade em \texttt{categoria} combinada com a exclusão de um valor de \texttt{status}, ambos campos escalares. O Código~\ref{lst:c1-pg} apresenta a consulta no PostgreSQL, e o Código~\ref{lst:c1-mongo}, no MongoDB.
+
+
+\begin{codigo}[language=SQL, breaklines=true, caption={C1 no PostgreSQL.}, label={lst:c1-pg}]
+SELECT nome, categoria, status
+FROM itens
+WHERE categoria = :categoria AND status <> 'DELETED';
+\end{codigo}
+
+\begin{codigo}[language=Python, breaklines=true, caption={C1 no MongoDB.}, label={lst:c1-mongo}]
+db.itens.find(
+    {"categoria": categoria, "status": {"$ne": "DELETED"}},
+    {"_id": 0, "nome": 1, "categoria": 1, "status": 1}
+)
+\end{codigo}
+
+\subsubsection{C2: upsert condicional.} Representa a operação de escrita mais frequente de 
+catálogo do iFood. Insere um item novo ou atualiza um já existente, aplicando a mudança 
+apenas se o conteúdo realmente mudou (\texttt{hash} diferente) e se o evento não é mais 
+antigo que o já processado (\texttt{versao} maior ou igual). No PostgreSQL, a decisão é tomada 
+pelo próprio banco, em uma única instrução com uma expressão com 
+um \texttt{UPDATE} condicionado a essas duas regras, seguido de um \texttt{INSERT} que só 
+ocorre se o item ainda não existe (Código~\ref{lst:c2-pg}). 
+Não foi usado o comando \texttt{INSERT ... ON CONFLICT}, que seria a forma mais direta, 
+porque ele sempre usa o índice da chave primária para detectar o conflito e, assim, 
+não permitiria medir a operação sem o índice, que será necessário para analisar mais adiante. 
+ 
+\begin{codigo}[language=SQL, breaklines=true, caption={C2 no PostgreSQL.}, label={lst:c2-pg}]
+WITH atualizado AS (
+  UPDATE itens
+  SET nome = :nome, categoria = :categoria, status = :status,
+      preco = CAST(:preco AS JSONB),
+      opcoes_grupos = CAST(:opcoes_grupos AS JSONB),
+      atributos_variaveis = CAST(:atributos AS JSONB),
+      hash = :hash, versao = :versao, modificado_em = now()
+  WHERE id = CAST(:id AS UUID) AND hash <> :hash AND :versao >= versao
+  RETURNING id
+)
+INSERT INTO itens (id, restaurante_id, nome, categoria, status, preco, opcoes_grupos, atributos_variaveis, hash, versao)
+SELECT CAST(:id AS UUID), CAST(:restaurante_id AS UUID), :nome, :categoria, :status, CAST(:preco AS JSONB), CAST(:opcoes_grupos AS JSONB), CAST(:atributos AS JSONB), :hash, :versao
+WHERE NOT EXISTS (SELECT 1 FROM itens WHERE id = CAST(:id AS UUID));
+\end{codigo}
+
+O MongoDB não possui uma instrução única de upsert condicional equivalente à do PostgreSQL, 
+de modo que a aplicação lê primeiro o documento existente e só então decide entre inserir, 
+substituir ou não fazer nada (Código~\ref{lst:c2-mongo}).
+
+\begin{codigo}[language=Python, breaklines=true, caption={C2 no MongoDB.}, label={lst:c2-mongo}]
+existente = db.itens.find_one({"_id": evento["_id"]})
+if existente is None:
+    db.itens.insert_one(evento)
+elif existente["hash"] != evento["hash"] and evento["versao"] >= existente["versao"]:
+    evento["criado_em"] = existente["criado_em"] 
+    db.itens.replace_one({"_id": evento["_id"]}, evento)
+# caso contrario, nao faz nada
+\end{codigo}
+
+\subsubsection{C3: exclusão lógica.} Representa a remoção de um item do cardápio pelo restaurante, o sistema real não executa exclusões físicas, apenas lógicas. O padrão de acesso é a atualização do campo \texttt{status}, localizando o item pelo identificador. Além do \texttt{status}, a operação zera o \texttt{hash} e atualiza \texttt{modificado\_em}. Os Códigos~\ref{lst:c3-pg} e~\ref{lst:c3-mongo} apresentam a operação nos dois bancos.
+
+\begin{codigo}[language=SQL, breaklines=true, caption={C3 no PostgreSQL.}, label={lst:c3-pg}]
+UPDATE itens
+SET status = 'DELETED', hash = 0, modificado_em = now()
+WHERE id = ANY(CAST(:ids AS uuid[])) AND status <> 'DELETED';
+\end{codigo}
+
+\begin{codigo}[language=Python, breaklines=true, caption={C3 no MongoDB.}, label={lst:c3-mongo}]
+db.itens.update_many(
+    {"_id": {"$in": ids}, "status": {"$ne": "DELETED"}},
+    {"$set": {"status": "DELETED", "hash": 0, "modificado_em": datetime.now()}}
+)
+\end{codigo}
+
+\subsubsection{C4: itens de um restaurante.} Retorna os itens de um restaurante específico, 
+excluindo os removidos. O padrão de acesso é uma junção entre itens e restaurantes, 
+com filtro de status, e a busca é feita pelo nome do restaurante. No PostgreSQL, 
+a junção é resolvida pelo banco em uma única instrução (Código~\ref{lst:c4-pg}). 
+
+\begin{codigo}[language=SQL, breaklines=true, caption={C4 no PostgreSQL.}, label={lst:c4-pg}]
+SELECT i.nome, i.categoria, i.status, r.nome AS restaurante_nome
+FROM itens i
+JOIN restaurantes r ON r.id = i.restaurante_id
+WHERE r.nome = :nome AND i.status <> 'DELETED';
+\end{codigo}
+
+No MongoDB, a aplicação busca primeiro o restaurante pelo nome, para obter seu identificador, e em seguida consulta os itens que o referenciam (Código~\ref{lst:c4-mongo}). Embora o MongoDB ofereça o operador \texttt{\$lookup}, optou-se por duas consultas simples, que é a forma usual de resolver uma referência entre coleções. 
+
+\begin{codigo}[language=Python, breaklines=true, caption={C4 no MongoDB.}, label={lst:c4-mongo}]
+restaurante = db.restaurantes.find_one({"nome": nome})
+db.itens.find(
+    {"restauranteId": restaurante["_id"], "status": {"$ne": "DELETED"}},
+    {"_id": 0, "nome": 1, "categoria": 1, "status": 1}
+)
+\end{codigo}
+
+
+\subsubsection{C5: itens por faixa de preço.} Retorna os itens cujo preço está entre um valor mínimo e um máximo. Como o preço é armazenado dentro do atributo JSONB, o filtro precisa acessar o campo \texttt{valor} dentro do objeto. No PostgreSQL, o valor é extraído como texto com o operador \texttt{->>} e convertido para numérico (Código~\ref{lst:c5-pg}).
+
+\begin{codigo}[language=SQL, breaklines=true, caption={C5 no PostgreSQL.}, label={lst:c5-pg}]
+SELECT nome, categoria, preco
+FROM itens
+WHERE (preco->>'valor')::numeric BETWEEN :minimo AND :maximo
+  AND status <> 'DELETED';
+\end{codigo}
+
+No MongoDB, o campo interno é acessado diretamente por notação de ponto (Código~\ref{lst:c5-mongo}).
+
+\begin{codigo}[language=Python, breaklines=true, caption={C5 no MongoDB.}, label={lst:c5-mongo}]
+db.itens.find(
+    {"preco.valor": {"$gte": minimo, "$lte": maximo},
+     "status": {"$ne": "DELETED"}},
+    {"_id": 0, "nome": 1, "categoria": 1, "preco": 1}
+)
+\end{codigo}
+
+\subsubsection{C6: valor de atributo variável aninhado.} Representa a busca por itens com 
+uma característica rara dentro de um atributo opcional, como as promoções de desconto alto. 
+O padrão de acesso é a igualdade em um valor aninhado:  
+\texttt{promocao.descontoPercentual} igual a 80\%. 
+No PostgreSQL, usa-se o operador de contenção \texttt{@>} sobre o JSONB 
+(Código~\ref{lst:c6-pg}), e no MongoDB, a notação de ponto sobre o campo aninhado 
+(Código~\ref{lst:c6-mongo}). 
+
+\begin{codigo}[language=SQL, breaklines=true, caption={C6 no PostgreSQL.}, label={lst:c6-pg}]
+SELECT nome, categoria, atributos_variaveis->'promocao' AS promocao
+FROM itens
+WHERE atributos_variaveis @> CAST(:filtro AS JSONB)
+  AND status <> 'DELETED';
+-- filtro: {"promocao": {"descontoPercentual": 80}}
+\end{codigo}
+
+\begin{codigo}[language=Python, breaklines=true, caption={C6 no MongoDB.}, label={lst:c6-mongo}]
+db.itens.find(
+    {"promocao.descontoPercentual": 80, "status": {"$ne": "DELETED"}},
+    {"_id": 0, "nome": 1, "categoria": 1, "promocao": 1}
+)
+\end{codigo}
+
+
+\subsubsection{C7: filtro em array de objetos aninhados.} Representa a busca por itens que oferecem uma personalização específica, como \textit{Bacon extra}, e envolve a estrutura mais complexa do modelo: um array de grupos, cada um com seu próprio array de opções, o que resulta em dois níveis de aninhamento. No PostgreSQL, usa-se o operador de contenção \texttt{@>} com um filtro JSONB que descreve a estrutura procurada (Código~\ref{lst:c7-pg}). 
+
+\begin{codigo}[language=SQL, breaklines=true, caption={C7 no PostgreSQL.}, label={lst:c7-pg}]
+SELECT nome, categoria, opcoes_grupos
+FROM itens
+WHERE opcoes_grupos @> '[{"opcoes": [{"nome": "Bacon extra"}]}]'::jsonb AND status <> 'DELETED';
+\end{codigo}
+
+No MongoDB, a notação de ponto atravessa os dois arrays e compara o nome da opção diretamente (Código~\ref{lst:c7-mongo}).
+
+\begin{codigo}[language=Python, breaklines=true, caption={C7 no MongoDB.}, label={lst:c7-mongo}]
+db.itens.find(
+    {"opcoes_grupos.opcoes.nome": "Bacon extra",
+     "status": {"$ne": "DELETED"}},
+    {"_id": 0, "nome": 1, "categoria": 1, "opcoes_grupos": 1}
+)
+\end{codigo}
+
+\subsubsection{C8: atualização parcial de JSONB.} Adiciona a tag \textit{novidade} a um item específico. O padrão de acesso é a atualização de um campo interno do JSONB. No PostgreSQL, a tag é acrescentada à lista existente com \texttt{jsonb\_set} e concatenação, usando \texttt{COALESCE} para o caso de o item ainda não ter tags. Como o operador \texttt{||} apenas concatena e duplicaria a tag em um item que já a possui, a cláusula \texttt{WHERE} seleciona somente os itens que ainda não contêm o valor (Código~\ref{lst:c8-pg}).
+
+\begin{codigo}[language=SQL, breaklines=true, caption={C8 no PostgreSQL.}, label={lst:c8-pg}]
+UPDATE itens
+SET atributos_variaveis = jsonb_set(
+      atributos_variaveis, '{tags}',
+      COALESCE(atributos_variaveis->'tags', '[]'::jsonb) || '"novidade"'::jsonb
+    ),
+    modificado_em = now()
+WHERE id = ANY(CAST(:ids AS uuid[]))
+  AND NOT COALESCE(atributos_variaveis->'tags', '[]'::jsonb) @> '"novidade"'::jsonb;
+\end{codigo}
+
+No MongoDB, o operador \texttt{\$addToSet} acrescenta o valor ao array apenas se ele ainda não estiver presente.  Para que as duas consultas sejam equivalentes, o filtro de ambas seleciona somente os itens que ainda não possuem a tag (Código~\ref{lst:c8-mongo}). Assim, em ambos os bancos, a data de modificação só é atualizada quando a tag é de fato adicionada.
+
+\begin{codigo}[language=Python, breaklines=true, caption={C8 no MongoDB.}, label={lst:c8-mongo}]
+db.itens.update_many(
+    {"_id": {"$in": ids}, "tags": {"$ne": "novidade"}},
+    {"$addToSet": {"tags": "novidade"},
+     "$set": {"modificado_em": datetime.now()}}
+)
+\end{codigo}
+
+\subsection{Estratégias de Indexação}
+\label{sec:indexacao}
+
+Esta seção descreve as estratégias de indexação avaliadas para cada consulta, 
+cada uma foi executada primeiro
+sem índices adicionais e depois com os índices candidatos. Os
+índices foram escolhidos conforme o padrão de acesso de cada consulta
+e os incompatíveis com esse padrão não foram testados. O procedimento 
+é o mesmo para as duas tecnologias:
+
+\begin{enumerate}
+  \item Antes de cada configuração, todos os índices que foram anteriormente criados pela autora são
+  removidos. No PostgreSQL, é usada a função \texttt{apagar\_indices\_pg()},
+  que automatiza o comando \texttt{DROP INDEX}. No MongoDB, é usado
+  \texttt{drop\_indexes()}. Assim, nenhum índice de uma configuração anterior 
+  interfere na seguinte.
+  \item Logo em seguida o índice é criado. No PostgreSQL, a criação é seguida do comando \texttt{ANALYZE}, que atualiza as estatísticas da tabela, de modo que o plano escolhido reflita o índice testado e não a desatualização das estatísticas.
+  \item O plano de execução é consultado com
+  \texttt{EXPLAIN} no PostgreSQL e com \texttt{explain}
+  (modo \texttt{executionStats}) no MongoDB. Esse passo confirma se o índice
+  criado foi escolhido pelo otimizador.
+  \item Quando o planejador do PostgreSQL ignora o índice criado e opta por uma varredura sequencial, a consulta é medida também com o uso do índice forçado (\texttt{enable\_seqscan = off}), para separar o efeito do índice da decisão do planejador.
+  \item Fazemos duas medições sobre os índices, a primeira é em relação ao tempo de execução da consulta e a segunda ao espaço ocupado pelo índice. O procedimento de cada uma está descrito na
+  Seção~\ref{sec:metodologia-medicao}.
+
+\end{enumerate}
+
+
+A Tabela~\ref{tab:matriz-indices} resume as combinações de consulta e índice testadas.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Combinações de consulta e índice avaliadas.}
+    \label{tab:matriz-indices}
+    \footnotesize
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{3.7cm}|>{\centering\arraybackslash}p{1.3cm}|>{\centering\arraybackslash}p{1.3cm}|>{\centering\arraybackslash}p{1.3cm}|>{\centering\arraybackslash}p{1.3cm}|>{\centering\arraybackslash}p{1.3cm}|>{\centering\arraybackslash}p{1.3cm}|>{\centering\arraybackslash}p{1.3cm}|}
+        \hline
+         & \multicolumn{3}{c|}{\textbf{PostgreSQL}} & \multicolumn{4}{c|}{\textbf{MongoDB}} \\ \cline{2-8}
+        \textbf{Consulta} & \textbf{Sem índice} & \textbf{Simples/ Composto} & \textbf{GIN} & \textbf{Sem índice} & \textbf{Simples/ Composto} & \textbf{Multikey} & \textbf{Wildcard} \\ \hline
+        C1 --- Categoria e status & \checkmark & \checkmark & -- & \checkmark & \checkmark & -- & -- \\ \hline
+        C2 --- Upsert condicional & \checkmark$^{b}$ & \checkmark$^{a}$ & -- & \checkmark$^{b}$ & \checkmark$^{a}$ & -- & -- \\ \hline
+        C3 --- Exclusão lógica & \checkmark$^{b}$ & \checkmark$^{a}$ & -- & \checkmark$^{b}$ & \checkmark$^{a}$ & -- & -- \\ \hline
+        C4 --- Itens de um restaurante & \checkmark & \checkmark & -- & \checkmark & \checkmark & -- & -- \\ \hline
+        C5 --- Faixa de preço & \checkmark & \checkmark & -- & \checkmark & \checkmark & -- & -- \\ \hline
+        C6 --- Valor de atributo aninhado & \checkmark & -- & \checkmark & \checkmark & -- & -- & \checkmark \\ \hline
+        C7 --- Array de objetos aninhados & \checkmark & -- & \checkmark & \checkmark & -- & \checkmark & -- \\ \hline
+        C8 --- Atualização parcial & \checkmark$^{b}$ & \checkmark$^{a}$ & -- & \checkmark$^{b}$ & \checkmark$^{a}$ & -- & -- \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+    \legend{$^{a}$ Utiliza apenas o índice da chave primária (criado automaticamente); $^{b}$ Varredura forçada da tabela; \checkmark: configuração testada; --: configuração não aplicável ao padrão de acesso. Fonte: Elaborado pela autora.}
+\end{table}
+
+A escolha de cada tipo de índice, e o motivo de não usar os outros, foi a seguinte:
+
+\begin{itemize}
+  \item \textbf{B-tree (simples ou composto)}: usado em C1, C4 e C5, que
+  comparam valores escalares por igualdade ou intervalo, e em C2, C3 e C8, que utilizam
+  apenas o índice da chave primária, criado automaticamente, para localizar o item pelo identificador. Em C6 e C7, as consultas usam o operador de contenção \texttt{@>} do JSONB, que o índice \textit{B-tree} não suporta.
+
+  \item \textbf{GIN}: usado em C6 e C7, que procuram dentro do JSONB. Não é usado
+  de C1 a C4, pois os campos são escalares e não têm elementos internos a
+  indexar. Também não é usado em C5, pois o GIN não atende a comparações de intervalo.
+
+  \item \textbf{\textit{Multikey}}: usado em C7, sobre o caminho
+  \texttt{opcoes\_grupos.opcoes.nome}, que atravessa arrays. Não é usado no restante pois os campos consultados não são arrays.
+
+  \item \textbf{\textit{Wildcard}}: usado em C6, em que o atributo consultado
+  existe só em parte dos itens e um único índice indexa automaticamente todos os caminhos presentes em cada documento, dispensando a criação de um índice por atributo. Não é usado
+  no restante, pois o campo consultado é sempre conhecido. 
+\end{itemize}
+
+
+\subsection{Metodologia de Medição}
+\label{sec:metodologia-medicao}
+
+As medições foram implementadas em três funções independentes, cada uma
+dedicada a um certo tipo de desempenho: tempo de execução, consumo de
+recursos computacionais e espaço ocupado em disco. As mesmas funções foram
+aplicadas aos dois bancos, de modo que as diferenças observadas decorram do
+banco e não do método de medição. 
+
+\subsubsection{Medição de tempo}
+\label{subsec:medicao-tempo}
+
+Inicialmente, o tempo seria obtido a partir do próprio plano de execução, por
+meio do \texttt{EXPLAIN ANALYZE} no PostgreSQL e do \texttt{explain} no MongoDB.
+Essa abordagem se mostrou inadequada para as operações de escrita, já que no
+PostgreSQL o \texttt{EXPLAIN ANALYZE} executa o comando, enquanto no MongoDB o
+\texttt{explain} apenas simula a operação, sem
+aplicá-la. Logo, os tempos de escrita dos
+dois bancos não seriam comparáveis de maneira justa.
+
+Optou-se então por cronometrar a operação do lado do cliente, com a função
+\texttt{time.perf\_counter()} da biblioteca padrão do Python. 
+A mesma função e os mesmos pontos de início e fim
+são usados para consultas, inserções, atualizações e exclusões nos dois
+bancos. 
+
+A função \texttt{medir\_tempo}, apresentada no
+Código~\ref{lst:medir-tempo}, recebe a ação a ser cronometrada e a executa
+repetidamente.
+
+\begin{codigo}[language=Python, breaklines=true, caption={Função de medição de tempo.}, label={lst:medir-tempo}]
+def medir_tempo(acao, repeats=10, warm_up=True, antes=None):
+    try:
+        if warm_up:
+            if antes:
+                antes()
+            acao()
+        tempos = []
+        for _ in range(repeats):
+            if antes:
+                antes()
+            inicio = time.perf_counter()
+            acao()
+            tempos.append((time.perf_counter() - inicio) * 1000)
+        return {"min": min(tempos), "max": max(tempos),
+                "media": statistics.mean(tempos),
+                "mediana": statistics.median(tempos),
+                "tempos_brutos": tempos}
+    except Exception as e:
+        print("Erro ao executar benchmark:", e)
+        return None
+\end{codigo}
+
+Seus parâmetros e etapas são os seguintes:
+
+\begin{itemize}
+  \item \texttt{acao}: função que executa a operação a ser
+  medida (uma consulta, um \textit{insert}, um \textit{update}).
+  \item \texttt{warm\_up}: quando ativo, a ação é executada uma vez antes da
+  medição e o resultado é descartado. Isso evita que o custo da primeira
+  execução distorça as medidas. Nos experimentos deste trabalho esse parâmetro permanece desativado,
+  pois o objetivo é medir justamente a execução com o cache vazio. Mas ele pode ser ativado
+  em experimentos futuros para avaliar o impacto do aquecimento na performance.
+  \item \texttt{antes}: função opcional executada antes de cada repetição e
+  fora da cronometragem, usada quando é preciso restaurar o estado do banco
+  entre as execuções.
+  \item \texttt{repeats}: número de repetições cronometradas, igual a 10 em todas as medições.
+\end{itemize}
+
+Para cada ação, a função devolve o tempo mínimo, o máximo, a média e a mediana
+em milissegundos, além dos tempos brutos de cada repetição. 
+
+\subsubsection{Medição de recursos}
+\label{subsec:medicao-recursos}
+
+O consumo de CPU e de memória dos contêineres foi medido durante a inserção em massa dos dados. A leitura é feita diretamente nos contadores do cgroup do Linux (cgroup v2) do contêiner, que fornecem os valores instantaneamente. O comando \texttt{docker stats} foi mantido como alternativa, usada apenas quando o cgroup não é encontrado. 
+O Código~\ref{lst:medir-recursos} apresenta as funções que trabalham em conjunto para capturar e monitorar esses recursos.
+
+\begin{codigo}[language=Python, breaklines=true, caption={Funções de medição de recursos durante a inserção.}, label={lst:medir-recursos}]
+def ler_cgroup(base):
+    # CPU acumulada (s) e memoria (MiB), sem o cache de arquivos
+    uso = next(int(l.split()[1]) for l in (base / "cpu.stat").read_text().splitlines()
+               if l.startswith("usage_usec"))
+    inativo = next(int(l.split()[1]) for l in (base / "memory.stat").read_text().splitlines()
+                   if l.startswith("inactive_file"))
+    memoria = int((base / "memory.current").read_text()) - inativo
+    return uso / 1e6, memoria / 1048576
+
+def monitorar_recursos(nome_container, amostras, parar, intervalo):
+    base = caminho_cgroup(nome_container)
+    cpu_ant, _ = ler_cgroup(base)
+    t_ant = time.perf_counter()
+    while not parar.is_set():
+        parar.wait(intervalo)
+        cpu_s, mem = ler_cgroup(base)
+        agora = time.perf_counter()
+        cpu = (cpu_s - cpu_ant) / (agora - t_ant) * 100 
+        cpu_ant, t_ant = cpu_s, agora
+        if _enviando.is_set():  
+            amostras.append((cpu, mem))
+
+def medir_insercao_com_recursos(funcao_insercao, nome_container, intervalo=0.25):
+    amostras = []
+    parar = threading.Event()
+    monitor = threading.Thread(target=monitorar_recursos,
+                               args=(nome_container, amostras, parar, intervalo))
+    monitor.start()
+    inicio = time.perf_counter()
+    try:
+        funcao_insercao()
+    finally:
+        tempo_total_ms = (time.perf_counter() - inicio) * 1000
+        parar.set()
+        monitor.join()
+    cpus = [a[0] for a in amostras]
+    memorias = [a[1] for a in amostras]
+    return {"tempo_envio_ms": tempo_envio_s * 1000,
+            "tempo_total_ms": tempo_total_ms,
+            "cpu_media_percent": statistics.mean(cpus) if cpus else None,
+            "cpu_max_percent": max(cpus) if cpus else None,
+            "memoria_media_mb": statistics.mean(memorias) if memorias else None,
+            "memoria_max_mb": max(memorias) if memorias else None,
+            "num_amostras": len(amostras),
+            "cpus_brutos": cpus, "memorias_brutas": memorias}
+\end{codigo}
+
+\begin{itemize}
+  \item \texttt{ler\_cgroup}: lê o tempo de CPU acumulado pelo contêiner e a 
+  memória em uso. Da memória é descontado o cache de arquivos inativo, 
+  como faz o \texttt{docker stats}, de modo que o valor reflita a memória efetivamente utilizada.
+  \item \texttt{monitorar\_recursos}: a cada intervalo (0,25 s), calcula o percentual de 
+  CPU, expresso em 
+  porcentagem de um núcleo, e registra a memória, que já vem em MiB. Cada amostra, composta pelo par CPU e memória, só é 
+  armazenada se o envio de dados ao banco estiver em andamento, 
+  o que exclui o tempo gasto na conversão dos dados no Python.
+  \item \texttt{medir\_insercao\_com\_recursos}: dispara o monitor em uma \textit{thread} 
+  separada, executa a inserção na \textit{thread} principal, cronometra o tempo com o 
+  \texttt{perf\_counter} e, ao final, sinaliza a parada do monitor. Devolve dois tempos, 
+  o de envio ao banco (\texttt{tempo\_envio\_ms}) e o total, que inclui a conversão dos dados 
+  lote a lote (\texttt{tempo\_total\_ms}), além da média e do máximo de CPU e de memória 
+  entre as amostras e das leituras brutas.
+\end{itemize}
+
+Na prática, a função tira uma ``foto'' do estado do contêiner a cada 0,25 s
+enquanto a inserção ocorre, e resume os recursos utilizados ao final.
+
+\subsubsection{Medição de espaço em disco}
+\label{subsec:medicao-espaco}
+
+Além do tempo, o espaço ocupado é uma métrica relevante, pois um índice que
+acelera as consultas pode ter um custo significativo de armazenamento. As
+funções do Código~\ref{lst:medir-espaco} medem o tamanho dos dados e o dos
+índices em cada banco.
+
+\begin{codigo}[language=Python, breaklines=true, caption={Funções de medição de espaço em disco.}, label={lst:medir-espaco}]
+def medir_espaco_dados_pg(nome_tabela):
+    with engine_pg.connect() as conn:
+        return conn.execute(text(
+            f"SELECT pg_table_size('{nome_tabela}')")).scalar() / 1024 / 1024
+
+def medir_espaco_indice_pg(nome_tabela):
+    with engine_pg.connect() as conn:
+        tamanho = conn.execute(text(
+            f"SELECT COALESCE(SUM(pg_relation_size(indexrelid)), 0)::bigint "
+            f"FROM pg_index WHERE indrelid = '{nome_tabela}'::regclass "
+            f"AND NOT indisprimary")).scalar()
+    return tamanho / 1024 / 1024
+
+def medir_espaco_dados_mongo(nome_colecao):
+    client_mongo.admin.command("fsync")
+    return db_mongo.command("collStats", nome_colecao)["storageSize"] / 1024 / 1024
+
+def medir_tamanho_logico_mongo(nome_colecao):
+    return db_mongo.command("collStats", nome_colecao)["size"] / 1024 / 1024
+
+def medir_espaco_indice_mongo(nome_colecao):
+    client_mongo.admin.command("fsync")
+    stats = db_mongo.command("collStats", nome_colecao)
+    return (stats["totalIndexSize"] - stats["indexSizes"].get("_id_", 0)) / 1024 / 1024
+\end{codigo}
+
+Nos dois bancos, o espaço é medido em disco e expresso em mebibytes (MiB). No PostgreSQL, o tamanho dos dados
+vem de \texttt{pg\_table\_size}, que considera a tabela e a área TOAST.
+Já o tamanho dos índices é a soma dos tamanhos dos índices da tabela, sem o índice da chave
+primária. Como todos os demais índices são removidos antes de cada medição, o
+valor obtido corresponde apenas ao índice criado para a consulta em teste.
+
+No MongoDB, o tamanho dos dados vem do campo \texttt{storageSize} do comando
+\texttt{collStats}, que reflete o espaço efetivamente alocado em disco, já com a
+compressão aplicada pelo \textit{WiredTiger}. Em seguida, mede-se também o
+tamanho sem compressão (campo \texttt{size}), para que a comparação com o
+PostgreSQL seja feita nas mesmas condições. O tamanho dos
+índices vem do campo \texttt{totalIndexSize}. O índice da chave primária
+(\texttt{\_id}) é descontado, pois existe em todos os cenários e não representa
+o custo do índice em teste. 
+
+O espaço dos dados é medido uma vez após cada carga. O espaço ocupado pelos índices é reportado apenas nas consultas em que há um índice criado
+para o teste (C1, C4, C5, C6 e C7). As consultas C2, C3 e C8 localizam o item pelo
+identificador, que já é coberto pelo índice da chave primária nos dois bancos.
+
+
+\subsection{Experimentos de Escalabilidade}
+
+Para observar como cada operação se comporta quando o cenário cresce, foram
+definidos três experimentos de escalabilidade, cada um variando um fator e
+mantendo os demais fixos: o volume total do banco, a seletividade do filtro e o
+tamanho do lote de escrita. Os
+resultados de cada experimento são gravados em arquivos JSON para análise
+posterior.
+
+\subsubsection{Volume total do banco}
+
+Este experimento mede como cada operação se comporta quando o banco inteiro
+cresce. A pergunta é se, ao buscar exatamente a mesma coisa, o tempo piora e, em
+caso afirmativo, se piora na mesma proporção do crescimento dos dados. O banco é
+avaliado em três volumes, apresentados na Tabela~\ref{tab:volumes}. Para cada volume, os bancos são recriados do zero e carregados com dados gerados com a mesma semente, de modo que o conteúdo é reproduzível.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Volumes de dados avaliados.}
+    \label{tab:volumes}
+    \footnotesize
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Volume} & \textbf{Restaurantes} & \textbf{Itens} \\ \hline
+        Pequeno & 50 & 5.000 \\ \hline
+        Médio & 200 & 100.000 \\ \hline
+        Grande & 1.000 & 1.000.000 \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+    \legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+As consultas e os
+parâmetros são sempre os mesmos, o que muda de uma rodada para outra é apenas o
+tamanho do banco. Com isso, a proporção de registros que satisfazem cada filtro
+permanece aproximadamente constante. 
+
+\subsubsection{Seletividade}
+
+A seletividade indica a fração dos registros que satisfaz o filtro de uma
+consulta. Este experimento mantém o volume do banco fixo (Grande) e varia o valor
+filtrado, de modo que a mesma consulta retorne quantidades diferentes de
+registros. A quantidade de linhas retornadas é
+registrada em cada medição, pois a seletividade depende dos dados gerados.
+
+Foram escolhidas as consultas de leitura cujo filtro possui um parâmetro que
+controla o tamanho do resultado: C1, C4, C5 e C7, mostrado na Tabela~\ref{tab:seletividade}. 
+As outras consultas não foram incluídas por não terem um parâmetro variável ou pelo desejo de visualizar apenas um valor muito seletivo, como C6, que retorna apenas os itens com desconto de 80\%.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Parâmetros variados no experimento de seletividade.}
+    \label{tab:seletividade}
+    \footnotesize
+    \begin{tabular}{|l|p{4cm}|p{7cm}|}
+        \hline
+        \textbf{Consulta} & \textbf{Parâmetro variado} & \textbf{Valores} \\ \hline
+        C1 & Categoria do item & Sobremesa (cerca de 10\% dos itens), bebida (cerca de 20\%) e pizza (cerca de 35\%) \\ \hline
+        C5 & Largura da faixa de preço & R\$ 5--12, R\$ 5--25, R\$ 5--50 e R\$ 5--70 \\ \hline
+        C4 & Porte do restaurante & Pequeno, médio e grande (restaurantes que concentram quantidades crescentes de itens) \\ \hline
+        C7 & Opção buscada & Picles extra (cerca de 0,09\% dos itens), Cheddar extra (cerca de 9,4\%) e Bacon extra (cerca de 20,5\%) \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+    \legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+O objetivo é observar como o tempo responde ao aumento do número de registros
+retornados. 
+
+\subsubsection{Lote de escrita}
+
+Este experimento verifica se o custo \textit{por item} diminui conforme o lote
+cresce e a partir de que tamanho essa melhoria deixa de ocorrer. O volume do
+banco é fixo (Grande), e os lotes variam entre 1, 10, 100, 1.000, 10.000, 50.000 e 100.000 itens. A Tabela~\ref{tab:lote} apresenta as operações avaliadas.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Operações avaliadas no experimento de lote de escrita.}
+    \label{tab:lote}
+    \footnotesize
+    \begin{tabular}{|l|p{11cm}|}
+        \hline
+        \textbf{Consulta} & \textbf{Operação em lote} \\ \hline
+        C2 (inserção) & \textit{Upsert} de $N$ itens que ainda não existem, de modo que todos são inseridos \\ \hline
+        C2 (atualização) & \textit{Upsert} de $N$ itens que já existem, de modo que todos são atualizados \\ \hline
+        C3 & Exclusão lógica (\texttt{status = 'DELETED'}) de $N$ itens \\ \hline
+        C8 & Adição da tag novidade a $N$ itens já existentes \\ \hline
+    \end{tabular}
+    \vspace{0.4em}
+    \legend{Fonte: Elaborado pela autora.}
+\end{table}
+
+Nos experimentos C3 e C8, os identificadores dos itens do lote são sorteados
+entre os itens que já existem no banco. No C2, são gerados identificadores novos,
+pois o \textit{upsert} insere itens que ainda não existem. Em todos os casos, o
+lote inteiro é enviado ao banco em uma única operação. No PostgreSQL, essa
+operação é uma instrução SQL seguida de \textit{commit} e no MongoDB, é um
+\texttt{bulk\_write} (C2) ou um \texttt{update\_many} com \texttt{\$in} (C3 e C8).
+
+Para que as repetições executem o mesmo trabalho,
+utiliza-se duas funções auxiliares:
+
+\begin{itemize}
+  \item \texttt{antes}: é o parâmetro opcional da função \texttt{medir\_tempo}
+  (Seção~\ref{subsec:medicao-tempo}), executado antes de cada repetição e fora
+  da cronometragem, em cada consulta ele desempenha a seguinte função:
+  \begin{itemize}
+    \item C2 (inserção): os itens do lote são apagados e são gerados novos eventos.
+    \item C2 (atualização): os itens são criados uma vez, antes das repetições, e a cada 
+    repetição recebem evento novos, com versão maior e conteúdo diferente, de modo que 
+    a atualização condicional seja de fato executada.
+    \item C3 e C8: os campos alterados voltam aos valores originais.
+  \end{itemize}
+  Depois dessa preparação, o cache dos bancos e do sistema operacional é descartado, como nos demais experimentos, de modo que cada repetição parte do cache vazio.
+  \item \texttt{depois}: é executado uma única vez, ao fim das dez repetições de
+  cada tamanho de lote, e devolve o banco ao estado original, de modo que o
+  lote seguinte parta das mesmas condições.
+\end{itemize}
+
+Além do tempo total do lote, calcula-se o tempo por item, dado pela razão entre o
+tempo médio do lote e o número de itens $N$. É importante ressaltar que o tamanho do lote não trata
+de vários clientes simultâneos e sim de um único cliente enviando vários itens de uma vez.
+
+\section{Resultados Obtidos}
+\label{sec:resultados}
+Dar uma introdução de como ler os resultados
+\subsection{Efeito do Volume e do Índice}
+\subsubsection{Consultas por id}
+\textcolor{red}{Utilizar C3 para exemplificar}
+\subsubsection{Consultas Seletivas}
+\textcolor{red}{Utilizar C6 para exemplificar}
+\subsubsection{Consultas pouco Seletivas}
+\textcolor{red}{Utilizar C1 para exemplificar}
+\subsubsection{Síntese do Ganho do Índice}
+\textcolor{red}{Grafico 2}
+\subsection{Seletividade}
+\subsection{Lote}
+\subsection{Carga Inicial dos Dados}
+\subsection{Armazenamento}
+
+
+\textcolor{red}{Nesta seção descreva o processo de obtenção dos resultados obtidos e analise-os à luz dos objetivos iniciais, bem como dos eventuais usuários (humanos ou não) de tais resultados. Preferencialmente, utilize critérios estabelecidos na área de pesquisa de seu projeto. Discuta sobre critérios utilizados para a validação do sistema, bem como os testes utilizados (se for o caso).}
+
+\section{Dificuldades e Limitações}
+\label{sec:dificuldades}
+
+\textcolor{red}{Nesta seção, descreva as principais dificuldades e limitações encontradas durante a condução do trabalho. Sintetize lições aprendidas e comente sobre direções alternativas, se for o caso. Se pertinente, faça uma análise crítica da abordagem adotada em seu projeto, ou seja, você a considera adequada? Ela é limitada sob algum aspecto? Indique quais pontos, decorrentes dos resultados, ou não, poderão ou deverão ser abordados por trabalhos futuros.}
+
+
+%\subsubsection{Limitações da medição}
+
+%\begin{itemize}
+%  \item A cronometragem no cliente inclui a sobrecarga do \textit{driver} e da
+%  construção do resultado em Python, o que eleva todos os tempos em relação ao
+%  tempo interno do SGBD. A comparação relativa entre os bancos, e não os valores
+%  absolutos, é a informação relevante.
+%  \item O consumo de recursos é amostrado a cada segundo e reflete o contêiner
+%  inteiro, e não apenas a operação de inserção. Em volumes pequenos, a inserção
+%  termina rapidamente e poucas amostras são coletadas. O consumo do processo
+%  Python, que roda fora do contêiner, não é medido.
+%  \item O espaço dos dados é medido em disco nos dois bancos e, por isso,
+%  reflete também as diferenças de armazenamento de cada um: o MongoDB comprime
+%  os documentos, e o PostgreSQL pode armazenar valores JSONB grandes em uma área
+%  separada (TOAST).
+%  \item Todas as medições usam um único cliente, de forma sequencial. O
+%  comportamento sob concorrência não foi avaliado e é indicado como trabalho
+%  futuro.
+%\end{itemize}
+
+\section{Considerações Finais}
+\label{sec:consideracoes-finais-dev}
+
+\textcolor{red}{Nesta seção o aluno deve apresentar uma conclusão sobre este capítulo e introduzir brevemente o capítulo seguinte.}

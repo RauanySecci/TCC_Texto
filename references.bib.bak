@@ -1,0 +1,312 @@
+@manual{silveira:2006:manual_tcc,
+  title = {Manual de Normalização para Apresentação de Trabalho de Conclusão
+	de Curso (TCC)},
+  author = {Simoni J\'ulia da Silveira},
+  organization = {Centro Federal de Educa{\c c}\~ao Tecnol\'ogica de Bambu\'i},
+  address = {Bambuí},
+  year = {2006}
+}
+
+@inproceedings{Ortiz2016,
+    author = {Ort{\'\i}z, Yudisney Vazquez and Pierre, Lisleydi Mier and Le{\'o}n, Anthony R. Sotolongo},
+    title = {Semi-structured data management in {PostgreSQL}: competing with {MongoDB}'s performance},
+    booktitle = {Proceedings of the 10th Alberto Mendelzon International Workshop on Foundations of Data Management},
+    series = {CEUR Workshop Proceedings},
+    volume = {1644},
+    address = {Aachen},
+    publisher = {CEUR-WS.org},
+    year = {2016},
+    url = {http://ceur-ws.org/Vol-1644/}
+}
+
+@article{Asiminidis2018b,
+    author = {Asiminidis, Christodoulos and Kokkonis, George and Kontogiannis, Sotirios},
+    title = {Managing {IoT} data using relational schema and {JSON} fields, a comparative study},
+    journal = {IOSR Journal of Computer Engineering},
+    volume = {20},
+    number = {6},
+    pages = {46--52},
+    month = {November},
+    year = {2018},
+    doi = {10.9790/0661-2006034652}
+}
+
+@article{Urnikiene2026,
+    author = {Urnikien{\.e}, Jovita and Steponavi{\v c}ien{\.e}, Vaida and Atanasov, Svetoslav},
+    title = {Comparative read performance analysis of {PostgreSQL} and {MongoDB} in e-commerce: an empirical study of filtering and analytical queries},
+    journal = {Big Data and Cognitive Computing},
+    volume = {10},
+    number = {2},
+    pages = {66},
+    year = {2026},
+    doi = {10.3390/bdcc10020066}
+}
+
+@article{Khan2023,
+    author = {Khan, Wael and Kumar, Tanveer and Zhang, Chen and Raj, Kumar and Roy, Ashok M. and Luo, Bin},
+    title = {SQL and {NoSQL} Database Software Architecture Performance Analysis
+             and Assessments: {A} Systematic Literature Review},
+    journal = {Big Data and Cognitive Computing},
+    volume = {7},
+    number = {97},
+    year = {2023},
+    doi = {10.3390/bdcc7020097}
+}
+
+@article{v2026comparative,
+  author    = {V, Senthil and Mishra, Rajesh and others},
+  title     = {Architectural Paradigms in Modern Data Management: Evaluating Relational, Non-Relational, and NewSQL Systems},
+  journal   = {International Journal of Information Technology and Systems Architecture},
+  year      = {2026}
+}
+
+@article{kvet2023,
+  author    = {Kvet, Michal},
+  title     = {Transaction Integrity and ACID Properties Evaluation in Modern Relational DBMS},
+  journal   = {Applied Sciences},
+  volume    = {13},
+  number    = {4},
+  pages     = {2105},
+  year      = {2023}
+}
+
+@article{davoudian2018,
+  author    = {Davoudian, Ali and Chen, Liu and Liu, Mengchi},
+  title     = {A Survey on NoSQL Stores},
+  journal   = {ACM Computing Surveys},
+  volume    = {51},
+  number    = {2},
+  pages     = {1--43},
+  year      = {2018}
+}
+
+@article{nayak2013,
+  author    = {Nayak, Ameya and Poriya, Anil and Poojary, Dikshay},
+  title     = {Type of NOSQL Databases and its Comparison with Relational Databases},
+  journal   = {International Journal of Applied Information Systems},
+  volume    = {5},
+  number    = {4},
+  pages     = {16--19},
+  year      = {2013}
+}
+
+@article{Turutin2024,
+    author = {Turutin, Igor and Puzevich, Maksim},
+    title = {{PostgreSQL JSONB} usage and performance analysis},
+    journal = {International Journal of Cybersecurity and Computer Science},
+    volume = {2}, number = {2}, article = {2443},
+    year = {2024},
+    url = {https://ijcjournal.org/article/view/2443}
+}
+
+@misc{CodersWorld2025,
+    author = {Coder's World},
+    title = {{JSON} is Holding You Back --- The Real Reason {MongoDB} Uses {BSON} 
+             for 40\% Faster Reads},
+    howpublished = {Medium},
+    year = {2025},
+    url = {https://medium.com/@CodersWorld99/json-is-holding-you-back-the-real-reason-mongodb-uses-bson-for-40-faster-reads-c8cd095a28a1}
+}
+
+@article{matcha2025database,
+  author  = {Sasibhushana Matcha and Reeta Mishra},
+  title   = {Database Selection and Management: Choosing the Right Database (SQL vs. NoSQL) for Your Application},
+  journal = {International Journal of Research in Humanities and Social Sciences},
+  year    = {2025},
+  month   = mar
+}
+
+@inproceedings{kaur2013modeling,
+  author    = {Karamjit Kaur and Rinkle Rani},
+  title     = {Modeling and Querying Data in NoSQL Databases},
+  booktitle = {2013 IEEE International Conference on Big Data},
+  year      = {2013}
+}
+
+@article{Liu2020,
+    author = {Liu, Zhen-Hua and others},
+    title = {Native {JSON} Datatype Support},
+    journal = {Proceedings of the VLDB Endowment},
+    volume = {13}, number = {12}, pages = {3204--3217},
+    year = {2020},
+    doi = {10.14778/3415478.3415534}
+}
+
+@article{Aji2026,
+    author = {Aji, R. F. and others},
+    title = {Evaluating Field Flexibility Approaches in Relational Databases: 
+             A Performance Study of {JSON} and Column-Oriented Models in Library Systems},
+    journal = {International Journal of Advanced Computer Science and Applications},
+    volume = {17}, number = {1}, pages = {37},
+    year = {2026},
+    doi = {10.14569/ijacsa.2026.0170137}
+}
+
+@article{Dubrovskaia2026,
+    author = {Dubrovskaia, E. and others},
+    title = {Research and Comparative Analysis of Approaches to Data Storage Architecture,
+             Hashing, Indexing, and Data Compression in {Oracle} and {PostgreSQL}},
+    journal = {Bulletin of Science and Practice},
+    year = {2026},
+    doi = {10.33619/2414-2948/122/10}
+}
+
+@article{Bondugula2024,
+    author = {Bondugula, Vipul Kumar},
+    title = {Storage Optimization in Distributed Environments using
+             Optimistic Concurrency Control},
+    journal = {International Journal on Science and Technology},
+    volume = {15}, number = {2}, year = {2024},
+    doi = {10.71097/ijsat.v15.i2.4755}
+}
+
+@article{Irshad2019,
+    author = {Irshad, L. and others},
+    title = {Schema-Based {JSON} Data Stores in Relational Databases},
+    journal = {Journal of Database Management},
+    year = {2019},
+    doi = {10.4018/jdm.2019070103}
+}
+
+@article{Zolotukhina2025,
+    author = {Zolotukhina, Daria},
+    title = {Comparative Analysis of Indexing Strategies in {PostgreSQL}
+             under Various Load Scenarios},
+    journal = {Programmnye sistemy i vychislitelnye metody},
+    year = {2025},
+    doi = {10.7256/2454-0714.2025.1.73138}
+}
+
+@article{Zakharov2026,
+    author = {Zakharov, Yuri and others},
+    title = {Analysis of the Impact of Indexing on {SQL} Query Performance},
+    journal = {Herald of Khmelnytskyi National University. Technical Sciences},
+    year = {2026},
+    doi = {10.31891/2307-5732-2026-365-18}
+}
+
+@misc{PostgreSQLGIN,
+    author = {{PostgreSQL Global Development Group}},
+    title = {{PostgreSQL} Documentation: {GIN} Indexes},
+    url = {https://www.postgresql.org/docs/current/gin.html},
+    urldate = {2026-10-06}
+}
+
+@inproceedings{Amardeep2024,
+    author = {Amardeep, R. and others},
+    title = {Advancement in Health Monitoring Through {IoT} and {PostgreSQL} Analytics},
+    booktitle = {2024 International Conference on Emerging Technologies in Computer Science
+                 for Interdisciplinary Applications (ICETCS)},
+    year = {2024},
+    doi = {10.1109/icetcs61022.2024.10543622}
+}
+
+@inproceedings{Truica2013,
+  author    = {Truic{\u{a}}, Ciprian-Octavian and Boicea, Alexandru and Trifan, Ionut},
+  title     = {CRUD Operations in {MongoDB}},
+  booktitle = {International Conference on Advanced Computer Science and Electronics Information (ICACSEI 2013)},
+  publisher = {Atlantis Press},
+  year      = {2013},
+  doi       = {10.2991/icacsei.2013.88}
+}
+
+@inproceedings{Nguyen2016,
+    author = {Nguyen, Trong-Dat and others},
+    title = {{I/O} Characteristics of {MongoDB} and Trim-Based Optimization in Flash {SSDs}},
+    booktitle = {Proceedings of the Sixth International Conference on Emerging Databases:
+                 Technologies, Applications, and Theory},
+    year = {2016},
+    doi = {10.1145/3007818.3007844}
+}
+
+@article{Kamsky2019,
+    author = {Kamsky, Asya},
+    title = {Adapting {TPC-C} Benchmark to Measure Performance of Multi-Document
+             Transactions in {MongoDB}},
+    journal = {Proceedings of the VLDB Endowment},
+    year = {2019},
+    doi = {10.14778/3352063.3352140}
+}
+
+@article{Inayati2026,
+    author = {Inayati, Kunti and others},
+    title = {Performance-Storage Trade-Off Analysis of {MongoDB} Indexing Strategies
+             Using Large-Scale E-Commerce Data},
+    journal = {Journal of Enhanced Studies in Informatics and Computer Applications},
+    volume = {3}, number = {2}, year = {2026},
+    doi = {10.47794/jesica.v3i2.45}
+}
+
+@inproceedings{Bahiense2025,
+    author = {Bahiense, Marcos Roberto G. and others},
+    title = {Performance Benchmark of Embedded Model Using {MongoDB}},
+    booktitle = {2025 IEEE International Conference on Data and Software Engineering (ICoDSE)},
+    year = {2025},
+    doi = {10.1109/icodse68111.2025.11351739}
+}
+
+@article{Didona2020,
+    author = {Didona, Diego and others},
+    title = {Toward a Better Understanding and Evaluation of Tree Structures on Flash {SSDs}},
+    journal = {Proceedings of the VLDB Endowment},
+    year = {2020},
+    doi = {10.14778/3430915.3430926}
+}
+
+@misc{MongoDBConcurrency,
+    author = {{MongoDB, Inc.}},
+    title = {{MongoDB} Manual: {FAQ}: Concurrency},
+    url = {https://www.mongodb.com/docs/manual/faq/concurrency/},
+    urldate = {2026-10-06}
+}
+
+@article{Eldahshan2022,
+    author = {Eldahshan, K. and others},
+    title = {Handling Big Data in Relational Database Management Systems},
+    journal = {Computers, Materials \& Continua},
+    year = {2022},
+    doi = {10.32604/cmc.2022.028326}
+}
+
+@inproceedings{Chasseur2013,
+    author = {Chasseur, Craig and Li, Yinan and Patel, Jignesh M.},
+    title = {Enabling {JSON} Document Stores in Relational Systems},
+    booktitle = {Proceedings of the 16th International Workshop on the Web and Databases (WebDB 2013)},
+    address = {New York, NY, USA},
+    pages = {1--6},
+    year = {2013},
+    month = jun
+}
+
+@inproceedings{Agrawal2001,
+    author = {Agrawal, Rakesh and Somani, Amit and Xu, Yirong},
+    title = {Storage and Querying of E-Commerce Data},
+    booktitle = {Proceedings of the 27th International Conference on Very Large Data Bases (VLDB 2001)},
+    address = {Roma, Italy},
+    publisher = {Morgan Kaufmann},
+    pages = {149--158},
+    year = {2001},
+    month = sep
+}
+
+@inproceedings{Durner2021,
+    author = {Durner, Dominik and others},
+    title = {{JSON} Tiles: Fast Analytics on Semi-Structured Data},
+    booktitle = {Proceedings of the 2021 International Conference on Management of Data},
+    year = {2021},
+    doi = {10.1145/3448016.3452809}
+}
+
+@article{Piech2018,
+    author = {Piech, Mateusz and others},
+    title = {A New Approach to Storing Dynamic Data in Relational Databases Using {JSON}},
+    journal = {Computer Science},
+    volume = {19}, number = {1}, year = {2018},
+    doi = {10.7494/csci.2018.19.1.2505}
+}
+
+@misc{Bartunov2013,
+  author = {Bartunov, Oleg and Sigaev, Teodor},
+  title  = {One step forward true json data type},
+  year   = {2013}
+}

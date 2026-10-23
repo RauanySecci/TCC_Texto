@@ -1,0 +1,145 @@
+\providecommand{\abntreprintinfo}[1]{%
+ \citeonline{#1}}
+\setlength{\labelsep}{0pt}\begin{thebibliography}{}
+\providecommand{\abntrefinfo}[3]{}
+\providecommand{\abntbstabout}[1]{}
+\abntbstabout{v-1.9.7 }
+
+\bibitem[Agrawal, Somani e Xu 2001]{Agrawal2001}
+\abntrefinfo{Agrawal, Somani e Xu}{AGRAWAL; SOMANI; XU}{2001}
+{AGRAWAL, R.; SOMANI, A.; XU, Y. Storage and querying of e-commerce data. In:
+  \textbf{Proceedings of the 27th International Conference on Very Large Data
+  Bases (VLDB 2001)}. Roma, Italy: Morgan Kaufmann, 2001. p. 149--158.}
+
+\bibitem[Aji e Utami 2026]{Aji2026}
+\abntrefinfo{Aji e Utami}{AJI; UTAMI}{2026}
+{AJI, R.~F.; UTAMI, N.~P. Evaluating field flexibility approaches in relational
+  databases: A performance study of {JSON} and column-oriented models in
+  library systems.
+\textbf{International Journal of Advanced Computer Science and Applications},
+  v.~17, n.~1, p.~37, 2026.}
+
+\bibitem[Asiminidis, Kokkonis e Kontogiannis 2018]{Asiminidis2018b}
+\abntrefinfo{Asiminidis, Kokkonis e Kontogiannis}{ASIMINIDIS; KOKKONIS;
+  KONTOGIANNIS}{2018}
+{ASIMINIDIS, C.; KOKKONIS, G.; KONTOGIANNIS, S. Managing {IoT} data using
+  relational schema and {JSON} fields, a comparative study.
+\textbf{IOSR Journal of Computer Engineering}, v.~20, n.~6, p. 46--52, nov.
+  2018.
+Dispon{\'\i}vel em:
+  \url{https://www.iosrjournals.org/iosr-jce/papers/Vol20-issue6/Version-3/H2006034652.pdf}.
+  Acesso em: 7 out. 2026.}
+
+\bibitem[Bartunov e Sigaev 2013]{Bartunov2013}
+\abntrefinfo{Bartunov e Sigaev}{BARTUNOV; SIGAEV}{2013}
+{BARTUNOV, O.; SIGAEV, T. \textbf{One step forward true json data type: nested
+  hstore with arrays support}. 2013. Apresentação em PGCon 2013, Ottawa, 24
+  maio 2013.
+Dispon{\'\i}vel em:
+  \url{https://www.pgcon.org/2013/schedule/attachments/280\_hstore-pgcon-2013.pdf}.
+  Acesso em: 7 out. 2026.}
+
+\bibitem[Bondugula 2024]{Bondugula2024}
+\abntrefinfo{Bondugula}{BONDUGULA}{2024}
+{BONDUGULA, V.~K. Storage optimization in distributed environments using
+  optimistic concurrency control.
+\textbf{International Journal on Science and Technology}, v.~15, n.~2, p.~4755,
+  2024.}
+
+\bibitem[Chasseur, Li e Patel 2013]{Chasseur2013}
+\abntrefinfo{Chasseur, Li e Patel}{CHASSEUR; LI; PATEL}{2013}
+{CHASSEUR, C.; LI, Y.; PATEL, J.~M. Enabling {JSON} document stores in
+  relational systems. In:  \textbf{Proceedings of the 16th International
+  Workshop on the Web and Databases (WebDB 2013)}. New York, NY, USA: ACM,
+  2013. p.~1--6.}
+
+\bibitem[Davoudian, Chen e Liu 2018]{davoudian2018}
+\abntrefinfo{Davoudian, Chen e Liu}{DAVOUDIAN; CHEN; LIU}{2018}
+{DAVOUDIAN, A.; CHEN, L.; LIU, M. A survey on {NoSQL} stores.
+\textbf{ACM Computing Surveys}, v.~51, n.~2, p. 1--43, 2018.}
+
+\bibitem[Durner, Leis e Neumann 2021]{Durner2021}
+\abntrefinfo{Durner, Leis e Neumann}{DURNER; LEIS; NEUMANN}{2021}
+{DURNER, D.; LEIS, V.; NEUMANN, T. {JSON} tiles: Fast analytics on
+  semi-structured data. In:  \textbf{Proceedings of the 2021 International
+  Conference on Management of Data}. New York: ACM, 2021. p. 445--458.}
+
+\bibitem[ElDahshan \textit{et al.} 2022]{Eldahshan2022}
+\abntrefinfo{ElDahshan \textit{et al.}}{ELDAHSHAN \textit{et al.}}{2022}
+{ELDAHSHAN, K.; SELIM, E.; EBADA, A. I.; ABOUHAWWASH, M.; NAM, Y.; BEHERY, G.
+  Handling big data in relational database management systems.
+\textbf{Computers, Materials \& Continua}, v.~72, n.~3, p. 5149--5164, 2022.}
+
+\bibitem[Irshad, Yan e Ma 2019]{Irshad2019}
+\abntrefinfo{Irshad, Yan e Ma}{IRSHAD; YAN; MA}{2019}
+{IRSHAD, L.; YAN, L.; MA, Z. Schema-based {JSON} data stores in relational
+  databases.
+\textbf{Journal of Database Management}, v.~30, n.~3, p. 38--70, 2019.}
+
+\bibitem[Liu \textit{et al.} 2020]{Liu2020}
+\abntrefinfo{Liu \textit{et al.}}{LIU \textit{et al.}}{2020}
+{LIU, Z.~H.; HAMMERSCHMIDT, B.; MCMAHON, D.; CHANG, H.; LU, Y.; SPIEGEL, J.;
+  SOSA, A.~C.; SURESH, S.; ARORA, G.; ARORA, V. Native {JSON} datatype support.
+\textbf{Proceedings of the VLDB Endowment}, v.~13, n.~12, p. 3059--3071, 2020.}
+
+\bibitem[Matcha e Mishra 2025]{matcha2025database}
+\abntrefinfo{Matcha e Mishra}{MATCHA; MISHRA}{2025}
+{MATCHA, S.; MISHRA, R. Database selection and management: Choosing the right
+  database ({SQL} vs. {NoSQL}) for your application.
+\textbf{International Journal of Research in Humanities and Social Sciences},
+  v.~13, n.~3, p. 68--88, mar. 2025.}
+
+\bibitem[{MongoDB, Inc.} 2026]{MongoDBConcurrency}
+\abntrefinfo{{MongoDB, Inc.}}{{MongoDB, Inc.}}{2026}
+{{MongoDB, Inc.} \textbf{{MongoDB} Manual: {FAQ}: Concurrency}. 2026.
+Dispon{\'\i}vel em: \url{https://www.mongodb.com/docs/manual/faq/concurrency/}.
+  Acesso em: 7 out. 2026.}
+
+\bibitem[Nayak, Poriya e Poojary 2013]{nayak2013}
+\abntrefinfo{Nayak, Poriya e Poojary}{NAYAK; PORIYA; POOJARY}{2013}
+{NAYAK, A.; PORIYA, A.; POOJARY, D. Type of {NoSQL} databases and its
+  comparison with relational databases.
+\textbf{International Journal of Applied Information Systems}, v.~5, n.~4, p.
+  16--19, mar. 2013.
+Dispon{\'\i}vel em:
+  \url{https://www.ijais.org/archives/volume5/number4/434-0888/}. Acesso em: 7
+  out. 2026.}
+
+\bibitem[Nguyen e Lee 2016]{Nguyen2016}
+\abntrefinfo{Nguyen e Lee}{NGUYEN; LEE}{2016}
+{NGUYEN, T.-D.; LEE, S.-W. {I/O} characteristics of {MongoDB} and trim-based
+  optimization in flash {SSDs}. In:  \textbf{Proceedings of the Sixth
+  International Conference on Emerging Databases: Technologies, Applications,
+  and Theory}. New York: ACM, 2016. p. 139--144.}
+
+\bibitem[Ort{\'\i}z, Pierre e Le{\'o}n 2016]{Ortiz2016}
+\abntrefinfo{Ort{\'\i}z, Pierre e Le{\'o}n}{ORT{\'I}Z; PIERRE; LE{\'O}N}{2016}
+{ORT{\'I}Z, Y.~V.; PIERRE, L.~M.; LE{\'O}N, A. R.~S. Semi-structured data
+  management in {PostgreSQL}: competing with {MongoDB}'s performance. In:
+  \textbf{Proceedings of the 10th Alberto Mendelzon International Workshop on
+  Foundations of Data Management}. Aachen: CEUR-WS.org, 2016.  (CEUR Workshop
+  Proceedings, v.~1644). Dispon{\'\i}vel em:
+  \url{https://ceur-ws.org/Vol-1644/paper31.pdf}. Acesso em: 7 out. 2026.}
+
+\bibitem[Truic{\u{a}}, Boicea e Trifan 2013]{Truica2013}
+\abntrefinfo{Truic{\u{a}}, Boicea e Trifan}{TRUIC{\u{A}}; BOICEA; TRIFAN}{2013}
+{TRUIC{\u{A}}, C.-O.; BOICEA, A.; TRIFAN, I. {CRUD} operations in {MongoDB}.
+  In:  \textbf{International Conference on Advanced Computer Science and
+  Electronics Information (ICACSEI 2013)}. Paris: Atlantis Press, 2013.}
+
+\bibitem[Urnikien{\.e}, Steponavi{\v c}ien{\.e} e Atanasov 2026]{Urnikiene2026}
+\abntrefinfo{Urnikien{\.e}, Steponavi{\v c}ien{\.e} e Atanasov}{URNIKIEN{\.E};
+  STEPONAVI{\v C}IEN{\.E}; ATANASOV}{2026}
+{URNIKIEN{\.E}, J.; STEPONAVI{\v C}IEN{\.E}, V.; ATANASOV, S. Comparative read
+  performance analysis of {PostgreSQL} and {MongoDB} in e-commerce: an
+  empirical study of filtering and analytical queries.
+\textbf{Big Data and Cognitive Computing}, v.~10, n.~2, p.~66, 2026.}
+
+\bibitem[Waterpeace e Ivanov 2026]{waterpeace2026sok}
+\abntrefinfo{Waterpeace e Ivanov}{WATERPEACE; IVANOV}{2026}
+{WATERPEACE, S.; IVANOV, N. {SoK}: Evolution, security, and fundamental
+  properties of transactional systems. In:  \textbf{Proceedings of the 31st ACM
+  Symposium on Access Control Models and Technologies (SACMAT '26)}. New York:
+  ACM, 2026. p. 223--235.}
+
+\end{thebibliography}

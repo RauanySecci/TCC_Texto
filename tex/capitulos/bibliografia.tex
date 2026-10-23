@@ -1,0 +1,121 @@
+Neste capítulo são apresentados os conceitos fundamentais e o levantamento bibliográfico para a compreensão do problema da pesquisa. São discutidos os conceitos sobre os paradigmas relacional e não relacional (NoSQL), comparação técnica entre os formatos \texttt{JSON} e \texttt{JSONB} no PostgreSQL e as especificidades dos bancos de dados PostgreSQL e MongoDB. Por fim, apresenta uma análise dos principais trabalhos que servem como base para a solução desenvolvida, contextualizando como estudos anteriores abordaram comparações entre esses sistemas e identificando as lacunas que o presente trabalho se propõe a preencher.
+
+\section{Conceitos e Técnicas Relevantes}
+\subsection{Bancos Relacionais e Bancos Não Relacionais}
+\label{sec:relacional-vs-nao-relacional}
+
+A evolução dos sistemas de armazenamento de dados é marcada pela busca por eficiência, integridade e escalabilidade diante do volume crescente e da variedade de informações. Assim, duas principais abordagens atendem requisitos de aplicações modernas: bancos de dados relacionais e não relacionais, logo, compreender as características de cada paradigma é essencial para a escolha arquitetural em sistemas como catálogos dinâmicos.
+
+Sistemas Gerenciadores de Bancos de Dados Relacionais (SGBDR) organizam os dados em estruturas tabulares com esquema predefinido, 
+o que favorece o tratamento de dados estruturados \cite{matcha2025database}. Nesses sistemas, a confiabilidade transacional é sustentada pelas 
+propriedades ACID: atomicidade, consistência, isolamento e 
+durabilidade, que asseguram a execução íntegra das transações,  
+a preservação de invariantes do sistema, a não interferência entre 
+transações concorrentes e a persistência dos efeitos após falhas 
+\cite{waterpeace2026sok}.
+Por essa razão, bancos relacionais 
+permanecem amplamente utilizados em domínios críticos e permitem consultas complexas envolvendo múltiplas tabelas.
+
+Bancos de dados não relacionais (NoSQL) surgiram como resposta às limitações dos sistemas relacionais tradicionais diante das crescentes demandas de armazenamento e consulta de grandes volumes de dados \cite{davoudian2018}. O paradigma NoSQL abrange diferentes categorias conforme a organização dos dados, como chave-valor, documentos, bancos orientados a colunas e grafos. Entre essas, os bancos orientados a documentos destacam-se por permitir que atributos dinâmicos e heterogêneos coexistam no mesmo documento sem estruturas previamente fixadas (\textit{schema-on-read}). Contudo, a literatura não trata o NoSQL como substituto universal do modelo relacional, mas como uma alternativa complementar \cite{nayak2013}.
+
+\subsection{JSON vs JSONB}
+
+O PostgreSQL oferece dois tipos de dados nativos para o armazenamento de documentos no formato JSON: 
+JSON e JSONB. JSON armazena dados em formato textual, preservando a representação original 
+do documento inserido. Em contraste, JSONB armazena dados em formato binário, processando o 
+documento durante a inserção para otimizar seu armazenamento e acesso \cite{Liu2020}.
+
+A escolha por JSONB em relação a JSON é fortemente justificada pelas implicações de 
+desempenho. Embora JSONB demande processamento adicional durante a inserção para realizar 
+a conversão binária, esse custo é compensado significativamente nas operações de leitura e 
+indexação. 
+
+Estudos indicam que o tipo de dado JSONB, por armazenar documentos em formato 
+binário, oferece melhor desempenho em consultas, com tempos de execução 
+menores em diferentes cenários avaliados \cite{Aji2026}, e permite indexação eficiente via 
+índices GIN, enquanto o formato textual de JSON requer processamento custoso durante operações 
+de consulta \cite{Liu2020}. Para catálogos dinâmicos com padrões de acesso centrados em leitura, 
+essa vantagem de desempenho é crucial.
+
+
+\subsection{PostgreSQL com JSONB}
+
+O PostgreSQL é um sistema gerenciador de banco de dados relacional de código aberto
+que utiliza a linguagem SQL (\textit{Structured Query Language}) para definição,
+manipulação e consulta dos dados. Os dados são armazenados em
+tabelas organizadas em páginas de 8~KB e para permitir acesso
+concorrente, adota o controle de concorrência multiversão (MVCC)\footnote{\url{https://www.postgresql.org/docs/current/mvcc-intro.html}}: leitores consultam
+versões anteriores dos registros enquanto escritores atualizam a versão corrente, de modo
+que um não bloqueia o outro \cite{Bondugula2024}. Para acelerar as consultas, o PostgreSQL oferece diferentes tipos de
+índice, como B-tree\footnote{\url{https://www.postgresql.org/docs/current/btree.html}}, \textit{Generalized Search Tree} (GiST)\footnote{\url{https://www.postgresql.org/docs/current/gist.html}}, GIN e \textit{Block Range Index} (BRIN)\footnote{\url{https://www.postgresql.org/docs/current/brin.html}}.
+
+Nesse contexto, o tipo JSONB faz com que o PostgreSQL seja híbrido, onde atributos estáveis
+permanecem em colunas relacionais e atributos variáveis, como os de um catálogo
+dinâmico, ficam em uma coluna JSONB. A abordagem proposta busca combinar o desenvolvimento rápido com JSON com a consistência do modelo relacional e a eficiência do SQL
+\cite{Irshad2019}.
+
+Neste trabalho utiliza-se três tipos de índice:
+
+\begin{itemize}
+    \item \textbf{Índice simples:} um índice B-tree sobre uma única coluna. É a estrutura
+    padrão do PostgreSQL, com busca de complexidade logarítmica, e apresenta bom
+    desempenho em consultas de seleção e atualização.
+    \item \textbf{Índice composto:} um índice B-tree sobre múltiplas colunas, indicado
+    para filtros que combinam vários atributos. A ordem das colunas
+    importa, pois o índice só é plenamente aproveitado por consultas que filtram suas
+    colunas iniciais.
+    \item \textbf{Índice GIN (\textit{Generalized Inverted Index}):} um índice invertido
+    que mapeia cada chave e valor presentes nos documentos aos registros que os contêm,
+    sendo o indicado para colunas JSONB.
+\end{itemize}
+
+\subsection{MongoDB}
+
+O MongoDB é um banco de dados não relacional orientado a documentos de código aberto, projetado para oferecer alta disponibilidade, escalabilidade horizontal 
+e flexibilidade de esquema. Em vez de tabelas e linhas, o MongoDB organiza os dados em \textit{coleções} compostas por \textit{documentos}. Internamente, os documentos 
+são armazenados no formato BSON (\textit{Binary JSON})\footnote{\url{https://www.mongodb.com/docs/manual/reference/bson-types/}}, uma representação binária do JSON que organiza o documento como uma lista ordenada de elementos,
+cada um composto por nome do campo, tipo de dado e valor \cite{Truica2013}.
+
+Para o gerenciamento de armazenamento no disco, o MongoDB utiliza por padrão o motor
+\textit{WiredTiger}\footnote{\url{https://www.mongodb.com/docs/manual/core/wiredtiger/}} \cite{Nguyen2016}. Esse motor emprega um mecanismo de concorrência no nível de documento
+com controle otimista \cite{MongoDBConcurrency}, permitindo que múltiplas operações de
+leitura e escrita ocorram simultaneamente na mesma coleção sem bloquear a coleção inteira.
+Assim como no PostgreSQL, a eficiência no acesso aos documentos e a execução de consultas no MongoDB dependem diretamente do uso adequado de índices, 
+destacando-se quatro tipos principais utilizados neste trabalho:
+
+\begin{itemize}
+    \item \textbf{Índice de Campo Único (\textit{Single Field Index})}\footnote{\url{https://www.mongodb.com/docs/manual/core/indexes/index-types/index-single/}}\textbf{:} estrutura de busca baseada em árvore sobre um único campo de nível superior ou sobre 
+    um caminho específico dentro de um documento, com busca de complexidade logarítmica.
+    
+    \item \textbf{Índice Composto (\textit{Compound Index})}\footnote{\url{https://www.mongodb.com/docs/manual/core/indexes/index-types/index-compound/}}\textbf{:} estrutura de busca baseada em árvore sobre múltiplos campos de um mesmo documento. 
+    A sequência dos campos na definição do índice é fundamental, assim como no índice composto do PostgreSQL.
+    
+    \item \textbf{Índice Chave-Múltipla (\textit{Multikey Index})}\footnote{\url{https://www.mongodb.com/docs/manual/core/indexes/index-types/index-multikey/}}\textbf{:} estrutura de busca baseada em árvore, acionada automaticamente pelo MongoDB quando o campo indexado contém um \textit{array}, 
+    permitindo que consultas filtrem com eficiência documentos que possuam valor dentro de coleções ou chaves aninhadas.
+
+    \item \textbf{Índice Curinga (\textit{Wildcard Index})}\footnote{\url{https://www.mongodb.com/docs/manual/core/indexes/index-types/index-wildcard/}}\textbf{:} indexa dinamicamente todos os campos e subdocumentos presentes na coleção (ou em um caminho específico). É a estrutura genérica indicada para cenários com atributos altamente 
+    heterogêneos e imprevisíveis.
+\end{itemize}
+
+
+\section{Trabalhos Relacionados}
+
+A literatura recente investiga de forma ampla o desempenho comparativo entre sistemas de gerenciamento de bancos de dados relacionais e NoSQL. Para fundamentar a análise proposta neste trabalho, destacam-se os seguintes estudos relevantes.
+
+\citeonline{Ortiz2016} conduziram um estudo comparativo avaliando o desempenho do PostgreSQL com a introdução do tipo \texttt{JSONB} frente ao MongoDB em cargas de até 4 milhões de documentos. Analisando métricas de tamanho do banco de dados, tempo de carga e tempo de resposta em consultas de seleção, os autores observaram que o PostgreSQL apresentou tempos de inserção e armazenamento em disco altamente competitivos. Nas consultas de leitura, o MongoDB manteve-se mais rápido em seleções com ordenação, enquanto o PostgreSQL com \texttt{JSONB} superou o MongoDB em operações de agrupamento (\textit{GROUP BY}). O estudo é fundamental por demonstrar a evolução do PostgreSQL em capacidades não relacionais, porém limitou-se a uma comparação genérica sem aprofundar em padrões estruturais específicos de JSONB ou em estratégias de indexação avançadas.
+
+\citeonline{Asiminidis2018b} investigaram as características de desempenho do PostgreSQL ao comparar a estrutura relacional tradicional contra colunas contendo dados semiestruturados nos formatos \texttt{JSON} e \texttt{JSONB}, utilizando um conjunto de dados de IoT com mais de 1 milhão de registros. Os autores observaram que a inserção em campos \texttt{JSON}/\texttt{JSONB} é mais rápida do que no esquema relacional devido à ausência de checagens estritas de tipo na ingestão. Ao comparar os formatos semiestruturados, enquanto o tipo \texttt{JSON} armazena uma cópia exata do texto de entrada, o \texttt{JSONB} armazena os dados em bytes decompostos. Isso permitiu ao \texttt{JSONB} superar o \texttt{JSON} nas seleções e agregações, concluindo que o \texttt{JSONB} representa o melhor meio-termo entre a flexibilidade do \texttt{JSON} e o desempenho de consulta do modelo relacional.
+
+\citeonline{Urnikiene2026} apresentaram uma análise comparativa focada em cenários de \textit{e-commerce}, avaliando o desempenho de leitura do PostgreSQL e do MongoDB sob volumes de até 300 mil produtos. Os resultados demonstraram que o PostgreSQL executou consultas analíticas complexas mais rápido do que o MongoDB, mantendo maior estabilidade e menor desvio padrão nas medições. Por outro lado, o MongoDB apresentou uma eficiência de armazenamento em disco superior devido ao encapsulamento em documentos incorporados. Os autores concluíram que esquemas relacionais normalizados mantêm vantagens expressivas em cenários de \textit{e-commerce} onde cargas analíticas dominam o sistema, ressaltando que a escolha do banco deve ser guiada pela complexidade das consultas e volume de dados.
+
+Estes trabalhos, embora fundamentais para evidenciar a diferença entre SGBDs relacionais e NoSQL, apresentam limitações para o cenário de catálogos dinâmicos 
+de grande porte como o do iFood. Entre elas, destacam-se o tratamento genérico do \texttt{JSONB}, sem distinguir como a estrutura interna dos documentos afeta o desempenho,
+a exploração limitada da indexação, sem comparar índices simples, compostos e GIN no PostgreSQL com os índices equivalentes do MongoDB, e
+a ausência de uma análise de como o desempenho varia com a escalabilidade. O presente estudo diferencia-se ao propor uma análise de um recorte do cenário real, 
+categorizando os atributos flexíveis do catálogo em três padrões estruturais de \texttt{JSONB}, utilizando diferentes tipos de indexação, além de quantificar o 
+comportamento do PostgreSQL e do MongoDB isoladamente sob três eixos de escalabilidade em ambiente de contêineres Docker\footnote{\url{https://docs.docker.com/}}.
+
+
+\section{Considerações Finais}
+
+Este capítulo estabeleceu a fundamentação teórica necessária, apresentando os paradigmas relacional e não relacional, o tipo \texttt{JSONB} do PostgreSQL e o MongoDB, com seus respectivos tipos de índice. A revisão dos trabalhos relacionados evidenciou a lacuna existente na análise de padrões estruturais de \texttt{JSONB}, de estratégias de indexação e de escalabilidade em catálogos dinâmicos. O Capítulo~\ref{chapter:desenvolvimento} detalhará a metodologia adotada, abrangendo a modelagem e a geração dos dados, as consultas e os índices avaliados, bem como os experimentos de escalabilidade e os resultados obtidos.
