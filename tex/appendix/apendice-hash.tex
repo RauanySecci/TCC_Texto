@@ -1,0 +1,15 @@
+% Conteúdo do Apêndice B: Cálculo da impressão digital do item
+
+\begin{codigo}[language=Python, breaklines=true, caption={Cálculo da impressão digital do item.}, label={lst:hash}]
+def calcular_hash(nome, categoria, status, preco, opcoes_grupos, atributos):
+    conteudo = json.dumps(
+        {"nome": nome, "categoria": categoria, "status": status,
+         "preco": preco, "opcoes_grupos": opcoes_grupos, "atributos": atributos},
+        sort_keys=True, ensure_ascii=False
+    )
+    digest = hashlib.md5(conteudo.encode("utf-8")).hexdigest()
+    valor = int(digest[:8], 16)
+    if valor >= 2**31:
+        valor -= 2**32
+    return valor
+\end{codigo}

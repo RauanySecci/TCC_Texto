@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.8.17)  23 OCT 2026 00:21
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.8.17)  24 OCT 2026 18:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1276,42 +1276,46 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \float@box=\box90
 \@float@everytoks=\toks76
 \@floatcapt=\box91
+) (/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2020/10/07 v1.3j Sub-captions (AR)
+\c@subfigure=\count439
+\c@subtable=\count440
 )
 
 Package hyperref Warning: Option `pagebackref' has already been used,
-(hyperref)                setting the option has no effect on input line 76.
+(hyperref)                setting the option has no effect on input line 108.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\language' on input line 76.
+(hyperref)                removing `\language' on input line 108.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\langwohyphens' on input line 76.
+(hyperref)                removing `\langwohyphens' on input line 108.
 
-Package hyperref Info: Option `colorlinks' set `true' on input line 76.
+Package hyperref Info: Option `colorlinks' set `true' on input line 108.
 (./thesis.aux)
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 117.
-LaTeX Font Info:    ... okay on input line 117.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 117.
-LaTeX Font Info:    ... okay on input line 117.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 117.
-LaTeX Font Info:    ... okay on input line 117.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 117.
-LaTeX Font Info:    ... okay on input line 117.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 117.
-LaTeX Font Info:    ... okay on input line 117.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 117.
-LaTeX Font Info:    ... okay on input line 117.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 117.
-LaTeX Font Info:    ... okay on input line 117.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 117.
-LaTeX Font Info:    ... okay on input line 117.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 117.
-LaTeX Font Info:    ... okay on input line 117.
-Package hyperref Info: Link coloring ON on input line 117.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+Package hyperref Info: Link coloring ON on input line 149.
  (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
@@ -1319,31 +1323,31 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ) (/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count439
+\c@section@level=\count441
 )
 Redoing nameref's sectioning
 Redoing nameref's label
-LaTeX Info: Redefining \nameref on input line 117.
-LaTeX Info: Redefining \ref on input line 117.
-LaTeX Info: Redefining \pageref on input line 117.
-LaTeX Info: Redefining \nameref on input line 117.
+LaTeX Info: Redefining \nameref on input line 149.
+LaTeX Info: Redefining \ref on input line 149.
+LaTeX Info: Redefining \pageref on input line 149.
+LaTeX Info: Redefining \nameref on input line 149.
 \myptabbox=\box92
 \myptabboxwidth=\skip315
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
-(lastpage)             ! on input line 117.
+(lastpage)             ! on input line 149.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count440
+\scratchcounter=\count442
 \scratchdimen=\dimen346
 \scratchbox=\box93
-\nofMPsegments=\count441
-\nofMParguments=\count442
+\nofMPsegments=\count443
+\nofMParguments=\count444
 \everyMPshowfont=\toks77
-\MPscratchCnt=\count443
+\MPscratchCnt=\count445
 \MPscratchDim=\dimen347
-\MPnumerator=\count444
-\makeMPintoPDFobject=\count445
+\MPnumerator=\count446
+\makeMPintoPDFobject=\count447
 \everyMPtoPDFconversion=\toks78
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -1361,18 +1365,18 @@ Package: ltcaption 2020/05/30 v1.4b longtable captions (AR)
 Package caption Info: rotating package is loaded.
 Package caption Info: supertabular package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \microtypecontext on input line 117.
-Package microtype Info: Applying patch `item' on input line 117.
-Package microtype Info: Applying patch `toc' on input line 117.
-Package microtype Info: Applying patch `eqnum' on input line 117.
-Package microtype Info: Applying patch `footnote' on input line 117.
+LaTeX Info: Redefining \microtypecontext on input line 149.
+Package microtype Info: Applying patch `item' on input line 149.
+Package microtype Info: Applying patch `toc' on input line 149.
+Package microtype Info: Applying patch `eqnum' on input line 149.
+Package microtype Info: Applying patch `footnote' on input line 149.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 117.
+LaTeX Info: Redefining \showhyphens on input line 149.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1385,9 +1389,9 @@ Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
 )
 Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 )
-\c@lstlisting=\count446
+\c@lstlisting=\count448
  (./thesis.glsdefs)
-LaTeX Font Info:    Trying to load font information for T1+lmss on input line 117.
+LaTeX Font Info:    Trying to load font information for T1+lmss on input line 149.
  (/usr/share/texmf/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1395,7 +1399,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line 117.
+LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line 149.
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
 File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
 )<<ot1.cmap>>
@@ -1403,15 +1407,15 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `ztmcm' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line 117.
+LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line 149.
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd
 File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
 )<<oml.cmap>>
-LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line 117.
+LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line 149.
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd
 File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
 )<<oms.cmap>>
-LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line 117.
+LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line 149.
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd
 File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
 )<<omx.cmap>> (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
@@ -1419,20 +1423,20 @@ File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 117.
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 149.
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 117.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 149.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 117.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 149.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 117.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 149.
 <images/logo-capa.png, id=9, 954.56625pt x 429.605pt>
 File: images/logo-capa.png Graphic file (type png)
 <use images/logo-capa.png>
-Package pdftex.def Info: images/logo-capa.png  used on input line 117.
+Package pdftex.def Info: images/logo-capa.png  used on input line 149.
 (pdftex.def)             Requested size: 114.543pt x 51.55037pt.
 \openout4 = `thesis.mw'.
 
@@ -1577,19 +1581,19 @@ Package pdftex.def Info: images/logo-capa.png  used on input line 117.
 \openout4 = `thesis.mw'.
 
 
-Underfull \hbox (badness 5771) in paragraph at lines 117--117
+Underfull \hbox (badness 5771) in paragraph at lines 149--149
 []\T1/ptm/m/n/10.95 (+20) Monografia final de conclusão de curso do
  []
 
 
-Underfull \hbox (badness 1983) in paragraph at lines 117--117
+Underfull \hbox (badness 1983) in paragraph at lines 149--149
 \T1/ptm/m/n/10.95 (+20) Departamento de Sistemas de Computação do
  []
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.117 \begin{document}
+l.149 \begin{document}
                       
 \openout4 = `thesis.mw'.
 
@@ -1600,12 +1604,12 @@ l.117 \begin{document}
 \openout4 = `thesis.mw'.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 117.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 149.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 117.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 149.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 117.
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 117.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 149.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 149.
  (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1614,54 +1618,54 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
 []|   \T1/lmtt/m/n/10 Análise Comparativa de Desempenho entre PostgreSQL
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
 \T1/lmtt/m/n/10 com JSONB e MongoDB para Catálogos com Dados
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
 \T1/lmtt/m/n/10 Parcialmente Variáveis no Contexto de Delivery de
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
 \T1/lmtt/m/n/10 Alimentos / Rauany Martinez Secci.-- São Carlos -- SP,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
 []|   \T1/lmtt/m/n/10 Monografia (Graduação) -- Instituto de Ciências
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
 \T1/lmtt/m/n/10 Matemáticas e de Computação (ICMC/USP), São Carlos --
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
 []|   \T1/lmtt/m/n/10 1.PostgreSQL. 2.MongoDB. 3.JSONB. 4.Dados
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
 \T1/lmtt/m/n/10 semiestruturados. 5.Indexação.  I. Sousa, Elaine
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
 \T1/lmtt/m/n/10 Parros Machado de. II. Instituto de Ciências
  []
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.117 \begin{document}
+l.149 \begin{document}
                       
 \openout4 = `thesis.mw'.
 
@@ -1783,9 +1787,6 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 9.
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <12> not available
 (Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 9.
-
-Underfull \vbox (badness 1052) has occurred while \output is active []
-
 \openout4 = `thesis.mw'.
 
  [19
@@ -1793,43 +1794,39 @@ Underfull \vbox (badness 1052) has occurred while \output is active []
 ] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-)
 \openout4 = `thesis.mw'.
 
  [20] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-Package xypdf Info: Line width: 0.47987pt on input line 117.
- (./tex/capitulos/introducao.tex
-\openout4 = `thesis.mw'.
-
- [21
-
-
-] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
-\openout4 = `thesis.mw'.
-
- [22] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
 )
 \openout4 = `thesis.mw'.
 
- [23] (./thesis.mw)
+ [21] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 \openout4 = `thesis.mw'.
 
- [24
+ [22
 
 ] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
- (./tex/capitulos/bibliografia.tex
-LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <14.4> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 4.
+Package xypdf Info: Line width: 0.47987pt on input line 149.
+ (./tex/capitulos/introducao.tex
+\openout4 = `thesis.mw'.
+
+ [23
+
+] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+ [24] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+)
 \openout4 = `thesis.mw'.
 
  [25] (./thesis.mw)
@@ -1837,13 +1834,14 @@ LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <14.4> not available
 
 \openout4 = `thesis.mw'.
 
- [26] (./thesis.mw)
+ [26
+
+] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 60.
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
-File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
+ (./tex/capitulos/bibliografia.tex
+LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <14.4> not available
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 4.
 \openout4 = `thesis.mw'.
 
  [27] (./thesis.mw)
@@ -1854,6 +1852,9 @@ File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
  [28] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 60.
+ (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 \openout4 = `thesis.mw'.
 
@@ -1862,108 +1863,87 @@ File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 
 \openout4 = `thesis.mw'.
 
- [30
+ [30] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+)
+\openout4 = `thesis.mw'.
+
+ [31] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+ [32
 
 ] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
  (./tex/capitulos/desenvolvimento.tex
-<images//metodologia.png, id=511, 1375.1375pt x 542.025pt>
+<images//metodologia.png, id=573, 1375.1375pt x 542.025pt>
 File: images//metodologia.png Graphic file (type png)
 <use images//metodologia.png>
 Package pdftex.def Info: images//metodologia.png  used on input line 20.
 (pdftex.def)             Requested size: 409.49722pt x 161.40123pt.
 \openout4 = `thesis.mw'.
 
- [31 <./images//metodologia.png>] (./thesis.mw)
+ [33 <./images//metodologia.png>] (./thesis.mw)
 \openout4 = `thesis.mw'.
-
-
-Underfull \vbox (badness 3536) has occurred while \output is active []
 
 \openout4 = `thesis.mw'.
 
- [32] (./thesis.mw)
+ [34] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 78.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 78.
-<images//modelo-relacional.png, id=536, 926.46124pt x 504.88625pt>
+<images//modelo-relacional.png, id=599, 926.46124pt x 504.88625pt>
 File: images//modelo-relacional.png Graphic file (type png)
 <use images//modelo-relacional.png>
-Package pdftex.def Info: images//modelo-relacional.png  used on input line 109.
-(pdftex.def)             Requested size: 273.00278pt x 148.77837pt.
+Package pdftex.def Info: images//modelo-relacional.png  used on input line 85.
+(pdftex.def)             Requested size: 364.00139pt x 198.36858pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-\openout4 = `thesis.mw'.
-
- [33] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
-
-Overfull \hbox (14.80048pt too wide) in paragraph at lines 114--116
+Overfull \hbox (14.80048pt too wide) in paragraph at lines 90--92
 \T1/ptm/m/n/12 (-20) atri-bu-tos va-riá-veis como cam-pos pró-prios (exem-pli-fi-cado por \T1/lmtt/m/n/12 atributosEspecificosCategoria\T1/ptm/m/n/12 (-20) ). 
  []
 
-<images//modelo-documentos.png, id=545, 1043.9pt x 789.95125pt>
+<images//modelo-documentos.png, id=601, 1043.9pt x 789.95125pt>
 File: images//modelo-documentos.png Graphic file (type png)
 <use images//modelo-documentos.png>
-Package pdftex.def Info: images//modelo-documentos.png  used on input line 120.
+Package pdftex.def Info: images//modelo-documentos.png  used on input line 96.
 (pdftex.def)             Requested size: 409.49722pt x 309.87573pt.
-<images//hierarquia-item.png, id=547, 1010.77625pt x 505.89pt>
+\openout4 = `thesis.mw'.
+
+[35 <./images//modelo-relacional.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+<images//hierarquia-item.png, id=612, 1010.77625pt x 505.89pt>
 File: images//hierarquia-item.png Graphic file (type png)
 <use images//hierarquia-item.png>
-Package pdftex.def Info: images//hierarquia-item.png  used on input line 132.
+Package pdftex.def Info: images//hierarquia-item.png  used on input line 108.
 (pdftex.def)             Requested size: 273.00278pt x 136.63843pt.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 123.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 123.
 \openout4 = `thesis.mw'.
 
-[34 <./images//modelo-relacional.png> <./images//modelo-documentos.png>] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-\openout4 = `thesis.mw'.
-
- [35 <./images//hierarquia-item.png>] (./thesis.mw)
+ [36 <./images//modelo-documentos.png> <./images//hierarquia-item.png>] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 
-Overfull \hbox (0.7345pt too wide) in paragraph at lines 205--213
+Overfull \hbox (0.7345pt too wide) in paragraph at lines 181--189
  [][] 
  []
+
+\openout4 = `thesis.mw'.
+
+[37] (./thesis.mw)
+\openout4 = `thesis.mw'.
 
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 228.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 204.
 
-Underfull \vbox (badness 4328) has occurred while \output is active []
-
-\openout4 = `thesis.mw'.
-
- [36] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
-
-Overfull \hbox (2.81802pt too wide) in paragraph at lines 251--265
+Overfull \hbox (2.81802pt too wide) in paragraph at lines 227--241
  [][] 
- []
-
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2020/03/24 1.8d listings language file
-)
-LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 273.
-\openout4 = `thesis.mw'.
-
- [37] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
-
-Overfull \hbox (22.85068pt too wide) in paragraph at lines 303--307
-[]\T1/ptm/m/n/12 (-20) No Mon-goDB não há um es-quema equi-va-lente ao do Post-greSQL. As co-le-ções \T1/lmtt/m/n/12 restaurantes
  []
 
 \openout4 = `thesis.mw'.
@@ -1971,48 +1951,49 @@ Overfull \hbox (22.85068pt too wide) in paragraph at lines 303--307
 [38] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-
-Underfull \vbox (badness 1226) has occurred while \output is active []
-
+ (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2020/03/24 1.8d listings language file
+)
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 249.
 \openout4 = `thesis.mw'.
 
  [39] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-\openout4 = `thesis.mw'.
 
- [40] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
-
-Overfull \hbox (1.87444pt too wide) in paragraph at lines 413--423
- [][] 
+Overfull \hbox (22.85068pt too wide) in paragraph at lines 279--283
+[]\T1/ptm/m/n/12 (-20) No Mon-goDB não há um es-quema equi-va-lente ao do Post-greSQL. As co-le-ções \T1/lmtt/m/n/12 restaurantes
  []
 
+\openout4 = `thesis.mw'.
 
-Overfull \hbox (10.71152pt too wide) in paragraph at lines 434--454
- [][] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+[40] (./thesis.mw)
+\openout4 = `thesis.mw'.
 
 \openout4 = `thesis.mw'.
 
  [41] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
- (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2020/03/24 1.8d listings language file
-)
-\openout4 = `thesis.mw'.
 
- [42] (./thesis.mw)
-\openout4 = `thesis.mw'.
+Overfull \hbox (1.87444pt too wide) in paragraph at lines 389--399
+ [][] 
+ []
 
 \openout4 = `thesis.mw'.
 
- [43] (./thesis.mw)
+[42] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+
+Overfull \hbox (10.71152pt too wide) in paragraph at lines 410--430
+ [][] 
+ []
+
+\openout4 = `thesis.mw'.
+
+[43] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 \openout4 = `thesis.mw'.
@@ -2025,6 +2006,9 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
  [45] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
+ (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2020/03/24 1.8d listings language file
+)
 \openout4 = `thesis.mw'.
 
  [46] (./thesis.mw)
@@ -2050,24 +2034,19 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
  [50] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
+\openout4 = `thesis.mw'.
 
-Overfull \hbox (1.02301pt too wide) in paragraph at lines 804--804
+ [51] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+
+Overfull \hbox (1.02301pt too wide) in paragraph at lines 721--721
  []|\T1/ptm/b/n/10 (-20) Multikey| 
  []
 
 
-Overfull \hbox (2.57971pt too wide) in paragraph at lines 804--804
+Overfull \hbox (2.57971pt too wide) in paragraph at lines 721--721
  []|\T1/ptm/b/n/10 (-20) Wildcard| 
- []
-
-\openout4 = `thesis.mw'.
-
-[51] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
-
-Overfull \hbox (1.39342pt too wide) in paragraph at lines 858--863
-[]\T1/ptm/m/n/12 (-20) Optou-se en-tão por cro-no-me-trar a ope-ra-ção do lado do cli-ente, com a fun-ção \T1/lmtt/m/n/12 time.perf_-
  []
 
 \openout4 = `thesis.mw'.
@@ -2075,17 +2054,24 @@ Overfull \hbox (1.39342pt too wide) in paragraph at lines 858--863
 [52] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-\openout4 = `thesis.mw'.
 
- [53] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Overfull \hbox (1.39342pt too wide) in paragraph at lines 775--780
+[]\T1/ptm/m/n/12 (-20) Optou-se en-tão por cro-no-me-trar a ope-ra-ção do lado do cli-ente, com a fun-ção \T1/lmtt/m/n/12 time.perf_-
+ []
 
 \openout4 = `thesis.mw'.
 
- [54] (./thesis.mw)
+[53] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+
+Overfull \hbox (10.11484pt too wide) in paragraph at lines 842--850
+[]\T1/ptm/m/n/12 (-20) No Mon-goDB, o ta-ma-nho dos da-dos vem do campo \T1/lmtt/m/n/12 storageSize \T1/ptm/m/n/12 (-20) do co-mando \T1/lmtt/m/n/12 collStats\T1/ptm/m/n/12 (-20) ,
+ []
+
+\openout4 = `thesis.mw'.
+
+[54] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 \openout4 = `thesis.mw'.
@@ -2093,14 +2079,9 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [55] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-
-Overfull \hbox (10.11484pt too wide) in paragraph at lines 1025--1033
-[]\T1/ptm/m/n/12 (-20) No Mon-goDB, o ta-ma-nho dos da-dos vem do campo \T1/lmtt/m/n/12 storageSize \T1/ptm/m/n/12 (-20) do co-mando \T1/lmtt/m/n/12 collStats\T1/ptm/m/n/12 (-20) ,
- []
-
 \openout4 = `thesis.mw'.
 
-[56] (./thesis.mw)
+ [56] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 \openout4 = `thesis.mw'.
@@ -2108,45 +2089,136 @@ Overfull \hbox (10.11484pt too wide) in paragraph at lines 1025--1033
  [57] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
+<images//grafico1_escala_C3_id.png, id=879, 621.522pt x 361.35pt>
+File: images//grafico1_escala_C3_id.png Graphic file (type png)
+<use images//grafico1_escala_C3_id.png>
+Package pdftex.def Info: images//grafico1_escala_C3_id.png  used on input line 1050.
+(pdftex.def)             Requested size: 318.49861pt x 185.17929pt.
 \openout4 = `thesis.mw'.
 
  [58] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
+<images//grafico1_escala_C6.png, id=885, 621.522pt x 361.35pt>
+File: images//grafico1_escala_C6.png Graphic file (type png)
+<use images//grafico1_escala_C6.png>
+Package pdftex.def Info: images//grafico1_escala_C6.png  used on input line 1074.
+(pdftex.def)             Requested size: 318.49861pt x 185.17929pt.
+\openout4 = `thesis.mw'.
+
+ [59 <./images//grafico1_escala_C3_id.png> <./images//grafico1_escala_C6.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+<images//grafico1_escala_C1.png, id=894, 621.522pt x 361.35pt>
+File: images//grafico1_escala_C1.png Graphic file (type png)
+<use images//grafico1_escala_C1.png>
+Package pdftex.def Info: images//grafico1_escala_C1.png  used on input line 1095.
+(pdftex.def)             Requested size: 318.49861pt x 185.17929pt.
+<images//grafico2_ganho_indice.png, id=896, 867.24pt x 361.35pt>
+File: images//grafico2_ganho_indice.png Graphic file (type png)
+<use images//grafico2_ganho_indice.png>
+Package pdftex.def Info: images//grafico2_ganho_indice.png  used on input line 1112.
+(pdftex.def)             Requested size: 318.49861pt x 132.71043pt.
+\openout4 = `thesis.mw'.
+
+ [60 <./images//grafico1_escala_C1.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+<images//grafico3_seletividade_C1.png, id=905, 679.338pt x 361.35pt>
+File: images//grafico3_seletividade_C1.png Graphic file (type png)
+<use images//grafico3_seletividade_C1.png>
+Package pdftex.def Info: images//grafico3_seletividade_C1.png  used on input line 1136.
+(pdftex.def)             Requested size: 273.00278pt x 145.21562pt.
+<images//grafico3_seletividade_C4.png, id=907, 679.338pt x 361.35pt>
+File: images//grafico3_seletividade_C4.png Graphic file (type png)
+<use images//grafico3_seletividade_C4.png>
+Package pdftex.def Info: images//grafico3_seletividade_C4.png  used on input line 1155.
+(pdftex.def)             Requested size: 273.00278pt x 145.21562pt.
+\openout4 = `thesis.mw'.
+
+ [61 <./images//grafico2_ganho_indice.png> <./images//grafico3_seletividade_C1.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+<images//grafico4_lote_C2_insercao.png, id=916, 549.252pt x 361.35pt>
+File: images//grafico4_lote_C2_insercao.png Graphic file (type png)
+<use images//grafico4_lote_C2_insercao.png>
+Package pdftex.def Info: images//grafico4_lote_C2_insercao.png  used on input line 1181.
+(pdftex.def)             Requested size: 227.5pt x 149.67073pt.
+\openout4 = `thesis.mw'.
+
+ [62 <./images//grafico3_seletividade_C4.png> <./images//grafico4_lote_C2_insercao.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+<images//grafico6_carga_tempo.png, id=926, 621.522pt x 375.804pt>
+File: images//grafico6_carga_tempo.png Graphic file (type png)
+<use images//grafico6_carga_tempo.png>
+Package pdftex.def Info: images//grafico6_carga_tempo.png  used on input line 1215.
+(pdftex.def)             Requested size: 218.39806pt x 132.05519pt.
+<images//grafico8_carga_memoria.png, id=927, 621.522pt x 375.804pt>
+File: images//grafico8_carga_memoria.png Graphic file (type png)
+<use images//grafico8_carga_memoria.png>
+Package pdftex.def Info: images//grafico8_carga_memoria.png  used on input line 1221.
+(pdftex.def)             Requested size: 218.39806pt x 132.05519pt.
+<images//grafico7_carga_cpu.png, id=928, 621.522pt x 375.804pt>
+File: images//grafico7_carga_cpu.png Graphic file (type png)
+<use images//grafico7_carga_cpu.png>
+Package pdftex.def Info: images//grafico7_carga_cpu.png  used on input line 1229.
+(pdftex.def)             Requested size: 218.39806pt x 132.05519pt.
+\openout4 = `thesis.mw'.
+
+ [63 <./images//grafico6_carga_tempo.png> <./images//grafico8_carga_memoria.png> <./images//grafico7_carga_cpu.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+<images//grafico5_espaco_indice.png, id=937, 794.97pt x 375.804pt>
+File: images//grafico5_espaco_indice.png Graphic file (type png)
+<use images//grafico5_espaco_indice.png>
+Package pdftex.def Info: images//grafico5_espaco_indice.png  used on input line 1251.
+(pdftex.def)             Requested size: 273.00278pt x 129.05615pt.
+<images//grafico9_carga_espaco.png, id=939, 693.792pt x 390.258pt>
+File: images//grafico9_carga_espaco.png Graphic file (type png)
+<use images//grafico9_carga_espaco.png>
+Package pdftex.def Info: images//grafico9_carga_espaco.png  used on input line 1265.
+(pdftex.def)             Requested size: 273.00278pt x 153.56366pt.
+\openout4 = `thesis.mw'.
+
+ [64 <./images//grafico5_espaco_indice.png> <./images//grafico9_carga_espaco.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
 )
 \openout4 = `thesis.mw'.
 
- [59] (./thesis.mw)
+ [65] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 \openout4 = `thesis.mw'.
 
- [60] (./thesis.mw)
+ [66
+
+] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
- (./tex/capitulos/conclusao.tex) (./thesis.bbl (./thesis.brf)
+ (./tex/capitulos/conclusao.tex
+\openout4 = `thesis.mw'.
+
+ [67] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+) (./thesis.bbl (./thesis.brf)
 \tf@brf=\write24
 \openout4 = `thesis.brf'.
 
 \openout4 = `thesis.mw'.
 
- [61
-
-] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
-\openout4 = `thesis.mw'.
-
- [62
-
-] (./thesis.mw)
+ [68] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 
 bibitemlist
 \openout4 = `thesis.mw'.
 
-[63] (./thesis.mw)
+[69
+
+] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 ) (./tex/glossario.tex
@@ -4457,7 +4529,7 @@ bibitemlist
 No file thesis.gls.
 \openout4 = `thesis.mw'.
 
-[64] (./thesis.mw)
+[70] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 \openout4 = `thesis.mw'.
@@ -4644,26 +4716,188 @@ No file thesis.gls.
 
 \openout4 = `thesis.mw'.
 
- (./tex/appendix/exemploapendice.tex)
+ (./tex/appendix/apendice-versoes.tex)
 \openout4 = `thesis.mw'.
 
- [65
+ [71
 
 ] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 \openout4 = `thesis.mw'.
 
- [66
+ [72
 
 ] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
- (./tex/annex/exemploanexo.tex) 
+ (./tex/appendix/apendice-hash.tex)
+\openout4 = `thesis.mw'.
+
+ [73] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+ [74
+
+] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+ (./tex/appendix/apendice-codigos.tex
+\openout4 = `thesis.mw'.
+
+ [75] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+)
+\openout4 = `thesis.mw'.
+
+ [76] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+ (./tex/appendix/apendice-medicao.tex)
+\openout4 = `thesis.mw'.
+
+ [77
+
+] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+ [78
+
+] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+ (./tex/appendix/apendice-recursos.tex
+\openout4 = `thesis.mw'.
+
+ [79] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+)
+\openout4 = `thesis.mw'.
+
+ [80] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+ (./tex/appendix/apendice-espaco.tex)
+\openout4 = `thesis.mw'.
+
+ [81
+
+] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+ [82
+
+] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+ (./tex/appendix/exemploapendice.tex
+<images//grafico1_escala_C2_id.png, id=1195, 621.522pt x 361.35pt>
+File: images//grafico1_escala_C2_id.png Graphic file (type png)
+<use images//grafico1_escala_C2_id.png>
+Package pdftex.def Info: images//grafico1_escala_C2_id.png  used on input line 4.
+(pdftex.def)             Requested size: 386.75278pt x 224.86174pt.
+<images//grafico1_escala_C4.png, id=1196, 621.522pt x 361.35pt>
+File: images//grafico1_escala_C4.png Graphic file (type png)
+<use images//grafico1_escala_C4.png>
+Package pdftex.def Info: images//grafico1_escala_C4.png  used on input line 12.
+(pdftex.def)             Requested size: 386.75278pt x 224.86174pt.
+<images//grafico1_escala_C5.png, id=1197, 621.522pt x 361.35pt>
+File: images//grafico1_escala_C5.png Graphic file (type png)
+<use images//grafico1_escala_C5.png>
+Package pdftex.def Info: images//grafico1_escala_C5.png  used on input line 20.
+(pdftex.def)             Requested size: 386.75278pt x 224.86174pt.
+\openout4 = `thesis.mw'.
+
+ [83 <./images//grafico1_escala_C2_id.png> <./images//grafico1_escala_C4.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+<images//grafico1_escala_C7.png, id=1205, 621.522pt x 361.35pt>
+File: images//grafico1_escala_C7.png Graphic file (type png)
+<use images//grafico1_escala_C7.png>
+Package pdftex.def Info: images//grafico1_escala_C7.png  used on input line 28.
+(pdftex.def)             Requested size: 386.75278pt x 224.86174pt.
+<images//grafico1_escala_C8_id.png, id=1206, 621.522pt x 361.35pt>
+File: images//grafico1_escala_C8_id.png Graphic file (type png)
+<use images//grafico1_escala_C8_id.png>
+Package pdftex.def Info: images//grafico1_escala_C8_id.png  used on input line 36.
+(pdftex.def)             Requested size: 386.75278pt x 224.86174pt.
+\openout4 = `thesis.mw'.
+
+ [84 <./images//grafico1_escala_C5.png> <./images//grafico1_escala_C7.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+)
+\openout4 = `thesis.mw'.
+
+ [85 <./images//grafico1_escala_C8_id.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+ [86
+
+] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+ (./tex/appendix/apendice-btree.tex
+<images//grafico3_seletividade_C5.png, id=1222, 766.062pt x 361.35pt>
+File: images//grafico3_seletividade_C5.png Graphic file (type png)
+<use images//grafico3_seletividade_C5.png>
+Package pdftex.def Info: images//grafico3_seletividade_C5.png  used on input line 6.
+(pdftex.def)             Requested size: 386.75278pt x 182.43344pt.
+<images//grafico3_seletividade_C7.png, id=1223, 679.338pt x 361.35pt>
+File: images//grafico3_seletividade_C7.png Graphic file (type png)
+<use images//grafico3_seletividade_C7.png>
+Package pdftex.def Info: images//grafico3_seletividade_C7.png  used on input line 14.
+(pdftex.def)             Requested size: 386.75278pt x 205.72353pt.
+)
+\openout4 = `thesis.mw'.
+
+ [87 <./images//grafico3_seletividade_C5.png> <./images//grafico3_seletividade_C7.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+ [88
+
+] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+ (./tex/appendix/apendice-gin.tex
+<images//grafico4_lote_C2_atualizacao.png, id=1234, 549.252pt x 361.35pt>
+File: images//grafico4_lote_C2_atualizacao.png Graphic file (type png)
+<use images//grafico4_lote_C2_atualizacao.png>
+Package pdftex.def Info: images//grafico4_lote_C2_atualizacao.png  used on input line 7.
+(pdftex.def)             Requested size: 318.49861pt x 209.53352pt.
+<images//grafico4_lote_C3.png, id=1235, 549.252pt x 361.35pt>
+File: images//grafico4_lote_C3.png Graphic file (type png)
+<use images//grafico4_lote_C3.png>
+Package pdftex.def Info: images//grafico4_lote_C3.png  used on input line 15.
+(pdftex.def)             Requested size: 318.49861pt x 209.53352pt.
+<images//grafico4_lote_C8.png, id=1236, 549.252pt x 361.35pt>
+File: images//grafico4_lote_C8.png Graphic file (type png)
+<use images//grafico4_lote_C8.png>
+Package pdftex.def Info: images//grafico4_lote_C8.png  used on input line 23.
+(pdftex.def)             Requested size: 318.49861pt x 209.53352pt.
+)
+\openout4 = `thesis.mw'.
+
+ [89 <./images//grafico4_lote_C2_atualizacao.png> <./images//grafico4_lote_C3.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+ 
 AED: lastpage setting LastPage
 \openout4 = `thesis.mw'.
 
-[67] (./thesis.mw)
+[90 <./images//grafico4_lote_C8.png>] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
 \tf@lof=\write26
@@ -5203,11 +5437,111 @@ AED: lastpage setting LastPage
 
 \openout4 = `thesis.mw'.
 
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
+\openout4 = `thesis.mw'.
+
 )
 \openout4 = `thesis.brf'.
 
 Package rerunfilecheck Info: File `thesis.brf' has not changed.
-(rerunfilecheck)             Checksum: 7627F6D8B86704675C30E1F33756B5D0;1058.
+(rerunfilecheck)             Checksum: 63186155AE2779ED5A6EECF5F3AAEFE4;1058.
 \openout4 = `thesis.nlo'.
 
 \openout4 = `thesis.glo'.
@@ -5226,18 +5560,18 @@ Package rerunfilecheck Info: File `thesis.brf' has not changed.
 
  ) 
 Here is how much of TeX's memory you used:
- 42717 strings out of 480154
- 721139 string characters out of 5893788
- 1732727 words of memory out of 5000000
- 58708 multiletter control sequences out of 15000+600000
- 608996 words of font info for 454 fonts, out of 8000000 for 9000
+ 43150 strings out of 480154
+ 732005 string characters out of 5893788
+ 1650555 words of memory out of 5000000
+ 58989 multiletter control sequences out of 15000+600000
+ 610194 words of font info for 463 fonts, out of 8000000 for 9000
  61 hyphenation exceptions out of 8191
- 125i,13n,120p,3353b,2281s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 125i,13n,120p,3353b,2283s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (69 pages, 684704 bytes).
+Output written on thesis.pdf (92 pages, 2003963 bytes).
 PDF statistics:
- 1403 PDF objects out of 1440 (max. 8388607)
- 1284 compressed objects within 13 object streams
- 491 named destinations out of 1000 (max. 500000)
- 136806 words of extra memory for PDF output out of 154059 (max. 10000000)
+ 1655 PDF objects out of 1728 (max. 8388607)
+ 1467 compressed objects within 15 object streams
+ 541 named destinations out of 1000 (max. 500000)
+ 136972 words of extra memory for PDF output out of 154059 (max. 10000000)
 

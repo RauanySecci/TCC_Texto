@@ -1,0 +1,24 @@
+% Conteúdo do Apêndice D: Função de medição de tempo
+
+\begin{codigo}[language=Python, breaklines=true, caption={Função de medição de tempo.}, label={lst:medir-tempo}]
+def medir_tempo(acao, repeats=10, warm_up=True, antes=None):
+    try:
+        if warm_up:
+            if antes:
+                antes()
+            acao()
+        tempos = []
+        for _ in range(repeats):
+            if antes:
+                antes()
+            inicio = time.perf_counter()
+            acao()
+            tempos.append((time.perf_counter() - inicio) * 1000)
+        return {"min": min(tempos), "max": max(tempos),
+                "media": statistics.mean(tempos),
+                "mediana": statistics.median(tempos),
+                "tempos_brutos": tempos}
+    except Exception as e:
+        print("Erro ao executar benchmark:", e)
+        return None
+\end{codigo}

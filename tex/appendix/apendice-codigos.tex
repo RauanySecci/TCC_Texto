@@ -1,0 +1,48 @@
+% Conteúdo do Apêndice C: Código de inserção dos dados
+
+\begin{codigo}[language=Python, breaklines=true, caption={Inserção dos dados no PostgreSQL.}, label={lst:insert-pg}]
+execute_values(
+    cur,
+    "INSERT INTO restaurantes (id, nome, categoria, ativo) VALUES %s",
+    dados_restaurantes, page_size=10_000)
+conn.commit()
+
+for i in range(0, len(itens), 10_000):
+    rows = [(it["restaurante"]["pg_id"], it["nome"], it["categoria"],
+             it["status"],
+             json.dumps(it["preco"], ensure_ascii=False),
+             json.dumps(it["opcoes_grupos"], ensure_ascii=False),
+             json.dumps(it["atributos"], ensure_ascii=False),
+             it["hash"], it["versao"])
+            for it in itens[i:i + 10_000]]
+    execute_values(
+        cur,
+        "INSERT INTO itens (restaurante_id, nome, categoria, status, preco, "
+        "opcoes_grupos, atributos_variaveis, hash, versao) VALUES %s",
+        rows,
+        template="(%s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::jsonb, %s, %s)",
+        page_size=10_000)
+    conn.commit()  # confirma a cada lote
+\end{codigo}
+
+\begin{codigo}[language=Python, breaklines=true, caption={Inserção dos dados no MongoDB.}, label={lst:insert-mongo}]
+agora = datetime.now()
+
+docs_restaurantes = [{"_id": r["mongo_id"], "nome": r["nome"],
+                      "categoria": r["categoria"], "ativo": r["ativo"],
+                      "criado_em": agora} for r in restaurantes]
+db_mongo.restaurantes.insert_many(docs_restaurantes)
+
+for i in range(0, len(itens), 10_000):
+    docs = []
+    for it in itens[i:i + 10_000]:
+        doc = {"restauranteId": it["restaurante"]["mongo_id"],
+               "nome": it["nome"], "categoria": it["categoria"],
+               "status": it["status"], "preco": it["preco"],
+               "opcoes_grupos": it["opcoes_grupos"],
+               "hash": it["hash"], "versao": it["versao"],
+               "criado_em": agora, "modificado_em": agora}
+        doc.update(it["atributos"])  # atributos variaveis no nivel superior
+        docs.append(doc)
+    db_mongo.itens.insert_many(docs)
+\end{codigo}

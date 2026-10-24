@@ -1,0 +1,49 @@
+% Conteúdo do Apêndice E: Funções de medição de recursos
+
+\begin{codigo}[language=Python, breaklines=true, caption={Funções de medição de recursos durante a inserção.}, label={lst:medir-recursos}]
+def ler_cgroup(base):
+    # CPU acumulada (s) e memoria (MiB), sem o cache de arquivos
+    uso = next(int(l.split()[1]) for l in (base / "cpu.stat").read_text().splitlines()
+               if l.startswith("usage_usec"))
+    inativo = next(int(l.split()[1]) for l in (base / "memory.stat").read_text().splitlines()
+                   if l.startswith("inactive_file"))
+    memoria = int((base / "memory.current").read_text()) - inativo
+    return uso / 1e6, memoria / 1048576
+
+def monitorar_recursos(nome_container, amostras, parar, intervalo):
+    base = caminho_cgroup(nome_container)
+    cpu_ant, _ = ler_cgroup(base)
+    t_ant = time.perf_counter()
+    while not parar.is_set():
+        parar.wait(intervalo)
+        cpu_s, mem = ler_cgroup(base)
+        agora = time.perf_counter()
+        cpu = (cpu_s - cpu_ant) / (agora - t_ant) * 100 
+        cpu_ant, t_ant = cpu_s, agora
+        if _enviando.is_set():  
+            amostras.append((cpu, mem))
+
+def medir_insercao_com_recursos(funcao_insercao, nome_container, intervalo=0.25):
+    amostras = []
+    parar = threading.Event()
+    monitor = threading.Thread(target=monitorar_recursos,
+                               args=(nome_container, amostras, parar, intervalo))
+    monitor.start()
+    inicio = time.perf_counter()
+    try:
+        funcao_insercao()
+    finally:
+        tempo_total_ms = (time.perf_counter() - inicio) * 1000
+        parar.set()
+        monitor.join()
+    cpus = [a[0] for a in amostras]
+    memorias = [a[1] for a in amostras]
+    return {"tempo_envio_ms": tempo_envio_s * 1000,
+            "tempo_total_ms": tempo_total_ms,
+            "cpu_media_percent": statistics.mean(cpus) if cpus else None,
+            "cpu_max_percent": max(cpus) if cpus else None,
+            "memoria_media_mb": statistics.mean(memorias) if memorias else None,
+            "memoria_max_mb": max(memorias) if memorias else None,
+            "num_amostras": len(amostras),
+            "cpus_brutos": cpus, "memorias_brutas": memorias}
+\end{codigo}

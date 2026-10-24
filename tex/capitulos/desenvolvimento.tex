@@ -67,31 +67,7 @@ PostgreSQL por meio do SQLAlchemy\footnote{\url{https://www.sqlalchemy.org}} e a
 
 As versões de todas as dependências estão fixadas no arquivo \texttt{requirements.txt}, que permite recriar o ambiente
 Python e inclui também as dependências indiretas do
-Jupyter. As principais bibliotecas utilizadas estão na Tabela~\ref{tab:versoes}.
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.1}
-\caption{Principais bibliotecas Python e versões utilizadas.}
-\label{tab:versoes}
-\small
-\begin{tabular}{|l|l|p{7.2cm}|}
-\hline
-\textbf{Biblioteca} & \textbf{Versão} & \textbf{Finalidade} \\ \hline
-SQLAlchemy & 2.0.53 & Conexão e consultas ao PostgreSQL \\ \hline
-psycopg2-binary & 2.9.13 & Driver do PostgreSQL e inserção em lotes (\texttt{execute\_values}) \\ \hline
-PyMongo & 4.18.1 & Conexão e consultas ao MongoDB \\ \hline
-Faker & 40.39.0 & Geração de dados sintéticos \\ \hline
-pandas & 2.3.3 & Manipulação dos resultados \\ \hline
-matplotlib & 3.10.9 & Geração dos gráficos \\ \hline
-numpy & 2.2.6 & Cálculos numéricos nos gráficos \\ \hline
-python-dotenv & 1.2.3 & Leitura das variáveis do \texttt{.env} \\ \hline
-\texttt{time} / \texttt{statistics} & 3.10.12$^{*}$ & Medição (\texttt{perf\_counter}) e agregação dos tempos \\ \hline
-\texttt{subprocess} / \texttt{threading} & 3.10.12$^{*}$ & Coleta de CPU e memória dos contêineres (cgroup, com \texttt{docker stats} como alternativa) durante a inserção dos dados \\ \hline
-\end{tabular}
-\vspace{0.4em}
-\legend{$^{*}$ Biblioteca padrão do Python, com a versão do interpretador. Fonte: Elaborado pela autora.}
-\end{table}
+Jupyter. As principais bibliotecas utilizadas estão na Tabela~\ref{tab:versoes}, no Apêndice~\ref{chapter:apendice-versoes}.
 
 \subsection{Modelagem dos Dados e Schema}
 
@@ -106,7 +82,7 @@ colunas JSONB.
 \begin{figure}[H]
     \centering
     \caption{Modelo de dados no PostgreSQL.}
-    \includegraphics[width=0.6\textwidth]{modelo-relacional.png}
+    \includegraphics[width=0.8\textwidth]{modelo-relacional.png}
     \label{fig:modelo-relacional}
     \legend{Fonte: Elaborado pela autora.}
 \end{figure}
@@ -458,21 +434,7 @@ A oferta de \textit{Bacon extra}, \textit{Cheddar extra} e \textit{Picles extra}
 
 O preço é um objeto, cujo campo \texttt{precoOriginal} só é preenchido quando o item possui promoção e é calculado a partir do percentual de desconto. Por esse motivo, os atributos variáveis são gerados antes do preço.
 
-Cada item recebe um valor de \texttt{hash}, que funciona como uma impressão digital do seu conteúdo. Ele é calculado a partir do nome, da categoria, do status, do preço, das opções e dos atributos variáveis, serializados em JSON com as chaves ordenadas, o que garante que o mesmo conteúdo produza sempre o mesmo valor, o Código~\ref{lst:hash} apresenta esse cálculo. O objetivo é permitir, na inserção condicional, decidir se um item recebido difere do armazenado comparando apenas dois inteiros, em vez de comparar todos os campos.
-
-\begin{codigo}[language=Python, breaklines=true, caption={Cálculo da impressão digital do item.}, label={lst:hash}]
-def calcular_hash(nome, categoria, status, preco, opcoes_grupos, atributos):
-    conteudo = json.dumps(
-        {"nome": nome, "categoria": categoria, "status": status,
-         "preco": preco, "opcoes_grupos": opcoes_grupos, "atributos": atributos},
-        sort_keys=True, ensure_ascii=False
-    )
-    digest = hashlib.md5(conteudo.encode("utf-8")).hexdigest()
-    valor = int(digest[:8], 16)
-    if valor >= 2**31:
-        valor -= 2**32
-    return valor
-\end{codigo}
+Cada item recebe um valor de \texttt{hash}, que funciona como uma impressão digital do seu conteúdo. Ele é calculado a partir do nome, da categoria, do status, do preço, das opções e dos atributos variáveis, serializados em JSON com as chaves ordenadas, o que garante que o mesmo conteúdo produza sempre o mesmo valor, o Código~\ref{lst:hash}, no Apêndice~\ref{chapter:apendice-hash}, apresenta esse cálculo. O objetivo é permitir, na inserção condicional, decidir se um item recebido difere do armazenado comparando apenas dois inteiros, em vez de comparar todos os campos.
 
 \subsection{Inserção dos dados}
 
@@ -482,60 +444,15 @@ no PostgreSQL, com um \texttt{commit} ao final de cada lote, e no MongoDB com a 
 \texttt{journal=True}. 
 O banco gera o identificador de cada 
 item (\texttt{DEFAULT gen\_random\_uuid()}) e preenche as datas de criação e modificação 
-(\texttt{DEFAULT now()}). O Código~\ref{lst:insert-pg} apresenta a inserção no PostgreSQL.
+(\texttt{DEFAULT now()}).
 
-\begin{codigo}[language=Python, breaklines=true, caption={Inserção dos dados no PostgreSQL.}, label={lst:insert-pg}]
-execute_values(
-    cur,
-    "INSERT INTO restaurantes (id, nome, categoria, ativo) VALUES %s",
-    dados_restaurantes, page_size=10_000)
-conn.commit()
-
-for i in range(0, len(itens), 10_000):
-    rows = [(it["restaurante"]["pg_id"], it["nome"], it["categoria"],
-             it["status"],
-             json.dumps(it["preco"], ensure_ascii=False),
-             json.dumps(it["opcoes_grupos"], ensure_ascii=False),
-             json.dumps(it["atributos"], ensure_ascii=False),
-             it["hash"], it["versao"])
-            for it in itens[i:i + 10_000]]
-    execute_values(
-        cur,
-        "INSERT INTO itens (restaurante_id, nome, categoria, status, preco, "
-        "opcoes_grupos, atributos_variaveis, hash, versao) VALUES %s",
-        rows,
-        template="(%s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::jsonb, %s, %s)",
-        page_size=10_000)
-    conn.commit()  # confirma a cada lote
-\end{codigo}
-
+O Código~\ref{lst:insert-pg}, no Apêndice~\ref{chapter:apendice-codigos}, apresenta a inserção no PostgreSQL.
 
 No MongoDB, os itens são carregados com uma chamada a \texttt{insert\_many} por lote, e o identificador do
 item é gerado pelo \textit{driver}. Como o banco não preenche as datas, a aplicação as define com o instante
 do início da carga, o mesmo valor para todos os documentos. Além disso, os atributos variáveis são gravados
-diretamente no nível superior do documento (Código~\ref{lst:insert-mongo}).
+diretamente no nível superior do documento (Código~\ref{lst:insert-mongo}, Apêndice~\ref{chapter:apendice-codigos}).
 
-\begin{codigo}[language=Python, breaklines=true, caption={Inserção dos dados no MongoDB.}, label={lst:insert-mongo}]
-agora = datetime.now()
-
-docs_restaurantes = [{"_id": r["mongo_id"], "nome": r["nome"],
-                      "categoria": r["categoria"], "ativo": r["ativo"],
-                      "criado_em": agora} for r in restaurantes]
-db_mongo.restaurantes.insert_many(docs_restaurantes)
-
-for i in range(0, len(itens), 10_000):
-    docs = []
-    for it in itens[i:i + 10_000]:
-        doc = {"restauranteId": it["restaurante"]["mongo_id"],
-               "nome": it["nome"], "categoria": it["categoria"],
-               "status": it["status"], "preco": it["preco"],
-               "opcoes_grupos": it["opcoes_grupos"],
-               "hash": it["hash"], "versao": it["versao"],
-               "criado_em": agora, "modificado_em": agora}
-        doc.update(it["atributos"])  # atributos variaveis no nivel superior
-        docs.append(doc)
-    db_mongo.itens.insert_many(docs)
-\end{codigo}
 
 Durante cada inserção são medidos o tempo total, o uso de CPU e de memória do contêiner e o 
 espaço ocupado pelos dados. Ao final da carga, o PostgreSQL executa o comando
@@ -862,33 +779,8 @@ são usados para consultas, inserções, atualizações e exclusões nos dois
 bancos. 
 
 A função \texttt{medir\_tempo}, apresentada no
-Código~\ref{lst:medir-tempo}, recebe a ação a ser cronometrada e a executa
-repetidamente.
-
-\begin{codigo}[language=Python, breaklines=true, caption={Função de medição de tempo.}, label={lst:medir-tempo}]
-def medir_tempo(acao, repeats=10, warm_up=True, antes=None):
-    try:
-        if warm_up:
-            if antes:
-                antes()
-            acao()
-        tempos = []
-        for _ in range(repeats):
-            if antes:
-                antes()
-            inicio = time.perf_counter()
-            acao()
-            tempos.append((time.perf_counter() - inicio) * 1000)
-        return {"min": min(tempos), "max": max(tempos),
-                "media": statistics.mean(tempos),
-                "mediana": statistics.median(tempos),
-                "tempos_brutos": tempos}
-    except Exception as e:
-        print("Erro ao executar benchmark:", e)
-        return None
-\end{codigo}
-
-Seus parâmetros e etapas são os seguintes:
+Código~\ref{lst:medir-tempo} (Apêndice~\ref{chapter:apendice-medicao}), recebe a ação a ser cronometrada e a executa
+repetidamente. Seus parâmetros e etapas são os seguintes:
 
 \begin{itemize}
   \item \texttt{acao}: função que executa a operação a ser
@@ -911,55 +803,7 @@ em milissegundos, além dos tempos brutos de cada repetição.
 \label{subsec:medicao-recursos}
 
 O consumo de CPU e de memória dos contêineres foi medido durante a inserção em massa dos dados. A leitura é feita diretamente nos contadores do cgroup do Linux (cgroup v2) do contêiner, que fornecem os valores instantaneamente. O comando \texttt{docker stats} foi mantido como alternativa, usada apenas quando o cgroup não é encontrado. 
-O Código~\ref{lst:medir-recursos} apresenta as funções que trabalham em conjunto para capturar e monitorar esses recursos.
-
-\begin{codigo}[language=Python, breaklines=true, caption={Funções de medição de recursos durante a inserção.}, label={lst:medir-recursos}]
-def ler_cgroup(base):
-    # CPU acumulada (s) e memoria (MiB), sem o cache de arquivos
-    uso = next(int(l.split()[1]) for l in (base / "cpu.stat").read_text().splitlines()
-               if l.startswith("usage_usec"))
-    inativo = next(int(l.split()[1]) for l in (base / "memory.stat").read_text().splitlines()
-                   if l.startswith("inactive_file"))
-    memoria = int((base / "memory.current").read_text()) - inativo
-    return uso / 1e6, memoria / 1048576
-
-def monitorar_recursos(nome_container, amostras, parar, intervalo):
-    base = caminho_cgroup(nome_container)
-    cpu_ant, _ = ler_cgroup(base)
-    t_ant = time.perf_counter()
-    while not parar.is_set():
-        parar.wait(intervalo)
-        cpu_s, mem = ler_cgroup(base)
-        agora = time.perf_counter()
-        cpu = (cpu_s - cpu_ant) / (agora - t_ant) * 100 
-        cpu_ant, t_ant = cpu_s, agora
-        if _enviando.is_set():  
-            amostras.append((cpu, mem))
-
-def medir_insercao_com_recursos(funcao_insercao, nome_container, intervalo=0.25):
-    amostras = []
-    parar = threading.Event()
-    monitor = threading.Thread(target=monitorar_recursos,
-                               args=(nome_container, amostras, parar, intervalo))
-    monitor.start()
-    inicio = time.perf_counter()
-    try:
-        funcao_insercao()
-    finally:
-        tempo_total_ms = (time.perf_counter() - inicio) * 1000
-        parar.set()
-        monitor.join()
-    cpus = [a[0] for a in amostras]
-    memorias = [a[1] for a in amostras]
-    return {"tempo_envio_ms": tempo_envio_s * 1000,
-            "tempo_total_ms": tempo_total_ms,
-            "cpu_media_percent": statistics.mean(cpus) if cpus else None,
-            "cpu_max_percent": max(cpus) if cpus else None,
-            "memoria_media_mb": statistics.mean(memorias) if memorias else None,
-            "memoria_max_mb": max(memorias) if memorias else None,
-            "num_amostras": len(amostras),
-            "cpus_brutos": cpus, "memorias_brutas": memorias}
-\end{codigo}
+O Código~\ref{lst:medir-recursos}, no Apêndice~\ref{chapter:apendice-recursos}, apresenta as funções que trabalham em conjunto para capturar e monitorar esses recursos.
 
 \begin{itemize}
   \item \texttt{ler\_cgroup}: lê o tempo de CPU acumulado pelo contêiner e a 
@@ -986,35 +830,8 @@ enquanto a inserção ocorre, e resume os recursos utilizados ao final.
 
 Além do tempo, o espaço ocupado é uma métrica relevante, pois um índice que
 acelera as consultas pode ter um custo significativo de armazenamento. As
-funções do Código~\ref{lst:medir-espaco} medem o tamanho dos dados e o dos
+funções do Código~\ref{lst:medir-espaco}, no Apêndice~\ref{chapter:apendice-espaco}, medem o tamanho dos dados e o dos
 índices em cada banco.
-
-\begin{codigo}[language=Python, breaklines=true, caption={Funções de medição de espaço em disco.}, label={lst:medir-espaco}]
-def medir_espaco_dados_pg(nome_tabela):
-    with engine_pg.connect() as conn:
-        return conn.execute(text(
-            f"SELECT pg_table_size('{nome_tabela}')")).scalar() / 1024 / 1024
-
-def medir_espaco_indice_pg(nome_tabela):
-    with engine_pg.connect() as conn:
-        tamanho = conn.execute(text(
-            f"SELECT COALESCE(SUM(pg_relation_size(indexrelid)), 0)::bigint "
-            f"FROM pg_index WHERE indrelid = '{nome_tabela}'::regclass "
-            f"AND NOT indisprimary")).scalar()
-    return tamanho / 1024 / 1024
-
-def medir_espaco_dados_mongo(nome_colecao):
-    client_mongo.admin.command("fsync")
-    return db_mongo.command("collStats", nome_colecao)["storageSize"] / 1024 / 1024
-
-def medir_tamanho_logico_mongo(nome_colecao):
-    return db_mongo.command("collStats", nome_colecao)["size"] / 1024 / 1024
-
-def medir_espaco_indice_mongo(nome_colecao):
-    client_mongo.admin.command("fsync")
-    stats = db_mongo.command("collStats", nome_colecao)
-    return (stats["totalIndexSize"] - stats["indexSizes"].get("_id_", 0)) / 1024 / 1024
-\end{codigo}
 
 Nos dois bancos, o espaço é medido em disco e expresso em mebibytes (MiB). No PostgreSQL, o tamanho dos dados
 vem de \texttt{pg\_table\_size}, que considera a tabela e a área TOAST.
@@ -1164,51 +981,331 @@ de vários clientes simultâneos e sim de um único cliente enviando vários ite
 
 \section{Resultados Obtidos}
 \label{sec:resultados}
-Dar uma introdução de como ler os resultados
+
+Os resultados vêm de uma única rodada completa dos experimentos, executados nos dois SGBDs com os mesmos dados sintéticos. Vale relembrar, que todas as medições de 
+consulta e de escrita, os contêineres são reiniciados e o cache do sistema operacional é descartado antes de cada repetição. 
+Cada medição de consulta é repetida 10 vezes e a carga inicial de cada volume é repetida 5 vezes, recriando os bancos do zero. 
+
+As convenções dos gráficos são: PostgreSQL em azul e MongoDB em laranja. Em consultas onde tem variação de volume, elas são avaliadas em 5 mil, 100 mil e 1 milhão de itens. Caso tiver outro tipo de variação, 
+o volume é fixado em 1 milhão de itens.
+
+A forma como a média é mostrada depende do gráfico. 
+Nos gráficos de variação de volume e de
+lote, cada cenário traz uma faixa do primeiro quartil (Q1) ao terceiro quartil (Q3), um fio do
+mínimo ao máximo e a média das 10 repetições, representadas, respectivamente, por um traço horizontal na faixa e um
+ponto sobre a linha. A faixa de Q1 a Q3 cobre a metade central das repetições, deixando de fora os
+25\% menores e os 25\% maiores valores. Essa faixa ajuda a verificar se a média resume bem os tempos medidos, já que
+se a média está dentro da faixa, nenhum valor extremo a está distorcendo. Além
+disso, quanto mais estreita a faixa, mais parecidos são os tempos e melhor a
+média os representa.
+
+
+Nos gráficos de carga inicial, a altura da barra é a média das
+5 rodadas e o fio vai do mínimo ao máximo entre elas, como são poucas rodadas,
+não se usa a faixa de Q1 a Q3. Já os de espaço ocupado, o tamanho foi o mesmo
+em todas as rodadas, então não há variação a representar. Nos demais gráficos, as 10 repetições variaram pouco, por isso foi escolhido apresentar apenas a média dos valores, já que desenhar a variação sobre cada
+barra apenas poluiria a figura.
+
 \subsection{Efeito do Volume e do Índice}
+
+Esta subseção trata da variação do volume do banco. Cada gráfico mostra uma
+consulta, com o volume (5 mil, 100 mil e 1 milhão de itens) no eixo horizontal e o
+tempo no vertical (em escala logarítmica). As consultas foram agrupadas pelo 
+comportamento observado, apresenta-se no texto uma consulta de cada grupo, e as
+demais estão no Apêndice~\ref{chapter:apendice-volume}. Com 5 mil itens as operações levam
+poucos milissegundos, e pequenas oscilações pesam mais, fazendo com que a variação chegue a
+cerca de 20\% a 50\% da média. Portanto a avaliação do efeito do volume é mais confiável nos volumes maiores, em que a variação cai para cerca de 5\% a 10\% da média. 
+
+Além do volume, cada consulta é medida com e sem índice, para avaliar quanto o
+índice ajuda. Esse efeito é medido pelo ganho do índice, e duas situações exigiram
+cuidados no experimento:
+\begin{itemize}
+    \item \textbf{Índices de id:} as buscas por identificador (C2, C3 e C8) já são
+    cobertas por um índice criado automaticamente pelos bancos (a chave primária no
+    PostgreSQL e o \texttt{\_id} no MongoDB). Portanto, para medir o
+    quanto ele ajuda, foi criado um mecanismo que faz o banco ignorá-lo e varrer a
+    tabela inteira.
+    \item \textbf{Índice forçado:} em algumas consultas (C1 e C5), o PostgreSQL
+    decide por conta própria não usar o índice criado e faz uma varredura. Nesses
+    casos, o experimento também mede a consulta obrigando o uso do índice, apenas
+    para estudar o seu efeito, na prática o banco não o usaria.
+\end{itemize}
+
+
 \subsubsection{Consultas por id}
-\textcolor{red}{Utilizar C3 para exemplificar}
+
+Essa consulta localiza o item pelo identificador e devolve uma única
+linha, o que a torna a mais seletiva do experimento.
+Sem índice, o tempo cresce com o volume porque o banco varre a tabela inteira:
+o PostgreSQL passa de 35,4 ms (5 mil) para 111,5 ms
+(100 mil) e 729,5 ms (1 milhão), e o MongoDB, de 25,9 ms para 124,0 ms e 1.052,9 ms.
+Com índice, o tempo fica quase constante em qualquer volume, pois o índice leva
+direto ao item. Nesse cenário, o MongoDB é quase duas vezes mais rápido que o PostgreSQL, em um volume médio e grande.
+A C2 e a C8 (Apêndice~\ref{chapter:apendice-volume}) 
+apresentam o mesmo comportamento.
+
+\begin{figure}[H]
+    \centering
+    \caption{Efeito do volume no tempo de C3.}
+    \includegraphics[width=0.7\textwidth]{grafico1_escala_C3_id.png}
+    \label{fig:escala-c3}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
 \subsubsection{Consultas Seletivas}
-\textcolor{red}{Utilizar C6 para exemplificar}
+
+Essa consulta é seletiva, mas não tanto quanto as buscas por identificador, pois
+devolve algumas linhas e não apenas uma. Sem índice, o tempo cresce com o volume: o
+PostgreSQL passa de 36,6 ms (5 mil) para 109,9 ms (100 mil) e 1.175,8 ms (1 milhão), e
+o MongoDB, de 19,3 ms para 117,3 ms e 1.075,9 ms. 
+Com índice, diferente das consultas por id, o tempo aumenta com o volume, porque a
+consulta devolve mais linhas quando o banco é maior: o PostgreSQL passa de 24,8 ms
+para 49,5 ms e 218,7 ms, e o MongoDB, de 18,3 ms para 58,1 ms e 371,1 ms. Mesmo assim,
+o índice ajuda bastante: em 1 milhão de itens, o tempo cai de 1.175,8 para 218,7 ms
+no PostgreSQL e de 1.075,9 para 371,1 ms no MongoDB. Isso faz com que o PostgreSQL seja cerca de 1,7 vez mais
+rápido que o MongoDB com índice. Em 100 mil itens,
+os dois ficam próximos (49,5 contra 58,1 ms). A C4 (Apêndice~\ref{chapter:apendice-volume})
+apresenta comportamento semelhante.
+
+
+\begin{figure}[H]
+    \centering
+    \caption{Efeito de volume no tempo de C6.}
+    \includegraphics[width=0.7\textwidth]{grafico1_escala_C6.png}
+    \label{fig:escala-c6}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
 \subsubsection{Consultas pouco Seletivas}
-\textcolor{red}{Utilizar C1 para exemplificar}
+
+Essa consulta não é seletiva, pois devolve uma grande parte da tabela (cerca de 33\%) como resposta.
+Sem índice, o tempo cresce com o volume: o
+PostgreSQL passa de 41,7 ms (5 mil) para 140,7 ms (100 mil) e 1.182,9 ms (1 milhão), e
+o MongoDB, de 26,0 ms para 174,2 ms e 1.645,6 ms. Com índice, o tempo cresce do mesmo
+modo e o índice não ajuda. No PostgreSQL, o ponto crítico é e em 1 milhão de itens, onde o próprio banco decide 
+ignorar o índice. Ao forçar o uso, o tempo vai a 2.526,9 ms (cerca de 2,1 vezes mais lento). No MongoDB, o
+índice quase não altera o tempo. O melhor cenário para essa consulta acaba sendo o PostgreSQL sem índice. 
+A C5 e a C7 (Apêndice~\ref{chapter:apendice-volume}) apresentam o
+mesmo comportamento.
+
+
+\begin{figure}[H]
+    \centering
+    \caption{Efeito de volume no tempo de C1.}
+    \includegraphics[width=0.7\textwidth]{grafico1_escala_C1.png}
+    \label{fig:escala-c1}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
 \subsubsection{Síntese do Ganho do Índice}
-\textcolor{red}{Grafico 2}
+
+A Figura~\ref{fig:ganho-indice} resume o ganho do índice por consulta. Esse ganho é o tempo sem índice dividido pelo tempo com índice. 
+Acima de 1× o índice melhora a consulta e abaixo de 1× piora. O padrão é a seletividade: quanto menos tuplas a consulta devolve, mais
+o índice ajuda. Nas buscas por id (C2, C3 e C8) o ganho é de dezenas de vezes, nas
+seletivas (C4 e C6), de unidades a dezenas, e nas pouco seletivas (C1, C5 e C7),
+próximo de 1$\times$ ou menor. Nas buscas por id, o ganho do MongoDB é maior, nas
+seletivas, o do PostgreSQL.
+
+\begin{figure}[H]
+    \centering
+    \caption{Síntese do ganho proporcionado pelo índice em cada consulta.}
+    \includegraphics[width=0.7\textwidth]{grafico2_ganho_indice.png}
+    \label{fig:ganho-indice}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
 \subsection{Seletividade}
+
+Nesta subseção varia-se o filtro de cada
+consulta, de modo que ela devolva mais ou menos tuplas. Foram avaliadas a C1 e a C4,
+apresentadas a seguir, que representam dois padrões diferentes. A C5 e
+a C7 repetem esses padrões e, por isso, estão no
+Apêndice~\ref{chapter:apendice-seletividade}.
+
+Na C1, o filtro devolve de 10\% a 35\% da tabela, conforme a categoria buscada
+(Figura~\ref{fig:seletividade-c1}). Nessa faixa, o índice não ajuda. No
+PostgreSQL, para sobremesa, o tempo vai de 838 ms sem
+índice para 5.431 ms com índice, e o mesmo ocorre,
+em menor grau, para bebida. Já para pizza, o PostgreSQL abandona o
+índice e faz uma varredura da tabela, e o tempo volta ao do cenário sem índice. No
+MongoDB o índice continua sendo usado, mas quase não altera o tempo.
+
+\begin{figure}[H]
+    \centering
+    \caption{Efeito da seletividade no tempo de C1.}
+    \includegraphics[width=0.6\textwidth]{grafico3_seletividade_C1.png}
+    \label{fig:seletividade-c1}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
+
+Na C4, o filtro devolve menos de 0,5\% da tabela, conforme o
+porte do restaurante (Figura~\ref{fig:seletividade-c4}). Com índice, o
+tempo cresce com o número de linhas devolvidas: no PostgreSQL, passa de 70 ms
+(restaurante pequeno) para 235 ms (médio) e 840 ms (grande), e no MongoDB, de 103 ms
+para 380 ms e 571 ms. O índice ajuda nos três portes e nos dois bancos, mas o ganho
+diminui conforme o restaurante tem mais itens, pois cada linha devolvida é uma
+leitura a mais. Sem índice, o tempo praticamente não
+muda com o porte do restaurante, pois o
+banco lê a tabela inteira de qualquer forma.
+
+\begin{figure}[H]
+    \centering
+    \caption{Efeito da seletividade no tempo de C4.}
+    \includegraphics[width=0.6\textwidth]{grafico3_seletividade_C4.png}
+    \label{fig:seletividade-c4}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
+
 \subsection{Lote}
+
+Nesta subseção varia-se o tamanho do lote, isto é, quantos itens são enviados de uma vez 
+em uma única operação de escrita. Apresenta-se no texto a C2 (inserção)
+(Figura~\ref{fig:lote-c2-insercao}), e as outras consultas que seguem o mesmo padrão estão no
+Apêndice~\ref{chapter:apendice-lote}. O custo por item diminui muito conforme o lote aumenta. Com 1 item, cada operação custa de 14 a 28 ms, que é o custo fixo
+de uma escrita confirmada. Quando o lote
+cresce, esse custo passa, do lote de 1 item para o de 100 mil,
+de 28,3 para 0,15 ms no PostgreSQL e de 13,7 para 0,011 ms no MongoDB.
+
+
+Esse ganho não é sempre contínuo. No PostgreSQL, o custo por item deixa de cair em
+torno de 50 mil itens e, no lote de 100 mil, tende a ficar igual ou pior. 
+Isso sugere que lotes muito grandes passam a custar em memória e o ganho de dividir o custo fixo se esgota. No
+MongoDB a saturação é mais tardia e continua caindo até 100 mil. O MongoDB é mais
+rápido por item na maioria dos tamanhos de lote, e a vantagem aumenta nos lotes grandes.
+
+\begin{figure}[H]
+    \centering
+    \caption{Efeito do tamanho do lote em C2.}
+    \includegraphics[width=0.5\textwidth]{grafico4_lote_C2_insercao.png}
+    \label{fig:lote-c2-insercao}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
 \subsection{Carga Inicial dos Dados}
+
+Esta subseção apresenta as três medidas que descrevem o custo de carregar os dados 
+nos SGBDs pela primeira vez.
+A (Figura~\ref{fig:carga-tempo}) mostra quanto tempo dura o envio dos itens ao banco. 
+A (Figura~\ref{fig:carga-memoria}) mostra quanta
+memória o contêiner ocupa em média durante a carga.
+A (Figura~\ref{fig:carga-cpu}) mostra
+quanto do processador do contêiner o banco usa durante a carga.
+Vale ressaltar que os resultados com 5 mil itens não são considerados para a análise de CPU, já que as operações
+levam poucos milissegundos, e pequenas oscilações do sistema pesam muito no tempo
+total, o que gera uma variação de 20\% a 50\% da média entre as repetições.
+
+
+Nos dois bancos, o tempo e a memória aumentam com o volume, mas em ritmos
+diferentes. De 100 mil para 1 milhão de itens, os dados crescem 10 vezes e o tempo
+de carga acompanha esse crescimento: passa de 4,9 para 63,7 s no PostgreSQL e de
+1,5 para 16,6 s no MongoDB. A memória cresce bem menos: de 219 para 318 MB no
+PostgreSQL e de 346 para 593 MB no MongoDB. A CPU, ao contrário dos dois, não
+cresce com o volume, pois os lotes chegam ao banco no mesmo ritmo e o que aumenta é
+a duração da carga. O PostgreSQL usa mais CPU que o MongoDB (cerca de 57\% contra
+32\%), uma possível explicação é a verificação da chave estrangeira a cada item inserido, que o MongoDB não faz. 
+
+
+\begin{figure}[H]
+    \centering
+    \caption{Tempo, uso de memória e uso de CPU durante a carga inicial dos dados.}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{grafico6_carga_tempo.png}
+        \caption{Tempo.}
+        \label{fig:carga-tempo}
+    \end{subfigure}\hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{grafico8_carga_memoria.png}
+        \caption{Memória.}
+        \label{fig:carga-memoria}
+    \end{subfigure}
+
+    \vspace{1em}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{grafico7_carga_cpu.png}
+        \caption{CPU.}
+        \label{fig:carga-cpu}
+    \end{subfigure}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
 \subsection{Armazenamento}
 
+A Figura~\ref{fig:espaco-indice} mostra o tamanho dos índices criados para cada consulta. 
+Os índices B-tree (C1, C4 e C5) ocupam pouco espaço, e os dos dois bancos têm tamanho parecido. 
+Na C7, o índice GIN do PostgreSQL e o \textit{multikey} do MongoDB são praticamente iguais (17 e 18 MB), pois ambos guardam
+uma entrada por elemento do array. A maior diferença está na C6: o GIN do PostgreSQL
+ocupa 11 MB, e o índice \textit{wildcard} do MongoDB, 148 MB. Isso acontece, porque o GIN indexa apenas uma
+coluna JSONB, enquanto o \textit{wildcard} indexa todos os campos de todos os
+documentos. Isso o torna flexível, pois serve
+para qualquer campo, mas bem mais caro, a ponto de ser maior que a própria coleção
+comprimida em disco.
 
-\textcolor{red}{Nesta seção descreva o processo de obtenção dos resultados obtidos e analise-os à luz dos objetivos iniciais, bem como dos eventuais usuários (humanos ou não) de tais resultados. Preferencialmente, utilize critérios estabelecidos na área de pesquisa de seu projeto. Discuta sobre critérios utilizados para a validação do sistema, bem como os testes utilizados (se for o caso).}
+\begin{figure}[H]
+    \centering
+    \caption{Espaço em disco ocupado pelos índices.}
+    \includegraphics[width=0.6\textwidth]{grafico5_espaco_indice.png}
+    \label{fig:espaco-indice}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
+A Figura~\ref{fig:carga-espaco} mostra o espaço ocupado pelos dados após a carga
+inicial, que cresce proporcionalmente ao volume nos dois bancos. Sem considerar a
+compressão, os dois ocupam praticamente o mesmo espaço. Porém, esse valor serve apenas
+de comparação, pois o MongoDB comprime os dados por padrão e o PostgreSQL não. 
+Logo, o que vale na prática é 108 MB no MongoDB contra 647 MB no PostgreSQL, o que é uma vantagem do MongoDB em uso real.
+
+\begin{figure}[H]
+    \centering
+    \caption{Espaço em disco ocupado após a carga inicial dos dados.}
+    \includegraphics[width=0.6\textwidth]{grafico9_carga_espaco.png}
+    \label{fig:carga-espaco}
+    \legend{Fonte: Elaborado pela autora.}
+\end{figure}
+
 
 \section{Dificuldades e Limitações}
 \label{sec:dificuldades}
 
-\textcolor{red}{Nesta seção, descreva as principais dificuldades e limitações encontradas durante a condução do trabalho. Sintetize lições aprendidas e comente sobre direções alternativas, se for o caso. Se pertinente, faça uma análise crítica da abordagem adotada em seu projeto, ou seja, você a considera adequada? Ela é limitada sob algum aspecto? Indique quais pontos, decorrentes dos resultados, ou não, poderão ou deverão ser abordados por trabalhos futuros.}
+As principais dificuldades foram de execução e de comparabilidade. O notebook Jupyter, 
+usado para desenvolver e explicar o experimento, não pôde ser
+usado nos cenários de escalabilidade, pois o computador disponível travava durante a
+execução. Por isso, a execução passou a ser feita por um \textit{script} Python equivalente,
+no qual a rodada completa leva cerca de três horas.
 
+Houve ainda uma mudança
+de escopo, a proposta inicial envolvia o GraphQL, mas essa direção misturava as
+camadas de acesso e de armazenamento, dificultando a visualização do que queria ser medido e analisado.
+Por isso, a ideia foi focar nos bancos de dados e em mecanismos que os caracterizam, como índices e escalabilidade.
 
-%\subsubsection{Limitações da medição}
+Manter os dois bancos em condições comparáveis exigiu algumas decisões. A inserção é feita em
+lotes de 10 mil itens, com \textit{commit} ao final de cada lote no PostgreSQL e
+\texttt{journal=True} no MongoDB, de modo que as escritas tenham a mesma
+durabilidade. Antes de cada repetição, os
+contêineres são reiniciados e o cache do sistema operacional é descartado. O \textit{upsert} condicional (C2), não existe
+como instrução única no MongoDB, foi implementado com uma lógica de insert e update separados. Por fim, o espaço ocupado pelo MongoDB é medido também sem compressão, para
+comparar com o PostgreSQL nas mesmas condições.
 
-%\begin{itemize}
-%  \item A cronometragem no cliente inclui a sobrecarga do \textit{driver} e da
-%  construção do resultado em Python, o que eleva todos os tempos em relação ao
-%  tempo interno do SGBD. A comparação relativa entre os bancos, e não os valores
-%  absolutos, é a informação relevante.
-%  \item O consumo de recursos é amostrado a cada segundo e reflete o contêiner
-%  inteiro, e não apenas a operação de inserção. Em volumes pequenos, a inserção
-%  termina rapidamente e poucas amostras são coletadas. O consumo do processo
-%  Python, que roda fora do contêiner, não é medido.
-%  \item O espaço dos dados é medido em disco nos dois bancos e, por isso,
-%  reflete também as diferenças de armazenamento de cada um: o MongoDB comprime
-%  os documentos, e o PostgreSQL pode armazenar valores JSONB grandes em uma área
-%  separada (TOAST).
-%  \item Todas as medições usam um único cliente, de forma sequencial. O
-%  comportamento sob concorrência não foi avaliado e é indicado como trabalho
-%  futuro.
-%\end{itemize}
+Em relação as limitações, os experimentos foram executados em um único computador pessoal, com os bancos em contêineres de 2 CPUs e 3~GB cada, em um único nó e
+com um único cliente, de forma sequencial. Por isso, os resultados podem não valer
+para outro hardware ou para vários usuários simultâneos, e a capacidade da máquina
+limitou o maior volume em 1 milhão de itens e o maior lote em 100 mil itens. Outra limitação é que os dados
+são sintéticos, com semente fixa, e repetitivos, o que pode favorecer a compressão do
+MongoDB. 
+
+Os bancos usaram a configuração padrão, sem ajuste fino, e o tamanho do cache não é equivalente entre eles (128 MB no PostgreSQL contra cerca de 1 GB no MongoDB). Isso pode favorecer o MongoDB nas consultas que leem muitos dados de uma vez, embora o cache seja esvaziado antes de cada repetição.
+Além disso, em 5 mil itens, a variação entre repetições é grande, fazendo com que a média não seja um valor confiável nesse volume.
+
 
 \section{Considerações Finais}
 \label{sec:consideracoes-finais-dev}
 
-\textcolor{red}{Nesta seção o aluno deve apresentar uma conclusão sobre este capítulo e introduzir brevemente o capítulo seguinte.}
+Este capítulo apresentou a metodologia e os resultados da comparação entre o
+PostgreSQL com JSONB e o MongoDB, mostrando que o desempenho de cada um depende do
+cenário e, em especial, da seletividade das consultas e do uso de índices. O
+Capítulo~\ref{chapter:conclusao} apresenta as conclusões do trabalho e as
+propostas de continuidade.

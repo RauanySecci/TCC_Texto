@@ -16,6 +16,8 @@
 \usepackage{rotating}           % Usado para rotacionar o texto
 \usepackage[all,knot,arc,import,poly]{xy}   % Pacote para desenhos gráficos
 \usepackage{float}              % Permite posicionamento exato com [H]
+\usepackage{subcaption}         % Permite figuras com subfiguras lado a lado
+\raggedbottom                   % Evita esticar o espaço vertical quando uma figura [H] vai para a próxima página
 % Este pacote pode conflitar com outros pacotes gráficos como o ``pictex''
 % Então é necessário usar apenas um dos pacotes conflitantes
 
@@ -38,19 +40,49 @@
 % Resumo em português
 % conter no máximo 500 palavras
 \textoresumo{
-\textcolor{red}{Observação 1: Esta seção é obrigatória.}
-\textcolor{red}{Observação 2:  O resumo deve apresentar de forma concisa os pontos relevantes do texto. Deve descrever, de maneira objetiva e sucinta, o propósito da monografia, o objetivo do trabalho, sua relevância para a área de pesquisa onde está inserido, a metodologia empregada, e os resultados obtidos, com isso estimular a consulta ao texto completo da monografia.}
-\textcolor{red}{Observação 3:   Deve ser redigido em parágrafo único, através de uma seqüência de frases concisas e objetivas e com espaçamento duplo.}
-\textcolor{red}{Observação 4:   O resumo deve ter em torno de 15 linhas.}
-\textcolor{red}{Observação 5:  Mais informações sobre a escrita de resumo, consulte a norma NBR 6028/1990 para escrita de resumos.}
+Catálogos de produtos reúnem itens heterogêneos, o que dificulta o uso de um esquema
+relacional tradicional e leva à escolha entre armazenar a parte variável em colunas
+JSONB, no PostgreSQL, ou adotar um Sistema de Gerenciamento de Bancos de Dados (SGBD)
+orientado a documentos, como o MongoDB.
+Este trabalho compara o desempenho dessas duas alternativas em um catálogo de
+restaurantes inspirado em um sistema real, identificando em quais cenários cada
+tecnologia se destaca. Foram implementadas duas aplicações com os mesmos dados
+sintéticos, em contêineres com os mesmos limites de recursos, avaliadas oito
+consultas de leitura e de escrita sobre dados estruturados e semiestruturados, com e
+sem índice, variando o volume (até 1 milhão de itens), a seletividade e o tamanho do
+lote, além da carga inicial e do armazenamento. Os resultados mostram que nenhum dos
+bancos é melhor em todos os cenários. O MongoDB se destacou na inserção, com carga
+inicial de 3 a 4 vezes mais rápida e espaço em disco cerca de 6 vezes menor, ao custo
+de maior uso de memória, enquanto o PostgreSQL obteve os maiores ganhos com índice em
+consultas seletivas. O ganho do índice depende principalmente da seletividade da
+consulta e deixa de compensar quando ela devolve uma fração grande da tabela. Como
+contribuição, o trabalho oferece uma metodologia reproduzível e resultados que
+orientam a escolha entre os SGBDs e as estratégias de indexação.
     }{PostgreSQL, MongoDB, JSONB, Dados semiestruturados, Indexação}
 
 % ---
 % resumo em inglês
 % ---
 \textoresumo[english]{
-\textcolor{red}{Abstract é opcional}
-    }{Keyword 1, Keyword 2, Keyword 3, Keyword 4, Keyword 5}
+Product catalogs gather heterogeneous items, which makes a traditional relational
+schema hard to use and leads to a choice between storing the variable part in JSONB
+columns, in PostgreSQL, or adopting a document-oriented Database Management System
+(DBMS), such as MongoDB.
+This work compares the performance of these two alternatives in a restaurant catalog
+inspired by a real system, identifying in which scenarios each technology stands out.
+Two applications were implemented with the same synthetic data, in containers with
+the same resource limits, and eight read and write queries over structured and
+semi-structured data were evaluated, with and without indexes, varying the volume (up
+to 1 million items), the selectivity and the batch size, in addition to the initial
+load and the storage. The results show that neither database is better in all
+scenarios. MongoDB stood out in insertion, with an initial load 3 to 4 times faster
+and disk space about 6 times smaller, at the cost of higher memory usage, while
+PostgreSQL obtained the largest gains from indexes in selective queries. The index
+gain depends mainly on the selectivity of the query and stops being worthwhile when it
+returns a large fraction of the table. As a contribution, the work offers a
+reproducible methodology and results that guide the choice between DBMSs and indexing
+strategies.
+    }{PostgreSQL, MongoDB, JSONB, Semi-structured data, Indexing}
     
 % ---
 % Configurações de aparência do PDF final
@@ -175,10 +207,42 @@
 % ---
 \begin{apendicesenv}
 
-    \chapter{Exemplo de apêndice}
-    \label{chapter:exemploapendice}
+
+	\chapter{Bibliotecas Python e Versões Utilizadas}
+    \label{chapter:apendice-versoes}
+    \input{tex/appendix/apendice-versoes.tex}
+
+	\chapter{Cálculo da Impressão Digital do Item}
+    \label{chapter:apendice-hash}
+    \input{tex/appendix/apendice-hash.tex}
+
+	\chapter{Código de Inserção dos Dados}
+    \label{chapter:apendice-codigos}
+    \input{tex/appendix/apendice-codigos.tex}
+
+	\chapter{Função de Medição de Tempo}
+    \label{chapter:apendice-medicao}
+    \input{tex/appendix/apendice-medicao.tex}
+
+	\chapter{Funções de Medição de Recursos}
+    \label{chapter:apendice-recursos}
+    \input{tex/appendix/apendice-recursos.tex}
+
+	\chapter{Funções de Medição de Espaço em Disco}
+    \label{chapter:apendice-espaco}
+    \input{tex/appendix/apendice-espaco.tex}
+
+    \chapter{Gráficos Volume x Tempo}
+    \label{chapter:apendice-volume}
     \input{tex/appendix/exemploapendice}
 
+	\chapter{Gráficos Seletividade x Tempo}
+    \label{chapter:apendice-seletividade}
+    \input{tex/appendix/apendice-btree.tex}
+
+	\chapter{Gráficos Lote x Tempo}
+    \label{chapter:apendice-lote}
+    \input{tex/appendix/apendice-gin.tex}
 \end{apendicesenv}
 % ---
 
@@ -190,13 +254,13 @@
 % ---
 % Inicia os anexos
 % ---
-\begin{anexosenv}
+%\begin{anexosenv}
 
-    \chapter{Título do Anexo} 
-    \label{chapter:tituloanexo}
-    \input{tex/annex/exemploanexo}
+ %   \chapter{Título do Anexo} 
+  %  \label{chapter:tituloanexo}
+   % \input{tex/annex/exemploanexo}
 
-\end{anexosenv}
+%\end{anexosenv}
 % ---
 
 

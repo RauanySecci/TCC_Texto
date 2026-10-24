@@ -1,0 +1,25 @@
+% Conteúdo do Apêndice A: Bibliotecas e versões utilizadas
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.1}
+\caption{Principais bibliotecas Python e versões utilizadas.}
+\label{tab:versoes}
+\small
+\begin{tabular}{|l|l|p{7.2cm}|}
+\hline
+\textbf{Biblioteca} & \textbf{Versão} & \textbf{Finalidade} \\ \hline
+SQLAlchemy & 2.0.53 & Conexão e consultas ao PostgreSQL \\ \hline
+psycopg2-binary & 2.9.13 & Driver do PostgreSQL e inserção em lotes (\texttt{execute\_values}) \\ \hline
+PyMongo & 4.18.1 & Conexão e consultas ao MongoDB \\ \hline
+Faker & 40.39.0 & Geração de dados sintéticos \\ \hline
+pandas & 2.3.3 & Manipulação dos resultados \\ \hline
+matplotlib & 3.10.9 & Geração dos gráficos \\ \hline
+numpy & 2.2.6 & Cálculos numéricos nos gráficos \\ \hline
+python-dotenv & 1.2.3 & Leitura das variáveis do \texttt{.env} \\ \hline
+\texttt{time} / \texttt{statistics} & 3.10.12$^{*}$ & Medição (\texttt{perf\_counter}) e agregação dos tempos \\ \hline
+\texttt{subprocess} / \texttt{threading} & 3.10.12$^{*}$ & Coleta de CPU e memória dos contêineres (cgroup, com \texttt{docker stats} como alternativa) durante a inserção dos dados \\ \hline
+\end{tabular}
+\vspace{0.4em}
+\legend{$^{*}$ Biblioteca padrão do Python, com a versão do interpretador. Fonte: Elaborado pela autora.}
+\end{table}

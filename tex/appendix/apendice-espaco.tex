@@ -1,0 +1,28 @@
+% Conteúdo do Apêndice F: Funções de medição de espaço em disco
+
+\begin{codigo}[language=Python, breaklines=true, caption={Funções de medição de espaço em disco.}, label={lst:medir-espaco}]
+def medir_espaco_dados_pg(nome_tabela):
+    with engine_pg.connect() as conn:
+        return conn.execute(text(
+            f"SELECT pg_table_size('{nome_tabela}')")).scalar() / 1024 / 1024
+
+def medir_espaco_indice_pg(nome_tabela):
+    with engine_pg.connect() as conn:
+        tamanho = conn.execute(text(
+            f"SELECT COALESCE(SUM(pg_relation_size(indexrelid)), 0)::bigint "
+            f"FROM pg_index WHERE indrelid = '{nome_tabela}'::regclass "
+            f"AND NOT indisprimary")).scalar()
+    return tamanho / 1024 / 1024
+
+def medir_espaco_dados_mongo(nome_colecao):
+    client_mongo.admin.command("fsync")
+    return db_mongo.command("collStats", nome_colecao)["storageSize"] / 1024 / 1024
+
+def medir_tamanho_logico_mongo(nome_colecao):
+    return db_mongo.command("collStats", nome_colecao)["size"] / 1024 / 1024
+
+def medir_espaco_indice_mongo(nome_colecao):
+    client_mongo.admin.command("fsync")
+    stats = db_mongo.command("collStats", nome_colecao)
+    return (stats["totalIndexSize"] - stats["indexSizes"].get("_id_", 0)) / 1024 / 1024
+\end{codigo}

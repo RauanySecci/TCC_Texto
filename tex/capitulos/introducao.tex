@@ -56,15 +56,18 @@ um \textit{array} de estruturas aninhadas, em que cada elemento possui seus pró
 \section{Objetivos}
 
 O principal objetivo deste trabalho é comparar o desempenho do PostgreSQL, com a ferramenta
-JSONB, e do MongoDB, identificando em quais cenários cada tecnologia apresenta melhores resultados. 
+JSONB, e do MongoDB, identificando em quais cenários cada tecnologia apresenta melhores resultados.
+Para isso, são avaliadas operações de leitura e de escrita típicas de um catálogo de
+restaurantes. Nas leituras, consideram-se filtros de igualdade e exclusão em campos
+escalares, a junção entre itens e restaurantes, a busca por intervalo em um campo numérico
+do JSONB, a igualdade em um atributo aninhado e a contenção em um array de objetos aninhados.
+Nas escritas, consideram-se a inserção condicional (\textit{upsert}), a exclusão lógica (\textit{soft delete}) e a atualização parcial de um campo JSONB.
 
-Para isso, são avaliadas estratégias de indexação genéricas e específicas em cada sistema,
-aplicadas a operações de leitura e escrita sobre dados estruturados e semiestruturados.
-Além disso, analisa-se a escalabilidade de cada tecnologia conforme a seletividade das
-consultas, o volume de dados e o tamanho do lote de escrita. Para garantir uma comparação
-justa, os experimentos são executados em um ambiente controlado e com medição de tempo
-uniforme nos dois sistemas. 
-
+Cada operação é avaliada com e sem índices, comparando estratégias de indexação genéricas e
+específicas em cada sistema. Além disso, analisa-se a escalabilidade de cada tecnologia
+conforme a seletividade das consultas, o volume de dados e o tamanho do lote de escrita.
+Para garantir uma comparação justa, os experimentos são executados em um ambiente
+controlado, com os mesmos dados sintéticos e limites de recursos.
 
 \section{Organização do Trabalho}
 
