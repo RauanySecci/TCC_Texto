@@ -52,7 +52,7 @@ Ubuntu 22.04.5 LTS. Os contêineres foram executados com Docker Engine, versão 
 Os bancos foram definidos a partir de imagens com versão fixada: PostgreSQL 14.18 e MongoDB 8.0.29.
 Cada contêiner foi limitado a 2 CPUs e 3~GB de memória, o mesmo limite para os dois, garantindo
 condições equivalentes de execução. Os dados ficam em
-volumes persistentes, e as portas padrão de cada banco (5432 e 27017) são expostas ao notebook.
+volumes persistentes, e as portas padrão de cada banco (5432 e 27017) são expostas ao código.
 
 A implementação foi desenvolvida no Visual Studio Code\footnote{\url{https://code.visualstudio.com}}
 com Python\footnote{\url{https://www.python.org}} 3.10.12. O notebook e o script concentram as etapas do
@@ -152,7 +152,7 @@ Os atributos \texttt{hash} e \texttt{versao} não pertencem ao domínio do card�
         \texttt{restaurante\_id} & \texttt{UUID} & Restaurante a que o item pertence (chave estrangeira). \\ \hline
         \texttt{nome} & \texttt{VARCHAR(255)} & Nome do item. \\ \hline
         \texttt{categoria} & \texttt{VARCHAR(100)} & Pizza, bebida, sobremesa ou lanche. \\ \hline
-        \texttt{status} & \texttt{VARCHAR(20)} & \texttt{AVAILABLE}, \texttt{UNAVAILABLE} ou \texttt{DELETED}. O último representa a exclusão lógica, em que o registro permanece no banco. \\ \hline
+        \texttt{status} & \texttt{VARCHAR(20)} & \texttt{AVAILABLE}, \texttt{UNAVAILABLE} ou \texttt{DELETED}. O último representa a exclusão lógica. \\ \hline
         \texttt{preco} & \texttt{JSONB} & Preço do item, em um objeto de estrutura fixa. \\ \hline
         \texttt{opcoes\_grupos} & \texttt{JSONB} & Grupos de opções configuráveis pelo cliente, em um array de objetos aninhados. \\ \hline
         \texttt{atributos\_variaveis} & \texttt{JSONB} & Características descritivas que variam conforme a categoria. \\ \hline
@@ -277,8 +277,8 @@ CREATE TABLE itens (
 \subsubsection{Modelagem no MongoDB}
 
 No MongoDB não há um esquema equivalente ao do PostgreSQL. As coleções \texttt{restaurantes} e \texttt{itens} não são declaradas previamente: elas passam a existir 
-quando os primeiros documentos são inseridos, e a estrutura de cada documento é definida pelo próprio conteúdo inserido. Essa ausência de integridade referencial é uma 
-característica dos bancos não relacionais discutida na Seção~\ref{sec:relacional-vs-nao-relacional}, e transfere para a aplicação a responsabilidade de manter a consistência 
+quando os primeiros documentos são inseridos, ou seja, a estrutura de cada documento é definida pelo próprio conteúdo inserido. Essa ausência de integridade referencial é uma 
+característica dos bancos não relacionais discutida na Seção~\ref{sec:relacional-vs-nao-relacional}, ele transfere para a aplicação a responsabilidade de manter a consistência 
 entre item e restaurante.
 
 A principal diferença estrutural está nos atributos variáveis. No PostgreSQL, eles ficam dentro da coluna \texttt{atributos\_variaveis}, já no MongoDB 
@@ -372,9 +372,9 @@ A Tabela~\ref{tab:geracao-itens} resume como cada atributo de Item é gerado.
 \legend{Fonte: Elaborado pela autora.}
 \end{table}
 
-A distribuição das categorias foi definida para que o catálogo tivesse categorias de tamanhos diferentes, como ocorre em catálogos reais. Os itens com status \texttt{DELETED} existem porque o catálogo que inspira este trabalho realiza a exclusão por meio de \textit{soft delete}.
+A distribuição das categorias foi definida para que o catálogo tivesse categorias de tamanhos diferentes, como ocorre em catálogos reais. 
 
-Os atributos de \texttt{atributos\_variaveis} são definidos por categoria, e cada atributo 
+Os atributos de \texttt{atributos\_variaveis} são definidos por categoria e cada atributo 
 opcional é decidido por um sorteio independente. A lógica é: o gerador compara um número 
 aleatório entre 0 e 1 com um limiar, o atributo só é incluído quando o número do sorteio 
 o supera. Atributos que não se aplicam são omitidos do objeto. A Tabela~\ref{tab:probabilidades} 
@@ -424,13 +424,13 @@ Os grupos de \texttt{opcoes\_grupos} são definidos por categoria, com os limite
         \textbf{lanche} & \texttt{Adicionais} & Sem cebola & R\$~0,00 & Sempre \\ \cline{3-5}
          & & Bacon extra & R\$~3,00 & Restaurantes que o oferecem (cerca de 60\%) \\ \cline{3-5}
          & & Cheddar extra & R\$~3,50 & Restaurantes que o oferecem (cerca de 25\%) \\ \cline{3-5}
-         & & Picles extra & R\$~2,50 & Restaurantes pequenos que o oferecem (cerca de 1\% dos restaurantes) \\ \hline
+         & & Picles extra & R\$~2,50 & Restaurantes que o oferecem (cerca de 1\%) \\ \hline
     \end{tabular}
     \vspace{0.4em}
 \legend{Fonte: Elaborado pela autora.}
 \end{table}
 
-A oferta de \textit{Bacon extra}, \textit{Cheddar extra} e \textit{Picles extra} é decidida no nível do restaurante, e não do item, porque não faria sentido um mesmo restaurante oferecê-los em alguns lanches e em outros não. Dessa forma, a diferença de oferta entre os restaurantes produz seletividades distintas nas consultas que filtram por essas opções. 
+A oferta de \textit{Bacon extra}, \textit{Cheddar extra} e \textit{Picles extra} é decidida no nível do restaurante e não do item, porque não faria sentido um mesmo restaurante oferecê-los em alguns lanches e em outros não. Dessa forma, a diferença de oferta entre os restaurantes produz seletividades distintas nas consultas que filtram por essas opções. 
 
 O preço é um objeto, cujo campo \texttt{precoOriginal} só é preenchido quando o item possui promoção e é calculado a partir do percentual de desconto. Por esse motivo, os atributos variáveis são gerados antes do preço.
 
@@ -442,16 +442,13 @@ Os restaurantes são inseridos antes dos itens, porque os itens referenciam o re
 Os dois bancos recebem os itens em lotes de 10000, e cada lote é confirmado da seguinte forma: 
 no PostgreSQL, com um \texttt{commit} ao final de cada lote, e no MongoDB com a opção 
 \texttt{journal=True}. 
-O banco gera o identificador de cada 
+O PostgreSQL, gera o identificador de cada 
 item (\texttt{DEFAULT gen\_random\_uuid()}) e preenche as datas de criação e modificação 
-(\texttt{DEFAULT now()}).
-
-O Código~\ref{lst:insert-pg}, no Apêndice~\ref{chapter:apendice-codigos}, apresenta a inserção no PostgreSQL.
+(\texttt{DEFAULT now()}). O Código~\ref{lst:insert-pg}, no Apêndice~\ref{chapter:apendice-codigos}, apresenta a inserção no PostgreSQL.
 
 No MongoDB, os itens são carregados com uma chamada a \texttt{insert\_many} por lote, e o identificador do
 item é gerado pelo \textit{driver}. Como o banco não preenche as datas, a aplicação as define com o instante
-do início da carga, o mesmo valor para todos os documentos. Além disso, os atributos variáveis são gravados
-diretamente no nível superior do documento (Código~\ref{lst:insert-mongo}, Apêndice~\ref{chapter:apendice-codigos}).
+do início da carga, o mesmo valor para todos os documentos (Código~\ref{lst:insert-mongo}, Apêndice~\ref{chapter:apendice-codigos}).
 
 
 Durante cada inserção são medidos o tempo total, o uso de CPU e de memória do contêiner e o 
@@ -471,10 +468,10 @@ busca por um valor específico dentro de um atributo opcional,
 como o valor da promoção, presente em apenas parte dos itens. Cada consulta 
 representa um cenário distinto de uso do catálogo.
 
-As oito consultas foram divididas em dois grupos, conforme o tipo de dado sobre o qual atuam. 
-consultas sobre dados estruturados (C1 a C4) operam sobre campos escalares comuns. 
-As consultas sobre dados semiestruturados (C5 a C8) operam sobre o conteúdo dos atributos 
-JSONB. A Tabela~\ref{tab:consultas} resume as consultas, e as seções seguintes apresentam 
+As oito consultas foram divididas em dois grupos, conforme o tipo de dado sobre o qual atuam: 
+consultas sobre dados estruturados (C1 a C4) que operam sobre campos escalares comuns e
+consultas sobre dados semiestruturados (C5 a C8) que operam sobre o conteúdo dos atributos 
+variáveis. A Tabela~\ref{tab:consultas} resume as consultas, e as seções seguintes apresentam 
 cada uma com a implementação nos dois bancos. 
 
 \begin{table}[H]
@@ -519,13 +516,14 @@ db.itens.find(
 catálogo do iFood. Insere um item novo ou atualiza um já existente, aplicando a mudança 
 apenas se o conteúdo realmente mudou (\texttt{hash} diferente) e se o evento não é mais 
 antigo que o já processado (\texttt{versao} maior ou igual). No PostgreSQL, a decisão é tomada 
-pelo próprio banco, em uma única instrução com uma expressão com 
+pelo próprio banco, com
 um \texttt{UPDATE} condicionado a essas duas regras, seguido de um \texttt{INSERT} que só 
 ocorre se o item ainda não existe (Código~\ref{lst:c2-pg}). 
-Não foi usado o comando \texttt{INSERT ... ON CONFLICT}, que seria a forma mais direta, 
-porque ele sempre usa o índice da chave primária para detectar o conflito e, assim, 
-não permitiria medir a operação sem o índice, que será necessário para analisar mais adiante. 
- 
+Não foi usado o comando \texttt{INSERT ... ON CONFLICT}, que seria a forma mais direta e eficiente, 
+pois ele sempre recorre ao índice da chave 
+primária para detectar o conflito, o que impediria medir a operação sem índice, cenário 
+necessário para a análise apresentada adiante.
+
 \begin{codigo}[language=SQL, breaklines=true, caption={C2 no PostgreSQL.}, label={lst:c2-pg}]
 WITH atualizado AS (
   UPDATE itens
@@ -542,9 +540,9 @@ SELECT CAST(:id AS UUID), CAST(:restaurante_id AS UUID), :nome, :categoria, :sta
 WHERE NOT EXISTS (SELECT 1 FROM itens WHERE id = CAST(:id AS UUID));
 \end{codigo}
 
-O MongoDB não possui uma instrução única de upsert condicional equivalente à do PostgreSQL, 
-de modo que a aplicação lê primeiro o documento existente e só então decide entre inserir, 
-substituir ou não fazer nada (Código~\ref{lst:c2-mongo}).
+No MongoDB, a mesma lógica é executada pela aplicação, que lê primeiro o documento existente 
+e só então decide entre inserir, substituir ou não fazer nada (Código~\ref{lst:c2-mongo}).
+
 
 \begin{codigo}[language=Python, breaklines=true, caption={C2 no MongoDB.}, label={lst:c2-mongo}]
 existente = db.itens.find_one({"_id": evento["_id"]})
@@ -556,7 +554,7 @@ elif existente["hash"] != evento["hash"] and evento["versao"] >= existente["vers
 # caso contrario, nao faz nada
 \end{codigo}
 
-\subsubsection{C3: exclusão lógica.} Representa a remoção de um item do cardápio pelo restaurante, o sistema real não executa exclusões físicas, apenas lógicas. O padrão de acesso é a atualização do campo \texttt{status}, localizando o item pelo identificador. Além do \texttt{status}, a operação zera o \texttt{hash} e atualiza \texttt{modificado\_em}. Os Códigos~\ref{lst:c3-pg} e~\ref{lst:c3-mongo} apresentam a operação nos dois bancos.
+\subsubsection{C3: exclusão lógica.} Representa a remoção de um item do cardápio, o sistema real não executa exclusões físicas, apenas lógicas. O padrão de acesso é a atualização do campo \texttt{status}, localizando o item pelo identificador. Além do \texttt{status}, a operação zera o \texttt{hash} e atualiza \texttt{modificado\_em}. Os Códigos~\ref{lst:c3-pg} e~\ref{lst:c3-mongo} apresentam a operação nos dois bancos.
 
 \begin{codigo}[language=SQL, breaklines=true, caption={C3 no PostgreSQL.}, label={lst:c3-pg}]
 UPDATE itens
@@ -642,14 +640,15 @@ db.itens.find(
 \begin{codigo}[language=SQL, breaklines=true, caption={C7 no PostgreSQL.}, label={lst:c7-pg}]
 SELECT nome, categoria, opcoes_grupos
 FROM itens
-WHERE opcoes_grupos @> '[{"opcoes": [{"nome": "Bacon extra"}]}]'::jsonb AND status <> 'DELETED';
+WHERE opcoes_grupos @> CAST(:filtro AS JSONB) AND status <> 'DELETED';
+-- filtro: [{"opcoes": [{"nome": opcao}]}]
 \end{codigo}
 
 No MongoDB, a notação de ponto atravessa os dois arrays e compara o nome da opção diretamente (Código~\ref{lst:c7-mongo}).
 
 \begin{codigo}[language=Python, breaklines=true, caption={C7 no MongoDB.}, label={lst:c7-mongo}]
 db.itens.find(
-    {"opcoes_grupos.opcoes.nome": "Bacon extra",
+    {"opcoes_grupos.opcoes.nome": opcao,
      "status": {"$ne": "DELETED"}},
     {"_id": 0, "nome": 1, "categoria": 1, "opcoes_grupos": 1}
 )
@@ -668,7 +667,7 @@ WHERE id = ANY(CAST(:ids AS uuid[]))
   AND NOT COALESCE(atributos_variaveis->'tags', '[]'::jsonb) @> '"novidade"'::jsonb;
 \end{codigo}
 
-No MongoDB, o operador \texttt{\$addToSet} acrescenta o valor ao array apenas se ele ainda não estiver presente.  Para que as duas consultas sejam equivalentes, o filtro de ambas seleciona somente os itens que ainda não possuem a tag (Código~\ref{lst:c8-mongo}). Assim, em ambos os bancos, a data de modificação só é atualizada quando a tag é de fato adicionada.
+No MongoDB, o operador \texttt{\$addToSet} já evita duplicatas. Ainda assim, o filtro \texttt{"tags": \{"\$ne": "novidade"\}} foi incluído para que ambas as consultas atualizem exatamente o mesmo conjunto de itens, isto é, apenas os que ainda não possuem a tag (Código~\ref{lst:c8-mongo}). Desse modo, em ambos os bancos, a data de modificação só é alterada quando há mudança real.
 
 \begin{codigo}[language=Python, breaklines=true, caption={C8 no MongoDB.}, label={lst:c8-mongo}]
 db.itens.update_many(
@@ -766,11 +765,11 @@ banco e não do método de medição.
 
 Inicialmente, o tempo seria obtido a partir do próprio plano de execução, por
 meio do \texttt{EXPLAIN ANALYZE} no PostgreSQL e do \texttt{explain} no MongoDB.
-Essa abordagem se mostrou inadequada para as operações de escrita, já que no
+Porém, essa abordagem se mostrou inadequada para as operações de escrita, já que no
 PostgreSQL o \texttt{EXPLAIN ANALYZE} executa o comando, enquanto no MongoDB o
 \texttt{explain} apenas simula a operação, sem
 aplicá-la. Logo, os tempos de escrita dos
-dois bancos não seriam comparáveis de maneira justa.
+dois bancos não seriam comparados de maneira justa.
 
 Optou-se então por cronometrar a operação do lado do cliente, com a função
 \texttt{time.perf\_counter()} da biblioteca padrão do Python. 
@@ -793,7 +792,7 @@ repetidamente. Seus parâmetros e etapas são os seguintes:
   \item \texttt{antes}: função opcional executada antes de cada repetição e
   fora da cronometragem, usada quando é preciso restaurar o estado do banco
   entre as execuções.
-  \item \texttt{repeats}: número de repetições cronometradas, igual a 10 em todas as medições.
+  \item \texttt{repeats}: número de repetições cronometradas.
 \end{itemize}
 
 Para cada ação, a função devolve o tempo mínimo, o máximo, a média e a mediana
@@ -803,7 +802,7 @@ em milissegundos, além dos tempos brutos de cada repetição.
 \label{subsec:medicao-recursos}
 
 O consumo de CPU e de memória dos contêineres foi medido durante a inserção em massa dos dados. A leitura é feita diretamente nos contadores do cgroup do Linux (cgroup v2) do contêiner, que fornecem os valores instantaneamente. O comando \texttt{docker stats} foi mantido como alternativa, usada apenas quando o cgroup não é encontrado. 
-O Código~\ref{lst:medir-recursos}, no Apêndice~\ref{chapter:apendice-recursos}, apresenta as funções que trabalham em conjunto para capturar e monitorar esses recursos.
+O Código~\ref{lst:medir-recursos}, no Apêndice~\ref{chapter:apendice-recursos}, apresenta as funções que trabalham em conjunto para capturar e monitorar esses recursos:
 
 \begin{itemize}
   \item \texttt{ler\_cgroup}: lê o tempo de CPU acumulado pelo contêiner e a 
@@ -842,8 +841,7 @@ valor obtido corresponde apenas ao índice criado para a consulta em teste.
 No MongoDB, o tamanho dos dados vem do campo \texttt{storageSize} do comando
 \texttt{collStats}, que reflete o espaço efetivamente alocado em disco, já com a
 compressão aplicada pelo \textit{WiredTiger}. Em seguida, mede-se também o
-tamanho sem compressão (campo \texttt{size}), para que a comparação com o
-PostgreSQL seja feita nas mesmas condições. O tamanho dos
+tamanho sem compressão. O tamanho dos
 índices vem do campo \texttt{totalIndexSize}. O índice da chave primária
 (\texttt{\_id}) é descontado, pois existe em todos os cenários e não representa
 o custo do índice em teste. 
@@ -865,7 +863,7 @@ posterior.
 \subsubsection{Volume total do banco}
 
 Este experimento mede como cada operação se comporta quando o banco inteiro
-cresce. A pergunta é se, ao buscar exatamente a mesma coisa, o tempo piora e, em
+cresce. A pergunta é se ao buscar exatamente a mesma coisa o tempo piora e, em
 caso afirmativo, se piora na mesma proporção do crescimento dos dados. O banco é
 avaliado em três volumes, apresentados na Tabela~\ref{tab:volumes}. Para cada volume, os bancos são recriados do zero e carregados com dados gerados com a mesma semente, de modo que o conteúdo é reproduzível.
 
@@ -914,41 +912,23 @@ As outras consultas não foram incluídas por não terem um parâmetro variável
         \textbf{Consulta} & \textbf{Parâmetro variado} & \textbf{Valores} \\ \hline
         C1 & Categoria do item & Sobremesa (cerca de 10\% dos itens), bebida (cerca de 20\%) e pizza (cerca de 35\%) \\ \hline
         C5 & Largura da faixa de preço & R\$ 5--12, R\$ 5--25, R\$ 5--50 e R\$ 5--70 \\ \hline
-        C4 & Porte do restaurante & Pequeno, médio e grande (restaurantes que concentram quantidades crescentes de itens) \\ \hline
+        C4 & Porte do restaurante & Pequeno, médio e grande \\ \hline
         C7 & Opção buscada & Picles extra (cerca de 0,09\% dos itens), Cheddar extra (cerca de 9,4\%) e Bacon extra (cerca de 20,5\%) \\ \hline
     \end{tabular}
     \vspace{0.4em}
     \legend{Fonte: Elaborado pela autora.}
 \end{table}
 
-O objetivo é observar como o tempo responde ao aumento do número de registros
-retornados. 
+O objetivo é observar como o tempo e os índices respondem ao aumento do número de registros
+retornados.
 
 \subsubsection{Lote de escrita}
 
-Este experimento verifica se o custo \textit{por item} diminui conforme o lote
+Este experimento verifica se o custo da operação \textit{por item} diminui conforme o lote
 cresce e a partir de que tamanho essa melhoria deixa de ocorrer. O volume do
-banco é fixo (Grande), e os lotes variam entre 1, 10, 100, 1.000, 10.000, 50.000 e 100.000 itens. A Tabela~\ref{tab:lote} apresenta as operações avaliadas.
+banco é fixo (Grande), e os lotes variam entre 1, 10, 100, 1.000, 10.000, 50.000 e 100.000 itens.
 
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.1}
-    \caption{Operações avaliadas no experimento de lote de escrita.}
-    \label{tab:lote}
-    \footnotesize
-    \begin{tabular}{|l|p{11cm}|}
-        \hline
-        \textbf{Consulta} & \textbf{Operação em lote} \\ \hline
-        C2 (inserção) & \textit{Upsert} de $N$ itens que ainda não existem, de modo que todos são inseridos \\ \hline
-        C2 (atualização) & \textit{Upsert} de $N$ itens que já existem, de modo que todos são atualizados \\ \hline
-        C3 & Exclusão lógica (\texttt{status = 'DELETED'}) de $N$ itens \\ \hline
-        C8 & Adição da tag novidade a $N$ itens já existentes \\ \hline
-    \end{tabular}
-    \vspace{0.4em}
-    \legend{Fonte: Elaborado pela autora.}
-\end{table}
-
-Nos experimentos C3 e C8, os identificadores dos itens do lote são sorteados
+Quatro operações são avaliadas, cada uma sobre $N$ itens: C2 (como INSERT e UPDATE de forma separada), C3 e C8. Nos experimentos C3 e C8, os identificadores dos itens do lote são sorteados
 entre os itens que já existem no banco. No C2, são gerados identificadores novos,
 pois o \textit{upsert} insere itens que ainda não existem. Em todos os casos, o
 lote inteiro é enviado ao banco em uma única operação. No PostgreSQL, essa
@@ -961,15 +941,14 @@ utiliza-se duas funções auxiliares:
 \begin{itemize}
   \item \texttt{antes}: é o parâmetro opcional da função \texttt{medir\_tempo}
   (Seção~\ref{subsec:medicao-tempo}), executado antes de cada repetição e fora
-  da cronometragem, em cada consulta ele desempenha a seguinte função:
+  da cronometragem. Em cada consulta ele desempenha a seguinte função:
   \begin{itemize}
     \item C2 (inserção): os itens do lote são apagados e são gerados novos eventos.
     \item C2 (atualização): os itens são criados uma vez, antes das repetições, e a cada 
-    repetição recebem evento novos, com versão maior e conteúdo diferente, de modo que 
+    repetição recebem eventos novos, com versão maior e conteúdo diferente, de modo que 
     a atualização condicional seja de fato executada.
     \item C3 e C8: os campos alterados voltam aos valores originais.
   \end{itemize}
-  Depois dessa preparação, o cache dos bancos e do sistema operacional é descartado, como nos demais experimentos, de modo que cada repetição parte do cache vazio.
   \item \texttt{depois}: é executado uma única vez, ao fim das dez repetições de
   cada tamanho de lote, e devolve o banco ao estado original, de modo que o
   lote seguinte parta das mesmas condições.
@@ -1009,7 +988,7 @@ barra apenas poluiria a figura.
 \subsection{Efeito do Volume e do Índice}
 
 Esta subseção trata da variação do volume do banco. Cada gráfico mostra uma
-consulta, com o volume (5 mil, 100 mil e 1 milhão de itens) no eixo horizontal e o
+consulta, com o volume no eixo horizontal e o
 tempo no vertical (em escala logarítmica). As consultas foram agrupadas pelo 
 comportamento observado, apresenta-se no texto uma consulta de cada grupo, e as
 demais estão no Apêndice~\ref{chapter:apendice-volume}. Com 5 mil itens as operações levam
@@ -1028,7 +1007,7 @@ cuidados no experimento:
     \item \textbf{Índice forçado:} em algumas consultas (C1 e C5), o PostgreSQL
     decide por conta própria não usar o índice criado e faz uma varredura. Nesses
     casos, o experimento também mede a consulta obrigando o uso do índice, apenas
-    para estudar o seu efeito, na prática o banco não o usaria.
+    para estudar o seu efeito.
 \end{itemize}
 
 
@@ -1061,10 +1040,8 @@ o MongoDB, de 19,3 ms para 117,3 ms e 1.075,9 ms.
 Com índice, diferente das consultas por id, o tempo aumenta com o volume, porque a
 consulta devolve mais linhas quando o banco é maior: o PostgreSQL passa de 24,8 ms
 para 49,5 ms e 218,7 ms, e o MongoDB, de 18,3 ms para 58,1 ms e 371,1 ms. Mesmo assim,
-o índice ajuda bastante: em 1 milhão de itens, o tempo cai de 1.175,8 para 218,7 ms
-no PostgreSQL e de 1.075,9 para 371,1 ms no MongoDB. Isso faz com que o PostgreSQL seja cerca de 1,7 vez mais
-rápido que o MongoDB com índice. Em 100 mil itens,
-os dois ficam próximos (49,5 contra 58,1 ms). A C4 (Apêndice~\ref{chapter:apendice-volume})
+o índice ajuda bastante, isso faz com que o PostgreSQL seja cerca de 1,7 vez mais
+rápido que o MongoDB com índice em 1 milhão de itens. A C4 (Apêndice~\ref{chapter:apendice-volume})
 apresenta comportamento semelhante.
 
 
@@ -1125,34 +1102,29 @@ Apêndice~\ref{chapter:apendice-seletividade}.
 Na C1, o filtro devolve de 10\% a 35\% da tabela, conforme a categoria buscada
 (Figura~\ref{fig:seletividade-c1}). Nessa faixa, o índice não ajuda. No
 PostgreSQL, para sobremesa, o tempo vai de 838 ms sem
-índice para 5.431 ms com índice, e o mesmo ocorre,
-em menor grau, para bebida. Já para pizza, o PostgreSQL abandona o
-índice e faz uma varredura da tabela, e o tempo volta ao do cenário sem índice. No
-MongoDB o índice continua sendo usado, mas quase não altera o tempo.
+índice para 5.431 ms com índice, e o mesmo ocorre para bebida. Já para pizza, o PostgreSQL abandona o
+índice e faz uma varredura da tabela. No MongoDB o índice continua sendo usado, mas quase não altera o tempo.
 
 \begin{figure}[H]
     \centering
     \caption{Efeito da seletividade no tempo de C1.}
-    \includegraphics[width=0.6\textwidth]{grafico3_seletividade_C1.png}
+    \includegraphics[width=0.7\textwidth]{grafico3_seletividade_C1.png}
     \label{fig:seletividade-c1}
     \legend{Fonte: Elaborado pela autora.}
 \end{figure}
 
 
 Na C4, o filtro devolve menos de 0,5\% da tabela, conforme o
-porte do restaurante (Figura~\ref{fig:seletividade-c4}). Com índice, o
-tempo cresce com o número de linhas devolvidas: no PostgreSQL, passa de 70 ms
+porte do restaurante (Figura~\ref{fig:seletividade-c4}). Com índice: no PostgreSQL, passa de 70 ms
 (restaurante pequeno) para 235 ms (médio) e 840 ms (grande), e no MongoDB, de 103 ms
 para 380 ms e 571 ms. O índice ajuda nos três portes e nos dois bancos, mas o ganho
 diminui conforme o restaurante tem mais itens, pois cada linha devolvida é uma
-leitura a mais. Sem índice, o tempo praticamente não
-muda com o porte do restaurante, pois o
-banco lê a tabela inteira de qualquer forma.
+leitura a mais. Sem índice, o tempo praticamente não muda com o porte do restaurante.
 
 \begin{figure}[H]
     \centering
     \caption{Efeito da seletividade no tempo de C4.}
-    \includegraphics[width=0.6\textwidth]{grafico3_seletividade_C4.png}
+    \includegraphics[width=0.7\textwidth]{grafico3_seletividade_C4.png}
     \label{fig:seletividade-c4}
     \legend{Fonte: Elaborado pela autora.}
 \end{figure}
@@ -1170,7 +1142,7 @@ de 28,3 para 0,15 ms no PostgreSQL e de 13,7 para 0,011 ms no MongoDB.
 
 
 Esse ganho não é sempre contínuo. No PostgreSQL, o custo por item deixa de cair em
-torno de 50 mil itens e, no lote de 100 mil, tende a ficar igual ou pior. 
+torno de 50 mil itens e no lote de 100 mil tende a ficar igual ou pior. 
 Isso sugere que lotes muito grandes passam a custar em memória e o ganho de dividir o custo fixo se esgota. No
 MongoDB a saturação é mais tardia e continua caindo até 100 mil. O MongoDB é mais
 rápido por item na maioria dos tamanhos de lote, e a vantagem aumenta nos lotes grandes.
@@ -1178,7 +1150,7 @@ rápido por item na maioria dos tamanhos de lote, e a vantagem aumenta nos lotes
 \begin{figure}[H]
     \centering
     \caption{Efeito do tamanho do lote em C2.}
-    \includegraphics[width=0.5\textwidth]{grafico4_lote_C2_insercao.png}
+    \includegraphics[width=0.7\textwidth]{grafico4_lote_C2_insercao.png}
     \label{fig:lote-c2-insercao}
     \legend{Fonte: Elaborado pela autora.}
 \end{figure}
@@ -1203,8 +1175,14 @@ de carga acompanha esse crescimento: passa de 4,9 para 63,7 s no PostgreSQL e de
 1,5 para 16,6 s no MongoDB. A memória cresce bem menos: de 219 para 318 MB no
 PostgreSQL e de 346 para 593 MB no MongoDB. A CPU, ao contrário dos dois, não
 cresce com o volume, pois os lotes chegam ao banco no mesmo ritmo e o que aumenta é
-a duração da carga. O PostgreSQL usa mais CPU que o MongoDB (cerca de 57\% contra
-32\%), uma possível explicação é a verificação da chave estrangeira a cada item inserido, que o MongoDB não faz. 
+a duração da carga.
+
+Na comparação entre os bancos, o MongoDB carrega os dados de 3 a 4 vezes mais
+rápido que o PostgreSQL em todos os volumes, e também usa menos CPU (cerca de 32\%
+contra 57\%). Uma possível explicação para essas duas diferenças é a verificação da
+chave estrangeira a cada item inserido, que o PostgreSQL faz e o MongoDB não. Em
+contrapartida, o PostgreSQL ocupa menos memória: com 1 milhão de itens, são 318 MB
+contra 593 MB do MongoDB.
 
 
 \begin{figure}[H]
@@ -1280,15 +1258,14 @@ no qual a rodada completa leva cerca de três horas.
 Houve ainda uma mudança
 de escopo, a proposta inicial envolvia o GraphQL, mas essa direção misturava as
 camadas de acesso e de armazenamento, dificultando a visualização do que queria ser medido e analisado.
-Por isso, a ideia foi focar nos bancos de dados e em mecanismos que os caracterizam, como índices e escalabilidade.
+Por isso, a ideia foi focar nos SGBDs e em mecanismos que os caracterizam, como índices e escalabilidade.
 
 Manter os dois bancos em condições comparáveis exigiu algumas decisões. A inserção é feita em
 lotes de 10 mil itens, com \textit{commit} ao final de cada lote no PostgreSQL e
 \texttt{journal=True} no MongoDB, de modo que as escritas tenham a mesma
 durabilidade. Antes de cada repetição, os
 contêineres são reiniciados e o cache do sistema operacional é descartado. O \textit{upsert} condicional (C2), não existe
-como instrução única no MongoDB, foi implementado com uma lógica de insert e update separados. Por fim, o espaço ocupado pelo MongoDB é medido também sem compressão, para
-comparar com o PostgreSQL nas mesmas condições.
+como instrução única no MongoDB, foi implementado com uma lógica separada. 
 
 Em relação as limitações, os experimentos foram executados em um único computador pessoal, com os bancos em contêineres de 2 CPUs e 3~GB cada, em um único nó e
 com um único cliente, de forma sequencial. Por isso, os resultados podem não valer

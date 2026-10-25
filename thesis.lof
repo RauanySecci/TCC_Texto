@@ -3,23 +3,23 @@
 \contentsline {figure}{\numberline {2}{\ignorespaces Modelo de dados no PostgreSQL.\relax }}{35}{figure.caption.15}%
 \contentsline {figure}{\numberline {3}{\ignorespaces Modelo de documentos no MongoDB.\relax }}{36}{figure.caption.16}%
 \contentsline {figure}{\numberline {4}{\ignorespaces Hierarquia conceitual dos itens por categoria.\relax }}{36}{figure.caption.17}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Efeito do volume no tempo de C3.\relax }}{59}{figure.caption.33}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Efeito de volume no tempo de C6.\relax }}{59}{figure.caption.34}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Efeito de volume no tempo de C1.\relax }}{60}{figure.caption.35}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Síntese do ganho proporcionado pelo índice em cada consulta.\relax }}{61}{figure.caption.36}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Efeito da seletividade no tempo de C1.\relax }}{61}{figure.caption.37}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Efeito da seletividade no tempo de C4.\relax }}{62}{figure.caption.38}%
-\contentsline {figure}{\numberline {11}{\ignorespaces Efeito do tamanho do lote em C2.\relax }}{62}{figure.caption.39}%
-\contentsline {figure}{\numberline {12}{\ignorespaces Tempo, uso de memória e uso de CPU durante a carga inicial dos dados.\relax }}{63}{figure.caption.40}%
-\contentsline {figure}{\numberline {13}{\ignorespaces Espaço em disco ocupado pelos índices.\relax }}{64}{figure.caption.41}%
-\contentsline {figure}{\numberline {14}{\ignorespaces Espaço em disco ocupado após a carga inicial dos dados.\relax }}{64}{figure.caption.42}%
-\contentsline {figure}{\numberline {15}{\ignorespaces Efeito do volume no tempo de C2.\relax }}{83}{figure.caption.47}%
-\contentsline {figure}{\numberline {16}{\ignorespaces Efeito do volume no tempo de C4.\relax }}{83}{figure.caption.48}%
-\contentsline {figure}{\numberline {17}{\ignorespaces Efeito do volume no tempo de C5.\relax }}{84}{figure.caption.49}%
-\contentsline {figure}{\numberline {18}{\ignorespaces Efeito do volume no tempo de C7.\relax }}{84}{figure.caption.50}%
-\contentsline {figure}{\numberline {19}{\ignorespaces Efeito do volume no tempo de C8.\relax }}{85}{figure.caption.51}%
-\contentsline {figure}{\numberline {20}{\ignorespaces Efeito da seletividade no tempo de C5.\relax }}{87}{figure.caption.52}%
-\contentsline {figure}{\numberline {21}{\ignorespaces Efeito da seletividade no tempo de C7.\relax }}{87}{figure.caption.53}%
-\contentsline {figure}{\numberline {22}{\ignorespaces Efeito do tamanho do lote em C2.\relax }}{89}{figure.caption.54}%
-\contentsline {figure}{\numberline {23}{\ignorespaces Efeito do tamanho do lote em C3.\relax }}{89}{figure.caption.55}%
-\contentsline {figure}{\numberline {24}{\ignorespaces Efeito do tamanho do lote em C8.\relax }}{90}{figure.caption.56}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Efeito do volume no tempo de C3.\relax }}{58}{figure.caption.32}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Efeito de volume no tempo de C6.\relax }}{59}{figure.caption.33}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Efeito de volume no tempo de C1.\relax }}{60}{figure.caption.34}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Síntese do ganho proporcionado pelo índice em cada consulta.\relax }}{60}{figure.caption.35}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Efeito da seletividade no tempo de C1.\relax }}{61}{figure.caption.36}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Efeito da seletividade no tempo de C4.\relax }}{61}{figure.caption.37}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Efeito do tamanho do lote em C2.\relax }}{62}{figure.caption.38}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Tempo, uso de memória e uso de CPU durante a carga inicial dos dados.\relax }}{63}{figure.caption.39}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Espaço em disco ocupado pelos índices.\relax }}{64}{figure.caption.40}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Espaço em disco ocupado após a carga inicial dos dados.\relax }}{64}{figure.caption.41}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Efeito do volume no tempo de C2.\relax }}{83}{figure.caption.46}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Efeito do volume no tempo de C4.\relax }}{83}{figure.caption.47}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Efeito do volume no tempo de C5.\relax }}{84}{figure.caption.48}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Efeito do volume no tempo de C7.\relax }}{84}{figure.caption.49}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Efeito do volume no tempo de C8.\relax }}{85}{figure.caption.50}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Efeito da seletividade no tempo de C5.\relax }}{87}{figure.caption.51}%
+\contentsline {figure}{\numberline {21}{\ignorespaces Efeito da seletividade no tempo de C7.\relax }}{87}{figure.caption.52}%
+\contentsline {figure}{\numberline {22}{\ignorespaces Efeito do tamanho do lote em C2.\relax }}{89}{figure.caption.53}%
+\contentsline {figure}{\numberline {23}{\ignorespaces Efeito do tamanho do lote em C3.\relax }}{89}{figure.caption.54}%
+\contentsline {figure}{\numberline {24}{\ignorespaces Efeito do tamanho do lote em C8.\relax }}{90}{figure.caption.55}%

@@ -17,13 +17,13 @@ uma vantagem em uso real. Nas consultas de leitura, nenhum banco se destacou em 
 O PostgreSQL com índice
 foi melhor nas consultas seletivas (C4 e C6), e o MongoDB com índice, na contenção
 em array (C7). Nas outras consultas pouco seletivas (C1 e C5), o índice não ajuda e as diferenças
-entre os bancos são pequenas: em 1 milhão de itens, o PostgreSQL é cerca de 1,4x mais rápido na
-C1, e o MongoDB, cerca de 1,2x na C5 sem índice, com empate quando há índice.
+entre os bancos são pequenas sem índice: em 1 milhão de itens, o PostgreSQL é cerca de 1,4x mais rápido na
+C1, e o MongoDB, cerca de 1,2x na C5.
 
 Quanto aos índices, o resultado mais importante é que o ganho depende da
 seletividade da consulta: quanto menos linhas ela devolve, mais o índice ajuda.
 Nas que devolvem uma fração grande da tabela (a partir de cerca de 10\%), 
-o índice ajuda pouco ou nada e pode piorar o tempo, principalmente no PostgreSQL, 
+o índice ajuda pouco ou pode piorar o tempo, principalmente no PostgreSQL, 
 em que a varredura da tabela passa a ser a melhor opção.
 Para dados semiestruturados, o GIN do PostgreSQL compensa em consultas seletivas e ocupa pouco
 espaço (11~MB na C6), mas piora a consulta que devolve muitas linhas (C7). O índice
@@ -32,11 +32,10 @@ ocupou 148~MB na C6 e deu um ganho menor
 que o do GIN (cerca de 2,9 contra 5,4 vezes). Por fim, o uso de lotes na escrita traz 
 um ganho de centenas de vezes no custo por
 item, e esse ganho é maior no MongoDB, cujo custo continua caindo até lotes de 100
-mil itens na maior parte das operações. No PostgreSQL, o custo deixa de cair em
-torno de 50 mil itens.
+mil itens na maior parte das operações.
 
 Superar as dificuldades do caminho foi uma parte importante do aprendizado. A mudança
-de escopo, de uma proposta inicial com GraphQL para o foco nos bancos de dados, e as
+de escopo, de uma proposta inicial com GraphQL para o foco nos bancos de dados e as
 limitações do computador disponível, mostraram que recalcular a rota é parte do 
 trabalho de pesquisa. Em vez de
 insistir no plano original, foi preciso redefinir as prioridades e motivações. 
@@ -47,4 +46,4 @@ O principal produto deste trabalho é uma metodologia reproduzível, com \textit
 e notebook disponíveis, e um conjunto de resultados que orienta a escolha entre os
 dois bancos e as estratégias de indexação em catálogos semelhantes. Como
 continuidade, propõe-se avaliar a concorrência com vários clientes simultâneos,
-volumes maiores, outras configurações dos bancos e avaliar o PostgreSQL com compressão ajustada, para comparar o espaço e o custo em CPU com os do MongoDB.
+volumes maiores, outras configurações dos bancos e avaliar o PostgreSQL com compressão ajustada, para comparar o espaço e o custo em CPU com o do MongoDB.

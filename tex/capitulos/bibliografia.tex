@@ -110,7 +110,7 @@ A literatura recente investiga de forma ampla o desempenho comparativo entre sis
 
 Estes trabalhos, embora fundamentais para evidenciar a diferença entre SGBDs relacionais e NoSQL, apresentam limitações para o cenário de catálogos dinâmicos 
 de grande porte como o do iFood. Entre elas, destacam-se o tratamento genérico do \texttt{JSONB}, sem distinguir como a estrutura interna dos documentos afeta o desempenho,
-a exploração limitada da indexação, sem comparar índices simples, compostos e GIN no PostgreSQL com os índices equivalentes do MongoDB, e
+a exploração limitada da indexação, sem comparar índices simples, compostos e GIN no PostgreSQL com os índices equivalentes do MongoDB e
 a ausência de uma análise de como o desempenho varia com a escalabilidade. O presente estudo diferencia-se ao propor uma análise de um recorte do cenário real, 
 categorizando os atributos flexíveis do catálogo em três padrões estruturais de \texttt{JSONB}, utilizando diferentes tipos de indexação, além de quantificar o 
 comportamento do PostgreSQL e do MongoDB isoladamente sob três eixos de escalabilidade em ambiente de contêineres Docker\footnote{\url{https://docs.docker.com/}}.

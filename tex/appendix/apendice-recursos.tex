@@ -27,7 +27,7 @@ def medir_insercao_com_recursos(funcao_insercao, nome_container, intervalo=0.25)
     amostras = []
     parar = threading.Event()
     monitor = threading.Thread(target=monitorar_recursos,
-                               args=(nome_container, amostras, parar, intervalo))
+            args=(nome_container, amostras, parar, intervalo))
     monitor.start()
     inicio = time.perf_counter()
     try:

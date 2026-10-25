@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.8.17)  24 OCT 2026 18:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.8.17)  25 OCT 2026 14:48
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1654,12 +1654,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 149--149
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 149--149
-\T1/lmtt/m/n/10 semiestruturados. 5.Indexação.  I. Sousa, Elaine
+\T1/lmtt/m/n/10 semiestruturados. 5.Indexação. 6.Escalabilidade.
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 149--149
-\T1/lmtt/m/n/10 Parros Machado de. II. Instituto de Ciências
+\T1/lmtt/m/n/10 I. Sousa, Elaine Parros Machado de. II. Instituto de
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
+\T1/lmtt/m/n/10 Ciências Matemáticas e de Computação (ICMC/USP). III.
  []
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has been already used, duplicate ignored
@@ -1880,7 +1885,7 @@ File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 \openout4 = `thesis.mw'.
 
  (./tex/capitulos/desenvolvimento.tex
-<images//metodologia.png, id=573, 1375.1375pt x 542.025pt>
+<images//metodologia.png, id=571, 1375.1375pt x 542.025pt>
 File: images//metodologia.png Graphic file (type png)
 <use images//metodologia.png>
 Package pdftex.def Info: images//metodologia.png  used on input line 20.
@@ -1895,7 +1900,7 @@ Package pdftex.def Info: images//metodologia.png  used on input line 20.
  [34] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-<images//modelo-relacional.png, id=599, 926.46124pt x 504.88625pt>
+<images//modelo-relacional.png, id=597, 926.46124pt x 504.88625pt>
 File: images//modelo-relacional.png Graphic file (type png)
 <use images//modelo-relacional.png>
 Package pdftex.def Info: images//modelo-relacional.png  used on input line 85.
@@ -1905,7 +1910,7 @@ Overfull \hbox (14.80048pt too wide) in paragraph at lines 90--92
 \T1/ptm/m/n/12 (-20) atri-bu-tos va-riá-veis como cam-pos pró-prios (exem-pli-fi-cado por \T1/lmtt/m/n/12 atributosEspecificosCategoria\T1/ptm/m/n/12 (-20) ). 
  []
 
-<images//modelo-documentos.png, id=601, 1043.9pt x 789.95125pt>
+<images//modelo-documentos.png, id=599, 1043.9pt x 789.95125pt>
 File: images//modelo-documentos.png Graphic file (type png)
 <use images//modelo-documentos.png>
 Package pdftex.def Info: images//modelo-documentos.png  used on input line 96.
@@ -1915,7 +1920,7 @@ Package pdftex.def Info: images//modelo-documentos.png  used on input line 96.
 [35 <./images//modelo-relacional.png>] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-<images//hierarquia-item.png, id=612, 1010.77625pt x 505.89pt>
+<images//hierarquia-item.png, id=610, 1010.77625pt x 505.89pt>
 File: images//hierarquia-item.png Graphic file (type png)
 <use images//hierarquia-item.png>
 Package pdftex.def Info: images//hierarquia-item.png  used on input line 108.
@@ -2040,12 +2045,12 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
 \openout4 = `thesis.mw'.
 
 
-Overfull \hbox (1.02301pt too wide) in paragraph at lines 721--721
+Overfull \hbox (1.02301pt too wide) in paragraph at lines 720--720
  []|\T1/ptm/b/n/10 (-20) Multikey| 
  []
 
 
-Overfull \hbox (2.57971pt too wide) in paragraph at lines 721--721
+Overfull \hbox (2.57971pt too wide) in paragraph at lines 720--720
  []|\T1/ptm/b/n/10 (-20) Wildcard| 
  []
 
@@ -2055,7 +2060,7 @@ Overfull \hbox (2.57971pt too wide) in paragraph at lines 721--721
 \openout4 = `thesis.mw'.
 
 
-Overfull \hbox (1.39342pt too wide) in paragraph at lines 775--780
+Overfull \hbox (1.39342pt too wide) in paragraph at lines 774--779
 []\T1/ptm/m/n/12 (-20) Optou-se en-tão por cro-no-me-trar a ope-ra-ção do lado do cli-ente, com a fun-ção \T1/lmtt/m/n/12 time.perf_-
  []
 
@@ -2065,7 +2070,7 @@ Overfull \hbox (1.39342pt too wide) in paragraph at lines 775--780
 \openout4 = `thesis.mw'.
 
 
-Overfull \hbox (10.11484pt too wide) in paragraph at lines 842--850
+Overfull \hbox (10.11484pt too wide) in paragraph at lines 841--848
 []\T1/ptm/m/n/12 (-20) No Mon-goDB, o ta-ma-nho dos da-dos vem do campo \T1/lmtt/m/n/12 storageSize \T1/ptm/m/n/12 (-20) do co-mando \T1/lmtt/m/n/12 collStats\T1/ptm/m/n/12 (-20) ,
  []
 
@@ -2089,95 +2094,95 @@ Overfull \hbox (10.11484pt too wide) in paragraph at lines 842--850
  [57] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-<images//grafico1_escala_C3_id.png, id=879, 621.522pt x 361.35pt>
+<images//grafico1_escala_C3_id.png, id=877, 621.522pt x 361.35pt>
 File: images//grafico1_escala_C3_id.png Graphic file (type png)
 <use images//grafico1_escala_C3_id.png>
-Package pdftex.def Info: images//grafico1_escala_C3_id.png  used on input line 1050.
+Package pdftex.def Info: images//grafico1_escala_C3_id.png  used on input line 1029.
 (pdftex.def)             Requested size: 318.49861pt x 185.17929pt.
 \openout4 = `thesis.mw'.
 
- [58] (./thesis.mw)
+ [58 <./images//grafico1_escala_C3_id.png>] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-<images//grafico1_escala_C6.png, id=885, 621.522pt x 361.35pt>
+<images//grafico1_escala_C6.png, id=884, 621.522pt x 361.35pt>
 File: images//grafico1_escala_C6.png Graphic file (type png)
 <use images//grafico1_escala_C6.png>
-Package pdftex.def Info: images//grafico1_escala_C6.png  used on input line 1074.
+Package pdftex.def Info: images//grafico1_escala_C6.png  used on input line 1051.
 (pdftex.def)             Requested size: 318.49861pt x 185.17929pt.
-\openout4 = `thesis.mw'.
-
- [59 <./images//grafico1_escala_C3_id.png> <./images//grafico1_escala_C6.png>] (./thesis.mw)
-\openout4 = `thesis.mw'.
-
-<images//grafico1_escala_C1.png, id=894, 621.522pt x 361.35pt>
+<images//grafico1_escala_C1.png, id=886, 621.522pt x 361.35pt>
 File: images//grafico1_escala_C1.png Graphic file (type png)
 <use images//grafico1_escala_C1.png>
-Package pdftex.def Info: images//grafico1_escala_C1.png  used on input line 1095.
+Package pdftex.def Info: images//grafico1_escala_C1.png  used on input line 1072.
 (pdftex.def)             Requested size: 318.49861pt x 185.17929pt.
-<images//grafico2_ganho_indice.png, id=896, 867.24pt x 361.35pt>
+\openout4 = `thesis.mw'.
+
+ [59 <./images//grafico1_escala_C6.png>] (./thesis.mw)
+\openout4 = `thesis.mw'.
+
+<images//grafico2_ganho_indice.png, id=894, 867.24pt x 361.35pt>
 File: images//grafico2_ganho_indice.png Graphic file (type png)
 <use images//grafico2_ganho_indice.png>
-Package pdftex.def Info: images//grafico2_ganho_indice.png  used on input line 1112.
+Package pdftex.def Info: images//grafico2_ganho_indice.png  used on input line 1089.
 (pdftex.def)             Requested size: 318.49861pt x 132.71043pt.
 \openout4 = `thesis.mw'.
 
- [60 <./images//grafico1_escala_C1.png>] (./thesis.mw)
+ [60 <./images//grafico1_escala_C1.png> <./images//grafico2_ganho_indice.png>] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-<images//grafico3_seletividade_C1.png, id=905, 679.338pt x 361.35pt>
+<images//grafico3_seletividade_C1.png, id=904, 679.338pt x 361.35pt>
 File: images//grafico3_seletividade_C1.png Graphic file (type png)
 <use images//grafico3_seletividade_C1.png>
-Package pdftex.def Info: images//grafico3_seletividade_C1.png  used on input line 1136.
-(pdftex.def)             Requested size: 273.00278pt x 145.21562pt.
-<images//grafico3_seletividade_C4.png, id=907, 679.338pt x 361.35pt>
+Package pdftex.def Info: images//grafico3_seletividade_C1.png  used on input line 1111.
+(pdftex.def)             Requested size: 318.49861pt x 169.41548pt.
+<images//grafico3_seletividade_C4.png, id=906, 679.338pt x 361.35pt>
 File: images//grafico3_seletividade_C4.png Graphic file (type png)
 <use images//grafico3_seletividade_C4.png>
-Package pdftex.def Info: images//grafico3_seletividade_C4.png  used on input line 1155.
-(pdftex.def)             Requested size: 273.00278pt x 145.21562pt.
+Package pdftex.def Info: images//grafico3_seletividade_C4.png  used on input line 1127.
+(pdftex.def)             Requested size: 318.49861pt x 169.41548pt.
 \openout4 = `thesis.mw'.
 
- [61 <./images//grafico2_ganho_indice.png> <./images//grafico3_seletividade_C1.png>] (./thesis.mw)
+ [61 <./images//grafico3_seletividade_C1.png> <./images//grafico3_seletividade_C4.png>] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-<images//grafico4_lote_C2_insercao.png, id=916, 549.252pt x 361.35pt>
+<images//grafico4_lote_C2_insercao.png, id=915, 549.252pt x 361.35pt>
 File: images//grafico4_lote_C2_insercao.png Graphic file (type png)
 <use images//grafico4_lote_C2_insercao.png>
-Package pdftex.def Info: images//grafico4_lote_C2_insercao.png  used on input line 1181.
-(pdftex.def)             Requested size: 227.5pt x 149.67073pt.
+Package pdftex.def Info: images//grafico4_lote_C2_insercao.png  used on input line 1153.
+(pdftex.def)             Requested size: 318.49861pt x 209.53352pt.
 \openout4 = `thesis.mw'.
 
- [62 <./images//grafico3_seletividade_C4.png> <./images//grafico4_lote_C2_insercao.png>] (./thesis.mw)
+ [62 <./images//grafico4_lote_C2_insercao.png>] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-<images//grafico6_carga_tempo.png, id=926, 621.522pt x 375.804pt>
+<images//grafico6_carga_tempo.png, id=924, 621.522pt x 375.804pt>
 File: images//grafico6_carga_tempo.png Graphic file (type png)
 <use images//grafico6_carga_tempo.png>
-Package pdftex.def Info: images//grafico6_carga_tempo.png  used on input line 1215.
+Package pdftex.def Info: images//grafico6_carga_tempo.png  used on input line 1193.
 (pdftex.def)             Requested size: 218.39806pt x 132.05519pt.
-<images//grafico8_carga_memoria.png, id=927, 621.522pt x 375.804pt>
+<images//grafico8_carga_memoria.png, id=925, 621.522pt x 375.804pt>
 File: images//grafico8_carga_memoria.png Graphic file (type png)
 <use images//grafico8_carga_memoria.png>
-Package pdftex.def Info: images//grafico8_carga_memoria.png  used on input line 1221.
+Package pdftex.def Info: images//grafico8_carga_memoria.png  used on input line 1199.
 (pdftex.def)             Requested size: 218.39806pt x 132.05519pt.
-<images//grafico7_carga_cpu.png, id=928, 621.522pt x 375.804pt>
+<images//grafico7_carga_cpu.png, id=926, 621.522pt x 375.804pt>
 File: images//grafico7_carga_cpu.png Graphic file (type png)
 <use images//grafico7_carga_cpu.png>
-Package pdftex.def Info: images//grafico7_carga_cpu.png  used on input line 1229.
+Package pdftex.def Info: images//grafico7_carga_cpu.png  used on input line 1207.
 (pdftex.def)             Requested size: 218.39806pt x 132.05519pt.
 \openout4 = `thesis.mw'.
 
  [63 <./images//grafico6_carga_tempo.png> <./images//grafico8_carga_memoria.png> <./images//grafico7_carga_cpu.png>] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-<images//grafico5_espaco_indice.png, id=937, 794.97pt x 375.804pt>
+<images//grafico5_espaco_indice.png, id=935, 794.97pt x 375.804pt>
 File: images//grafico5_espaco_indice.png Graphic file (type png)
 <use images//grafico5_espaco_indice.png>
-Package pdftex.def Info: images//grafico5_espaco_indice.png  used on input line 1251.
+Package pdftex.def Info: images//grafico5_espaco_indice.png  used on input line 1229.
 (pdftex.def)             Requested size: 273.00278pt x 129.05615pt.
-<images//grafico9_carga_espaco.png, id=939, 693.792pt x 390.258pt>
+<images//grafico9_carga_espaco.png, id=937, 693.792pt x 390.258pt>
 File: images//grafico9_carga_espaco.png Graphic file (type png)
 <use images//grafico9_carga_espaco.png>
-Package pdftex.def Info: images//grafico9_carga_espaco.png  used on input line 1265.
+Package pdftex.def Info: images//grafico9_carga_espaco.png  used on input line 1243.
 (pdftex.def)             Requested size: 273.00278pt x 153.56366pt.
 \openout4 = `thesis.mw'.
 
@@ -4799,17 +4804,17 @@ No file thesis.gls.
 \openout4 = `thesis.mw'.
 
  (./tex/appendix/exemploapendice.tex
-<images//grafico1_escala_C2_id.png, id=1195, 621.522pt x 361.35pt>
+<images//grafico1_escala_C2_id.png, id=1191, 621.522pt x 361.35pt>
 File: images//grafico1_escala_C2_id.png Graphic file (type png)
 <use images//grafico1_escala_C2_id.png>
 Package pdftex.def Info: images//grafico1_escala_C2_id.png  used on input line 4.
 (pdftex.def)             Requested size: 386.75278pt x 224.86174pt.
-<images//grafico1_escala_C4.png, id=1196, 621.522pt x 361.35pt>
+<images//grafico1_escala_C4.png, id=1192, 621.522pt x 361.35pt>
 File: images//grafico1_escala_C4.png Graphic file (type png)
 <use images//grafico1_escala_C4.png>
 Package pdftex.def Info: images//grafico1_escala_C4.png  used on input line 12.
 (pdftex.def)             Requested size: 386.75278pt x 224.86174pt.
-<images//grafico1_escala_C5.png, id=1197, 621.522pt x 361.35pt>
+<images//grafico1_escala_C5.png, id=1193, 621.522pt x 361.35pt>
 File: images//grafico1_escala_C5.png Graphic file (type png)
 <use images//grafico1_escala_C5.png>
 Package pdftex.def Info: images//grafico1_escala_C5.png  used on input line 20.
@@ -4819,12 +4824,12 @@ Package pdftex.def Info: images//grafico1_escala_C5.png  used on input line 20.
  [83 <./images//grafico1_escala_C2_id.png> <./images//grafico1_escala_C4.png>] (./thesis.mw)
 \openout4 = `thesis.mw'.
 
-<images//grafico1_escala_C7.png, id=1205, 621.522pt x 361.35pt>
+<images//grafico1_escala_C7.png, id=1201, 621.522pt x 361.35pt>
 File: images//grafico1_escala_C7.png Graphic file (type png)
 <use images//grafico1_escala_C7.png>
 Package pdftex.def Info: images//grafico1_escala_C7.png  used on input line 28.
 (pdftex.def)             Requested size: 386.75278pt x 224.86174pt.
-<images//grafico1_escala_C8_id.png, id=1206, 621.522pt x 361.35pt>
+<images//grafico1_escala_C8_id.png, id=1202, 621.522pt x 361.35pt>
 File: images//grafico1_escala_C8_id.png Graphic file (type png)
 <use images//grafico1_escala_C8_id.png>
 Package pdftex.def Info: images//grafico1_escala_C8_id.png  used on input line 36.
@@ -4848,12 +4853,12 @@ Package pdftex.def Info: images//grafico1_escala_C8_id.png  used on input line 3
 \openout4 = `thesis.mw'.
 
  (./tex/appendix/apendice-btree.tex
-<images//grafico3_seletividade_C5.png, id=1222, 766.062pt x 361.35pt>
+<images//grafico3_seletividade_C5.png, id=1218, 766.062pt x 361.35pt>
 File: images//grafico3_seletividade_C5.png Graphic file (type png)
 <use images//grafico3_seletividade_C5.png>
 Package pdftex.def Info: images//grafico3_seletividade_C5.png  used on input line 6.
 (pdftex.def)             Requested size: 386.75278pt x 182.43344pt.
-<images//grafico3_seletividade_C7.png, id=1223, 679.338pt x 361.35pt>
+<images//grafico3_seletividade_C7.png, id=1219, 679.338pt x 361.35pt>
 File: images//grafico3_seletividade_C7.png Graphic file (type png)
 <use images//grafico3_seletividade_C7.png>
 Package pdftex.def Info: images//grafico3_seletividade_C7.png  used on input line 14.
@@ -4872,17 +4877,17 @@ Package pdftex.def Info: images//grafico3_seletividade_C7.png  used on input lin
 \openout4 = `thesis.mw'.
 
  (./tex/appendix/apendice-gin.tex
-<images//grafico4_lote_C2_atualizacao.png, id=1234, 549.252pt x 361.35pt>
+<images//grafico4_lote_C2_atualizacao.png, id=1230, 549.252pt x 361.35pt>
 File: images//grafico4_lote_C2_atualizacao.png Graphic file (type png)
 <use images//grafico4_lote_C2_atualizacao.png>
 Package pdftex.def Info: images//grafico4_lote_C2_atualizacao.png  used on input line 7.
 (pdftex.def)             Requested size: 318.49861pt x 209.53352pt.
-<images//grafico4_lote_C3.png, id=1235, 549.252pt x 361.35pt>
+<images//grafico4_lote_C3.png, id=1231, 549.252pt x 361.35pt>
 File: images//grafico4_lote_C3.png Graphic file (type png)
 <use images//grafico4_lote_C3.png>
 Package pdftex.def Info: images//grafico4_lote_C3.png  used on input line 15.
 (pdftex.def)             Requested size: 318.49861pt x 209.53352pt.
-<images//grafico4_lote_C8.png, id=1236, 549.252pt x 361.35pt>
+<images//grafico4_lote_C8.png, id=1232, 549.252pt x 361.35pt>
 File: images//grafico4_lote_C8.png Graphic file (type png)
 <use images//grafico4_lote_C8.png>
 Package pdftex.def Info: images//grafico4_lote_C8.png  used on input line 23.
@@ -5533,10 +5538,6 @@ AED: lastpage setting LastPage
 
 \openout4 = `thesis.mw'.
 
-\openout4 = `thesis.mw'.
-
-\openout4 = `thesis.mw'.
-
 )
 \openout4 = `thesis.brf'.
 
@@ -5560,18 +5561,18 @@ Package rerunfilecheck Info: File `thesis.brf' has not changed.
 
  ) 
 Here is how much of TeX's memory you used:
- 43150 strings out of 480154
- 732005 string characters out of 5893788
- 1650555 words of memory out of 5000000
- 58989 multiletter control sequences out of 15000+600000
- 610194 words of font info for 463 fonts, out of 8000000 for 9000
+ 43160 strings out of 480154
+ 732136 string characters out of 5893788
+ 1650615 words of memory out of 5000000
+ 58999 multiletter control sequences out of 15000+600000
+ 609952 words of font info for 464 fonts, out of 8000000 for 9000
  61 hyphenation exceptions out of 8191
  125i,13n,120p,3353b,2283s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (92 pages, 2003963 bytes).
+Output written on thesis.pdf (92 pages, 2003869 bytes).
 PDF statistics:
- 1655 PDF objects out of 1728 (max. 8388607)
- 1467 compressed objects within 15 object streams
- 541 named destinations out of 1000 (max. 500000)
+ 1649 PDF objects out of 1728 (max. 8388607)
+ 1461 compressed objects within 15 object streams
+ 539 named destinations out of 1000 (max. 500000)
  136972 words of extra memory for PDF output out of 154059 (max. 10000000)
 

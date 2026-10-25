@@ -3,8 +3,7 @@
 \begin{codigo}[language=Python, breaklines=true, caption={Inserção dos dados no PostgreSQL.}, label={lst:insert-pg}]
 execute_values(
     cur,
-    "INSERT INTO restaurantes (id, nome, categoria, ativo) VALUES %s",
-    dados_restaurantes, page_size=10_000)
+    "INSERT INTO restaurantes (id, nome, categoria, ativo) VALUES %s", dados_restaurantes, page_size=10_000)
 conn.commit()
 
 for i in range(0, len(itens), 10_000):
@@ -18,8 +17,7 @@ for i in range(0, len(itens), 10_000):
     execute_values(
         cur,
         "INSERT INTO itens (restaurante_id, nome, categoria, status, preco, "
-        "opcoes_grupos, atributos_variaveis, hash, versao) VALUES %s",
-        rows,
+        "opcoes_grupos, atributos_variaveis, hash, versao) VALUES %s", rows,
         template="(%s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::jsonb, %s, %s)",
         page_size=10_000)
     conn.commit()  # confirma a cada lote
@@ -42,7 +40,7 @@ for i in range(0, len(itens), 10_000):
                "opcoes_grupos": it["opcoes_grupos"],
                "hash": it["hash"], "versao": it["versao"],
                "criado_em": agora, "modificado_em": agora}
-        doc.update(it["atributos"])  # atributos variaveis no nivel superior
+        doc.update(it["atributos"])  # atributos variaveis 
         docs.append(doc)
     db_mongo.itens.insert_many(docs)
 \end{codigo}

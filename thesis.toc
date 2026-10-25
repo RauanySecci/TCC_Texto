@@ -25,7 +25,7 @@
 \contentsline {subsection}{\numberline {3.2.3}Geração dos Dados}{41}{subsection.3.2.3}%
 \contentsline {subsubsection}{\numberline {3.2.3.1}Restaurantes}{41}{subsubsection.3.2.3.1}%
 \contentsline {subsubsection}{\numberline {3.2.3.2}Itens}{41}{subsubsection.3.2.3.2}%
-\contentsline {subsection}{\numberline {3.2.4}Inserção dos dados}{45}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.4}Inserção dos dados}{44}{subsection.3.2.4}%
 \contentsline {subsection}{\numberline {3.2.5}Consultas Implementadas}{45}{subsection.3.2.5}%
 \contentsline {subsubsection}{\numberline {3.2.5.1}C1: itens por categoria e status.}{46}{subsubsection.3.2.5.1}%
 \contentsline {subsubsection}{\numberline {3.2.5.2}C2: upsert condicional.}{47}{subsubsection.3.2.5.2}%
@@ -38,27 +38,27 @@
 \contentsline {subsection}{\numberline {3.2.6}Estratégias de Indexação}{51}{subsection.3.2.6}%
 \contentsline {subsection}{\numberline {3.2.7}Metodologia de Medição}{53}{subsection.3.2.7}%
 \contentsline {subsubsection}{\numberline {3.2.7.1}Medição de tempo}{53}{subsubsection.3.2.7.1}%
-\contentsline {subsubsection}{\numberline {3.2.7.2}Medição de recursos}{54}{subsubsection.3.2.7.2}%
+\contentsline {subsubsection}{\numberline {3.2.7.2}Medição de recursos}{53}{subsubsection.3.2.7.2}%
 \contentsline {subsubsection}{\numberline {3.2.7.3}Medição de espaço em disco}{54}{subsubsection.3.2.7.3}%
 \contentsline {subsection}{\numberline {3.2.8}Experimentos de Escalabilidade}{55}{subsection.3.2.8}%
 \contentsline {subsubsection}{\numberline {3.2.8.1}Volume total do banco}{55}{subsubsection.3.2.8.1}%
 \contentsline {subsubsection}{\numberline {3.2.8.2}Seletividade}{55}{subsubsection.3.2.8.2}%
 \contentsline {subsubsection}{\numberline {3.2.8.3}Lote de escrita}{56}{subsubsection.3.2.8.3}%
 \contentsline {section}{\numberline {3.3}Resultados Obtidos}{57}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Efeito do Volume e do Índice}{58}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.1}Efeito do Volume e do Índice}{57}{subsection.3.3.1}%
 \contentsline {subsubsection}{\numberline {3.3.1.1}Consultas por id}{58}{subsubsection.3.3.1.1}%
-\contentsline {subsubsection}{\numberline {3.3.1.2}Consultas Seletivas}{59}{subsubsection.3.3.1.2}%
-\contentsline {subsubsection}{\numberline {3.3.1.3}Consultas pouco Seletivas}{60}{subsubsection.3.3.1.3}%
+\contentsline {subsubsection}{\numberline {3.3.1.2}Consultas Seletivas}{58}{subsubsection.3.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.3.1.3}Consultas pouco Seletivas}{59}{subsubsection.3.3.1.3}%
 \contentsline {subsubsection}{\numberline {3.3.1.4}Síntese do Ganho do Índice}{60}{subsubsection.3.3.1.4}%
-\contentsline {subsection}{\numberline {3.3.2}Seletividade}{61}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.2}Seletividade}{60}{subsection.3.3.2}%
 \contentsline {subsection}{\numberline {3.3.3}Lote}{62}{subsection.3.3.3}%
-\contentsline {subsection}{\numberline {3.3.4}Carga Inicial dos Dados}{63}{subsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.3.5}Armazenamento}{64}{subsection.3.3.5}%
-\contentsline {section}{\numberline {3.4}Dificuldades e Limitações}{65}{section.3.4}%
+\contentsline {subsection}{\numberline {3.3.4}Carga Inicial dos Dados}{62}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Armazenamento}{63}{subsection.3.3.5}%
+\contentsline {section}{\numberline {3.4}Dificuldades e Limitações}{64}{section.3.4}%
 \contentsline {section}{\numberline {3.5}Considerações Finais}{65}{section.3.5}%
 \contentsline {chapter}{\chapternumberline {4}\MakeTextUppercase {Conclusão}}{67}{chapter.4}%
 \vspace {\cftbeforechapterskip }
-\contentsline {chapter}{\MakeTextUppercase {Refer\^encias}}{69}{section*.45}%
+\contentsline {chapter}{\MakeTextUppercase {Refer\^encias}}{69}{section*.44}%
 \renewcommand *{\cftappendixname }{AP\^ENDICE \space }
 \contentsline {appendix}{\chapternumberline {A}\MakeTextUppercase {Bibliotecas Python e Versões Utilizadas}}{71}{appendix.A}%
 \contentsline {appendix}{\chapternumberline {B}\MakeTextUppercase {Cálculo da Impressão Digital do Item}}{73}{appendix.B}%

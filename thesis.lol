@@ -13,7 +13,7 @@
 \contentsline {lstlisting}{\numberline {13}C6 no MongoDB.}{50}{lstlisting.3.13}%
 \contentsline {lstlisting}{\numberline {14}C7 no PostgreSQL.}{50}{lstlisting.3.14}%
 \contentsline {lstlisting}{\numberline {15}C7 no MongoDB.}{50}{lstlisting.3.15}%
-\contentsline {lstlisting}{\numberline {16}C8 no PostgreSQL.}{51}{lstlisting.3.16}%
+\contentsline {lstlisting}{\numberline {16}C8 no PostgreSQL.}{50}{lstlisting.3.16}%
 \contentsline {lstlisting}{\numberline {17}C8 no MongoDB.}{51}{lstlisting.3.17}%
 \contentsline {lstlisting}{\numberline {18}Cálculo da impressão digital do item.}{73}{lstlisting.B.18}%
 \contentsline {lstlisting}{\numberline {19}Inserção dos dados no PostgreSQL.}{75}{lstlisting.C.19}%
